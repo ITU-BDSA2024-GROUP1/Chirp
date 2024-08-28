@@ -478,3 +478,4 @@ $RECYCLE.BIN/
 
 # IDE specifics
 .idea/
+*:Zone.Identifier
