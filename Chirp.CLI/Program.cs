@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using SimpleDB;
 
 namespace Chirp.CLI
 {
@@ -23,6 +24,9 @@ namespace Chirp.CLI
             }
         }
 
+        /**
+        * Reads the 
+        */
         static void Read()
         {
             string[] cheepsIn = File.ReadAllLines("data/chirp_cli_db.csv");
