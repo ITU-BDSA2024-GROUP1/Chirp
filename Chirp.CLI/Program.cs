@@ -3,33 +3,45 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.CommandLine;
 using SimpleDB;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Chirp.CLI
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task<int> Main(string[] args)
         {
-            switch (args[0])
+            var rootCommand = new RootCommand("Chirp where you can send cheeps and read others");
+            
+            var readCommand = new Command("read", "Read informantion stored in database");
+            readCommand.SetHandler(async () =>
             {
-                case "read":
-                    Read();
-                    break;
-                case "cheep":
-                    Cheep(args[1]);
-                    break;
-                default:
-                    break;
-            }
+                await Read();
+            });
+
+            var storeCommand = new Command("cheep", "Add a cheep to the databas");
+            var cheepArgument = new Argument<string>("message", "The cheep you want to send");
+            storeCommand.AddArgument(cheepArgument);
+            storeCommand.SetHandler(async (string message) =>
+             {
+                 await Cheep(message);   
+             }, cheepArgument);
+
+            rootCommand.AddCommand(readCommand);
+            rootCommand.AddCommand(storeCommand);
+
+            return await rootCommand.InvokeAsync(args);
         }
 
         /**
         * Reads the 
         */
-        static void Read()
+        static async Task Read()
         {
-            string[] cheepsIn = File.ReadAllLines("data/chirp_cli_db.csv");
+            string[] cheepsIn = await File.ReadAllLinesAsync("data/chirp_cli_db.csv");
             string[] cheeps = new string[cheepsIn.Length - 1];
             for (int i = 0; i < cheepsIn.Length-1; i++)
             {
@@ -38,7 +50,7 @@ namespace Chirp.CLI
                 Console.WriteLine(cheeps[i]);
             }
         }
-
+        // Line 51
         static string ParseCheep(string cheep)
         {
             string[] cheepContent = Regex.Split(cheep, @",\""|\"",");
@@ -59,17 +71,17 @@ namespace Chirp.CLI
             DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             dateTime = dateTime.AddSeconds(date).ToLocalTime();
             return dateTime;
-        }
+        } // Line 72
 
         static long ParseDateTimeToUnixTime(DateTime date)
         {
             return ((DateTimeOffset)date).ToUnixTimeSeconds();
         }
         
-        static void Cheep(string content)
+        static async Task Cheep(string content)
         {
             string csvLine = $"\n{Environment.UserName},\"{content}\",{ParseDateTimeToUnixTime(DateTime.UtcNow)}";
-            File.AppendAllText("data/chirp_cli_db.csv", csvLine);
+            await File.AppendAllTextAsync("data/chirp_cli_db.csv", csvLine);
         }
     }
 }
