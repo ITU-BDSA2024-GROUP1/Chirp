@@ -12,14 +12,17 @@ namespace Chirp.CLI
 {
     internal class Program
     {
+        const string cheepCsvPath = "data/chirp_cli_db.csv";
         static async Task<int> Main(string[] args)
         {
+            SetWorkingDirectoryToProjectRoot();
+            UserInterface.setCheepsCsvPath(cheepCsvPath);
             var rootCommand = new RootCommand("Chirp where you can send cheeps and read others");
 
             var readCommand = new Command("read", "Read informantion stored in database");
             readCommand.SetHandler(async () =>
             {
-                await Read();
+                await UserInterface.ReadCheeps();
             });
 
             var storeCommand = new Command("cheep", "Add a cheep to the databas");
@@ -36,36 +39,16 @@ namespace Chirp.CLI
             return await rootCommand.InvokeAsync(args);
         }
 
-        /**
-        * Reads the 
-        */
-        static async Task Read()
+        static void SetWorkingDirectoryToProjectRoot()
         {
-            string[] cheepsIn = await File.ReadAllLinesAsync("data/chirp_cli_db.csv");
-            string[] cheeps = new string[cheepsIn.Length - 1];
-            for (int i = 0; i < cheepsIn.Length-1; i++)
-            {
-                if (cheepsIn[i+1].Length == 0) continue;
-                cheeps[i] = ParseCheep(cheepsIn[i+1]);
-                Console.WriteLine(cheeps[i]);
-            }
-        }
-        // Line 51
-        static string ParseCheep(string cheep)
-        {
-            // Help from https://www.codeproject.com/Answers/555757/C-23plusString-FormatplusAlignment
-            string[] cheepContent = Regex.Split(cheep, @",\""|\"",");
-            DateTime date = ParseUnixTimeToDateTime(long.Parse(cheepContent[2]));
-            return $"{cheepContent[0], -10} @ {date.ToString("MM/dd/yy HH:mm:ss"), 17}: {cheepContent[1]}";
-        }
+            // Locate the project directory by navigating up from the binary directory
+            string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.FullName;
 
-        // UNIX timestamp help https://stackoverflow.com/questions/249760/how-can-i-convert-a-unix-timestamp-to-datetime-and-vice-versa
-        static DateTime ParseUnixTimeToDateTime(long date)
-        {
-            DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            dateTime = dateTime.AddSeconds(date).ToLocalTime();
-            return dateTime;
-        } // Line 72
+            // Set the working directory to the project directory
+            Directory.SetCurrentDirectory(projectDirectory);
+
+            Console.WriteLine("Current Working Directory Set To: " + Directory.GetCurrentDirectory());
+        }
 
         static long ParseDateTimeToUnixTime(DateTime date)
         {
@@ -75,7 +58,7 @@ namespace Chirp.CLI
         static async Task Cheep(string content)
         {
             string csvLine = $"\n{Environment.UserName},\"{content}\",{ParseDateTimeToUnixTime(DateTime.UtcNow)}";
-            await File.AppendAllTextAsync("data/chirp_cli_db.csv", csvLine);
+            await File.AppendAllTextAsync(cheepCsvPath, csvLine);
         }
     }
 }

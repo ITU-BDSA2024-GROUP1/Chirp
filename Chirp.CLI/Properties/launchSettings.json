@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "Chirp.CLI": {
+      "commandName": "Project"
+    }
+  }
+}
