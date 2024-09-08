@@ -1,64 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using CsvHelper;
+using CsvHelper.Configuration;
+
+using static Chirp.CLI.UserInterface;
 
 namespace Chirp.CLI
 {
     internal class UserInterface
     {
+        public record Cheep(string Author, string Message, long Timestamp) 
+        { 
+            override public string ToString()
+            {
+                // Help from https://www.codeproject.com/Answers/555757/C-23plusString-FormatplusAlignment
+                DateTime date = ParseUnixTimeToDateTime(Timestamp);
+                return $"{Author,-15} @ {date.ToString("MM/dd/yy HH:mm:ss"),17}: {Message}";
+            }
+        }
+
         static string cheepsCsvPath = String.Empty;
 
         public static void setCheepsCsvPath(string path) { cheepsCsvPath = path; }
 
         public static async Task ReadCheeps()
         {
-            string[] cheeps = GetCheepsFromCsv();
-            ParseCheepsToOutput(cheeps);
+            List<Cheep> cheeps = GetCheepsFromCsv();
             PrintCheeps(cheeps);
         }
 
-        static string[] GetCheepsFromCsv()
+        static List<Cheep> GetCheepsFromCsv()
         {
-            string[] cheepsIn = File.ReadAllLines(cheepsCsvPath);
-            string[] cheeps = new string[cheepsIn.Length];
-            int actualCheeps = 0;
-            for (int i = 1; i < cheepsIn.Length; i++)
+            List<Cheep> cheeps;
+            using (StreamReader reader = new StreamReader(cheepsCsvPath))
+            using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
-                if (cheepsIn[i].Length == 0) continue;
-                cheeps[actualCheeps++] = cheepsIn[i];
+                cheeps = new List<Cheep>(csv.GetRecords<Cheep>());
             }
-            string[] cheepsOut = new string[actualCheeps];
-            Array.Copy(cheeps, cheepsOut, actualCheeps);
-
-            return cheepsOut;
+            return cheeps;
         }
 
-        static void ParseCheepsToOutput(string[] cheeps)
-        {
-            for (int i = 0; i < cheeps.Length; i++)
-            {
-                string cheep = ParseCheep(cheeps[i]);
-                cheeps[i] = cheep;
-            }
-        }
 
-        static void PrintCheeps(string[] cheeps)
+        static void PrintCheeps(List<Cheep> cheeps)
         {
-            foreach (string cheep in cheeps)
+            foreach (Cheep cheep in cheeps)
             {
-                Console.WriteLine(cheep);
+                Console.WriteLine(cheep.ToString());
             }
-        }
-
-        static string ParseCheep(string cheep)
-        {
-            // Help from https://www.codeproject.com/Answers/555757/C-23plusString-FormatplusAlignment
-            string[] cheepContent = Regex.Split(cheep, @",\""|\"",");
-            DateTime date = ParseUnixTimeToDateTime(long.Parse(cheepContent[2]));
-            return $"{cheepContent[0],-10} @ {date.ToString("MM/dd/yy HH:mm:ss"),17}: {cheepContent[1]}";
         }
 
         // UNIX timestamp help https://stackoverflow.com/questions/249760/how-can-i-convert-a-unix-timestamp-to-datetime-and-vice-versa
@@ -67,6 +61,30 @@ namespace Chirp.CLI
             DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             dateTime = dateTime.AddSeconds(date).ToLocalTime();
             return dateTime;
-        } 
+        }
+
+        public static async Task WriteCheep(string message)
+        {
+            Cheep cheep = new Cheep(Environment.UserName, message, ParseDateTimeToUnixTime(DateTime.Now));
+            List<Cheep> cheeps = new List<Cheep>();
+            cheeps.Add(cheep);
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                // Don't write the header again.
+                HasHeaderRecord = false,
+            };
+            using (var stream = File.Open(cheepsCsvPath, FileMode.Append))
+            using (var writer = new StreamWriter(stream))
+            using (var csv = new CsvWriter(writer,config))
+            {
+                csv.WriteRecords(cheeps);
+            }
+        }
+
+
+        static long ParseDateTimeToUnixTime(DateTime date)
+        {
+            return ((DateTimeOffset)date).ToUnixTimeSeconds();
+        }
     }
 }

@@ -7,6 +7,7 @@ using System.CommandLine;
 using SimpleDB;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using CsvHelper;
 
 namespace Chirp.CLI
 {
@@ -29,36 +30,13 @@ namespace Chirp.CLI
             storeCommand.AddArgument(cheepArgument);
             storeCommand.SetHandler(async (string message) =>
              {
-                 await Cheep(message);   
+                 await UserInterface.WriteCheep(message);   
              }, cheepArgument);
 
             rootCommand.AddCommand(readCommand);
             rootCommand.AddCommand(storeCommand);
 
             return await rootCommand.InvokeAsync(args);
-        }
-
-        // With the help of ChatGPT since I could not find a solution through searching google.
-        static void SetWorkingDirectoryToProjectRoot()
-        {
-            // Locate the project directory by navigating up from the binary directory
-            string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.FullName;
-
-            // Set the working directory to the project directory
-            Directory.SetCurrentDirectory(projectDirectory);
-
-            Console.WriteLine("Current Working Directory Set To: " + Directory.GetCurrentDirectory());
-        }
-
-        static long ParseDateTimeToUnixTime(DateTime date)
-        {
-            return ((DateTimeOffset)date).ToUnixTimeSeconds();
-        }
-        
-        static async Task Cheep(string content)
-        {
-            string csvLine = $"\n{Environment.UserName},\"{content}\",{ParseDateTimeToUnixTime(DateTime.UtcNow)}";
-            await File.AppendAllTextAsync(cheepCsvPath, csvLine);
         }
     }
 }
