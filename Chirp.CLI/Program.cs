@@ -13,7 +13,7 @@ namespace Chirp.CLI
 {
     internal class Program
     {
-        const string cheepCsvPath = "data/chirp_cli_db.csv";
+        const string cheepCsvPath = "Chirp.CLI/data/chirp_cli_db.csv";
         static async Task<int> Main(string[] args)
         {
             UserInterface.setCheepsCsvPath(cheepCsvPath);

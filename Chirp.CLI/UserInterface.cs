@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 
-using static Chirp.CLI.UserInterface;
+using SimpleDB;
 
 namespace Chirp.CLI
 {
@@ -27,24 +27,19 @@ namespace Chirp.CLI
 
         static string cheepsCsvPath = String.Empty;
 
-        public static void setCheepsCsvPath(string path) { cheepsCsvPath = path; }
+        public static IDatabaseRepository<Cheep> cheepBase; 
+
+        public static void setCheepsCsvPath(string path) 
+        { 
+            cheepsCsvPath = path; 
+            cheepBase = new CSVDatabase<Cheep>(cheepsCsvPath);
+        }
 
         public static async Task ReadCheeps()
         {
-            List<Cheep> cheeps = GetCheepsFromCsv();
-            PrintCheeps(cheeps);
+            PrintCheeps(new List<Cheep>(cheepBase.Read()));
         }
 
-        static List<Cheep> GetCheepsFromCsv()
-        {
-            List<Cheep> cheeps;
-            using (StreamReader reader = new StreamReader(cheepsCsvPath))
-            using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                cheeps = new List<Cheep>(csv.GetRecords<Cheep>());
-            }
-            return cheeps;
-        }
 
 
         static void PrintCheeps(List<Cheep> cheeps)
@@ -66,19 +61,7 @@ namespace Chirp.CLI
         public static async Task WriteCheep(string message)
         {
             Cheep cheep = new Cheep(Environment.UserName, message, ParseDateTimeToUnixTime(DateTime.Now));
-            List<Cheep> cheeps = new List<Cheep>();
-            cheeps.Add(cheep);
-            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                // Don't write the header again.
-                HasHeaderRecord = false,
-            };
-            using (var stream = File.Open(cheepsCsvPath, FileMode.Append))
-            using (var writer = new StreamWriter(stream))
-            using (var csv = new CsvWriter(writer,config))
-            {
-                csv.WriteRecords(cheeps);
-            }
+            cheepBase.Store(cheep);
         }
 
 
