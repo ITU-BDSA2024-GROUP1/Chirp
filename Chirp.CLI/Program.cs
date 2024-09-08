@@ -39,6 +39,7 @@ namespace Chirp.CLI
             return await rootCommand.InvokeAsync(args);
         }
 
+        // With the help of ChatGPT since I could not find a solution through searching google.
         static void SetWorkingDirectoryToProjectRoot()
         {
             // Locate the project directory by navigating up from the binary directory
