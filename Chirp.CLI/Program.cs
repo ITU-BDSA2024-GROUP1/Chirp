@@ -15,7 +15,6 @@ namespace Chirp.CLI
         const string cheepCsvPath = "data/chirp_cli_db.csv";
         static async Task<int> Main(string[] args)
         {
-            SetWorkingDirectoryToProjectRoot();
             UserInterface.setCheepsCsvPath(cheepCsvPath);
             var rootCommand = new RootCommand("Chirp where you can send cheeps and read others");
 
