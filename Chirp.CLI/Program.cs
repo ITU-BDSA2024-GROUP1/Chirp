@@ -15,7 +15,7 @@ namespace Chirp.CLI
         static async Task<int> Main(string[] args)
         {
             var rootCommand = new RootCommand("Chirp where you can send cheeps and read others");
-            
+
             var readCommand = new Command("read", "Read informantion stored in database");
             readCommand.SetHandler(async () =>
             {
@@ -53,16 +53,10 @@ namespace Chirp.CLI
         // Line 51
         static string ParseCheep(string cheep)
         {
+            // Help from https://www.codeproject.com/Answers/555757/C-23plusString-FormatplusAlignment
             string[] cheepContent = Regex.Split(cheep, @",\""|\"",");
-            StringBuilder SB = new StringBuilder();
-            SB.Append(cheepContent[0]);
-            SB.Append(" @ ");
-            
             DateTime date = ParseUnixTimeToDateTime(long.Parse(cheepContent[2]));
-            SB.Append(date.ToString("MM/dd/yy HH:mm:ss"));
-            
-            SB.Append(": " + cheepContent[1]);
-            return SB.ToString();
+            return $"{cheepContent[0], -10} @ {date.ToString("MM/dd/yy HH:mm:ss"), 17}: {cheepContent[1]}";
         }
 
         // UNIX timestamp help https://stackoverflow.com/questions/249760/how-can-i-convert-a-unix-timestamp-to-datetime-and-vice-versa
