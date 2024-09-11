@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 using CsvHelper;
 using CsvHelper.Configuration;
-
 
 namespace SimpleDB
 {
     public class CSVDatabase<T> : IDatabaseRepository<T>
     {
-        string path;
-        public CSVDatabase(string path) { this.path = path; }
+        private readonly string _path;
+        public CSVDatabase(string path) { _path = path; }
 
         public IEnumerable<T> Read(int? limit = null)
         {
@@ -36,19 +30,16 @@ namespace SimpleDB
 
         public void Store(T record)
         {
-            List<T> records = new List<T>();
-            records.Add(record);
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 // Don't write the header again.
-                HasHeaderRecord = false,
+                HasHeaderRecord = false
             };
-            using (var stream = File.Open(path, FileMode.Append))
-            using (var writer = new StreamWriter(stream))
-            using (var csv = new CsvWriter(writer, config))
-            {
-                csv.WriteRecords(records);
-            }
+            
+            using var stream = File.Open(_path, FileMode.Append);
+            using var writer = new StreamWriter(stream);
+            using var csv = new CsvWriter(writer, config);
+            csv.WriteRecord(record);
         }
     }
 }
