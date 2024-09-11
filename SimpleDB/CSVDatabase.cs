@@ -16,7 +16,7 @@ namespace SimpleDB
             CsvReader csv = new(reader, CultureInfo.InvariantCulture);
             
             IEnumerable<T> records = csv.GetRecords<T>();
-            return limit == null ? records : records.Take((int)limit);
+            return limit == null ? records : records.TakeLast((int)limit);
         }
 
         public void Store(T record)
