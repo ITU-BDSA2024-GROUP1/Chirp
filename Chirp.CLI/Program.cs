@@ -4,7 +4,7 @@ namespace Chirp.CLI
 {
     internal class Program
     {
-        const string CheepCsvPath = "Chirp.CLI/data/chirp_cli_db.csv";
+        const string CheepCsvPath = "data/chirp_cli_db.csv";
         static async Task<int> Main(string[] args)
         {
             UserInterface.SetCheepsCsvPath(CheepCsvPath);
