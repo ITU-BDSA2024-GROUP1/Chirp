@@ -13,10 +13,7 @@ namespace Chirp.CLI
             var readCommand = new Command("read", "Read informantion stored in database");
             var readArgument = new Argument<int?>("value", "The amount of latest cheeps you want to read");
             readCommand.AddArgument(readArgument);
-            readCommand.SetHandler(async (int? value) =>
-            {
-                await UserInterface.ReadCheeps(value);
-            }, readArgument);
+            readCommand.SetHandler(UserInterface.ReadCheeps, readArgument);
 
             var storeCommand = new Command("cheep", "Add a cheep to the database");
             var cheepArgument = new Argument<string>("message", "The cheep you want to send");
