@@ -2,7 +2,8 @@
   "profiles": {
     "Chirp.CLI": {
       "commandName": "Project",
-      "workingDirectory": "$(MSBuildProjectDirectory)/..",
+      "commandLineArgs": "read 5",
+      "workingDirectory": "$(MSBuildProjectDirectory)",
       "remoteDebugEnabled": true
     }
   }

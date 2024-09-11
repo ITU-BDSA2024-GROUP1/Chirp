@@ -27,7 +27,7 @@ namespace Chirp.CLI
 
         static string cheepsCsvPath = String.Empty;
 
-        public static IDatabaseRepository<Cheep> cheepBase; 
+        public static IDatabaseRepository<Cheep>? cheepBase; 
 
         public static void setCheepsCsvPath(string path) 
         { 
@@ -35,9 +35,9 @@ namespace Chirp.CLI
             cheepBase = new CSVDatabase<Cheep>(cheepsCsvPath);
         }
 
-        public static async Task ReadCheeps()
+        public static async Task ReadCheeps(int? value)
         {
-            PrintCheeps(new List<Cheep>(cheepBase.Read()));
+            PrintCheeps(new List<Cheep>(cheepBase.Read(value)));
         }
 
 

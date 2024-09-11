@@ -24,7 +24,14 @@ namespace SimpleDB
             {
                 records = new List<T>(csv.GetRecords<T>());
             }
-            return records;
+            if (limit == null) return records;
+            if (limit >= records.Count()) return records;
+            List<T> values = new List<T>();
+            for (int i = records.Count() - (int)limit; i < records.Count(); i++)
+            {
+                values.Add(((List<T>)records)[i]);
+            }
+            return values;
         }
 
         public void Store(T record)
