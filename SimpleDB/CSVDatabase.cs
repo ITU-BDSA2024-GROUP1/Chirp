@@ -5,10 +5,10 @@ using CsvHelper.Configuration;
 
 namespace SimpleDB
 {
-    internal class CSVDatabase<T> : IDatabaseRepository<T>
+    public class CSVDatabase<T> : IDatabaseRepository<T>
     {
         private readonly string _path;
-        internal CSVDatabase(string path) { _path = path; }
+        public CSVDatabase(string path) { _path = path; }
 
         public IEnumerable<T> Read(int? limit = null)
         {
