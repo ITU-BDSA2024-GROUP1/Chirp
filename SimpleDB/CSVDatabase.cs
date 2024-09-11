@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Globalization;
+﻿using System.Globalization;
 
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -24,8 +23,9 @@ namespace SimpleDB
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 // Don't write the header again.
-                HasHeaderRecord = false,
+                HasHeaderRecord = false
             };
+            
             using var stream = File.Open(_path, FileMode.Append);
             using var writer = new StreamWriter(stream);
             using var csv = new CsvWriter(writer, config);
