@@ -1,54 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 using CsvHelper;
 using CsvHelper.Configuration;
-
 
 namespace SimpleDB
 {
     public class CSVDatabase<T> : IDatabaseRepository<T>
     {
-        string path;
-        public CSVDatabase(string path) { this.path = path; }
+        private readonly string _path;
+        public CSVDatabase(string path) { _path = path; }
 
         public IEnumerable<T> Read(int? limit = null)
         {
-            IEnumerable<T> records;
-            using (StreamReader reader = new StreamReader(path))
-            using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                records = new List<T>(csv.GetRecords<T>());
-            }
-            if (limit == null) return records;
-            if (limit >= records.Count()) return records;
-            List<T> values = new List<T>();
-            for (int i = records.Count() - (int)limit; i < records.Count(); i++)
-            {
-                values.Add(((List<T>)records)[i]);
-            }
-            return values;
+            StreamReader reader = new(_path);
+            CsvReader csv = new(reader, CultureInfo.InvariantCulture);
+            
+            IEnumerable<T> records = csv.GetRecords<T>();
+            return limit == null ? records : records.TakeLast((int)limit);
         }
 
         public void Store(T record)
         {
-            List<T> records = new List<T>();
-            records.Add(record);
-            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            CsvConfiguration config = new(CultureInfo.InvariantCulture)
             {
                 // Don't write the header again.
-                HasHeaderRecord = false,
+                HasHeaderRecord = false
             };
-            using (var stream = File.Open(path, FileMode.Append))
-            using (var writer = new StreamWriter(stream))
-            using (var csv = new CsvWriter(writer, config))
-            {
-                csv.WriteRecords(records);
-            }
+
+            FileStream stream = File.Open(_path, FileMode.Append);
+            StreamWriter writer = new(stream);
+            CsvWriter csv = new(writer, config);
+            csv.WriteRecord(record);
         }
     }
 }
