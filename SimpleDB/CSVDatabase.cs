@@ -21,7 +21,6 @@ namespace SimpleDB
 
         public void Store(T record)
         {
-            List<T> records = new() { record };
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 // Don't write the header again.
@@ -30,7 +29,7 @@ namespace SimpleDB
             using var stream = File.Open(_path, FileMode.Append);
             using var writer = new StreamWriter(stream);
             using var csv = new CsvWriter(writer, config);
-            csv.WriteRecords(records as IEnumerable);
+            csv.WriteRecord(record);
         }
     }
 }
