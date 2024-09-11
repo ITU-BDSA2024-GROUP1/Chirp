@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "SimpleDB": {
+      "commandName": "Project",
+      "commandLineArgs": "read",
+      "workingDirectory": "${MSBuildProjectDirectory}/../.."
+    }
+  }
+}
