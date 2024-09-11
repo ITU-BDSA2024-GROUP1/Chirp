@@ -4,14 +4,11 @@ namespace Chirp.CLI
 {
     internal class UserInterface
     {
-        static string cheepsCsvPath = String.Empty;
+        private static IDatabaseRepository<Cheep>? cheepBase;
 
-        private static IDatabaseRepository<Cheep>? cheepBase; 
-
-        public static void SetCheepsCsvPath(string path) 
+        public static void SetCheepsCsvPath(string path)
         { 
-            cheepsCsvPath = path; 
-            cheepBase = new CSVDatabase<Cheep>(cheepsCsvPath);
+            cheepBase = new CSVDatabase<Cheep>(path);
         }
 
         public static void ReadCheeps(int? value)
