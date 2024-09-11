@@ -1,42 +1,36 @@
-﻿using System.Globalization;
+﻿using System.Collections;
+using System.Globalization;
 
 using CsvHelper;
 using CsvHelper.Configuration;
 
-
 namespace SimpleDB
 {
-    public class CSVDatabase<T> : IDatabaseRepository<T>
+    internal class CSVDatabase<T> : IDatabaseRepository<T>
     {
-        string path;
-        public CSVDatabase(string path) { this.path = path; }
+        private readonly string _path;
+        internal CSVDatabase(string path) { _path = path; }
 
         public IEnumerable<T> Read(int? limit = null)
         {
-            IEnumerable<T> records;
-            using (StreamReader reader = new StreamReader(path))
-            using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                records = new List<T>(csv.GetRecords<T>());
-            }
+            using var reader = new StreamReader(_path);
+            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+            var records = new List<T>(csv.GetRecords<T>());
             return records;
         }
 
         public void Store(T record)
         {
-            List<T> records = new List<T>();
-            records.Add(record);
+            List<T> records = new() { record };
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 // Don't write the header again.
                 HasHeaderRecord = false,
             };
-            using (var stream = File.Open(path, FileMode.Append))
-            using (var writer = new StreamWriter(stream))
-            using (var csv = new CsvWriter(writer, config))
-            {
-                csv.WriteRecords(records);
-            }
+            using var stream = File.Open(_path, FileMode.Append);
+            using var writer = new StreamWriter(stream);
+            using var csv = new CsvWriter(writer, config);
+            csv.WriteRecords(records as IEnumerable);
         }
     }
 }
