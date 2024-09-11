@@ -11,7 +11,7 @@ namespace Chirp.CLI
             UserInterface.SetCheepsCsvPath(CheepCsvPath);
             var rootCommand = new RootCommand("Chirp where you can send cheeps and read others");
 
-            var readCommand = new Command("read", "Read informantion stored in database");
+            var readCommand = new Command("read", "Read information stored in database");
             var readArgument = new Argument<int?>("value", "The amount of latest cheeps you want to read");
             readCommand.AddArgument(readArgument);
             readCommand.SetHandler(UserInterface.ReadCheeps, readArgument);
