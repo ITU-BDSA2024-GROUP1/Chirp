@@ -27,10 +27,13 @@ namespace SimpleDB
                 HasHeaderRecord = false
             };
 
-            FileStream stream = File.Open(_path, FileMode.Append);
-            StreamWriter writer = new(stream);
-            CsvWriter csv = new(writer, config);
-            csv.WriteRecord(record);
+            using (FileStream stream = File.Open(_path, FileMode.Append))
+            using (StreamWriter writer = new(stream))
+            using (CsvWriter csv = new(writer, config))
+            {
+                csv.WriteRecord(record);
+                csv.NextRecord();
+            }
         }
     }
 }
