@@ -1,7 +1,7 @@
 namespace SimpleDB;
 
-public interface IDatabaseRepository<T>
+internal interface IDatabaseRepository<T>
 {
-    public IEnumerable<T> Read(int? limit = null);
-    public void Store(T record);
+    internal IEnumerable<T> Read(int? limit = null);
+    internal void Store(T record);
 }
