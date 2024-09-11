@@ -1,13 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.CommandLine;
-using SimpleDB;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using CsvHelper;
+﻿using System.CommandLine;
 
 namespace Chirp.CLI
 {
