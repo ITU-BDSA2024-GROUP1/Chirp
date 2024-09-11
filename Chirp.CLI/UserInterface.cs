@@ -16,6 +16,8 @@ namespace Chirp.CLI
 
         public static void ReadCheeps(int? value)
         {
+            if (cheepBase == null) throw new InvalidOperationException("ReadCheeps() has been called, but the database hasn't been initialized and therefore currently doesn't exist.");
+
             var cheeps = cheepBase.Read(value);
             PrintCheeps(cheeps);
         }
@@ -30,6 +32,8 @@ namespace Chirp.CLI
 
         public static void WriteCheep(string message)
         {
+            if (cheepBase == null) throw new InvalidOperationException("WriteCheep() has been called, but the database hasn't been initialized and therefore currently doesn't exist.");
+
             Cheep cheep = new(Environment.UserName, message, ParseDateTimeToUnixTime(DateTime.Now));
             cheepBase.Store(cheep);
         }
