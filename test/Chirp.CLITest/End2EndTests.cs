@@ -1,6 +1,6 @@
-namespace Chirp.CLITest
+﻿namespace Chirp.CLITest
 {
-    public class UnitTest1
+    public class End2EndTests
     {
         [Fact]
         public void Test1()
