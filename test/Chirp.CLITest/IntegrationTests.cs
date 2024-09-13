@@ -1,39 +1,33 @@
 ﻿using Chirp.CLI;
 
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace Chirp.CLITest
 {
     public class IntegrationTests
     {
-        /*[Fact]
+        [Fact]
         public void UserInterface_WriteReadCheeps()
         {
             // Arrange
-            UserInterface.SetCheepsCsvPath("test.csv");
+            int limit = 1;
             string message = "Test message";
-
-            // Act
+            string expected = $"{Environment.UserName}           @ {((DateTimeOffset)DateTime.Now),17:MM/dd/yy HH:mm:ss}: {message}\r\n";
+            string relativePath = Path.Combine("..", "..", "..", "..", "..", "data", "testWrite.csv");
+            string path = Path.GetFullPath(relativePath);
+            UserInterface.SetCheepsCsvPath(path);
             UserInterface.WriteCheep(message);
-            var cheeps = UserInterface.ReadCheeps(null);
 
-            // Assert
-            Assert.Contains(cheeps, c => c.Message == message);
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+
+                // Act
+                UserInterface.ReadCheeps(limit);
+
+                // Assert
+                Assert.Equal(expected, sw.ToString());
+            }
         }
-
-        [Fact]
-        public void UserInterface_WriteCheep_NullBase()
-        {
-            // Arrange
-            string message = "Test message";
-
-            // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => UserInterface.WriteCheep(message));
-        }
-
-        [Fact]
-        public void UserInterface_ReadCheep_NullBase()
-        {
-            // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => UserInterface.ReadCheeps(null));
-        }*/
     }
 }
