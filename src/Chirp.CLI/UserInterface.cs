@@ -14,6 +14,15 @@ namespace Chirp.CLI
             cheepBase = new CSVDatabase<Cheep>(cheepsCsvPath);
         }
 
+        /// <summary>
+        /// Sets the cheepBase repository. Used for test purposes.
+        /// </summary>
+        /// <param name="repository">The repository to set.</param>
+        public static void SetCheepBase(IDatabaseRepository<Cheep> repository)
+        {
+            cheepBase = repository;
+        }
+
         public static void ReadCheeps(int? value)
         {
             if (cheepBase == null) throw new InvalidOperationException("ReadCheeps() has been called, but the database hasn't been initialized and therefore currently doesn't exist.");

@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		README.md = README.md
+		data\testRead.csv = data\testRead.csv
+		data\testWrite.csv = data\testWrite.csv
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chirp.CLITest", "test\Chirp.CLITest\Chirp.CLITest.csproj", "{FB3065B1-5801-4C04-9E1E-6C6422072F8E}"
