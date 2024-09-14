@@ -24,7 +24,7 @@ jobs:
 
       - name: Move issue to "In Progress"
         env:
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           node ./scripts/move-issue.js $GITHUB_TOKEN ${{ github.event.issue.node_id }} "In Progress"
 
