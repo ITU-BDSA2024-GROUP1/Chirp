@@ -1,18 +1,20 @@
-// Made by ChatGPT
+// Made with ChatGPT
 const { graphql } = import("@octokit/graphql");
 
 const moveIssue = async (token, issueId, columnName) => {
-  const graphqlWithAuth = graphql.defaults({
-    headers: {
-      authorization: `token ${token}`,
-    },
+  const graphqlWithAuth = (query, variables) =>
+    graphql(query, {
+      headers: {
+        authorization: `token ${token}`,
+      },
+      ...variables,
   });
 
   // Query your project to get column IDs
   const projectData = await graphqlWithAuth(`
     query {
-      user(login: "ITU-BDSA2024-GROUP1") {  // Replace with your org or user login
-        projectNext(number: 1) {  // Replace with your project number
+      user(login: "YOUR_ORG_OR_USER") {  // Replace with your org or user login
+        projectNext(number: YOUR_PROJECT_NUMBER) {  // Replace with your project number
           id
           fields(first: 20) {
             nodes {
@@ -28,7 +30,7 @@ const moveIssue = async (token, issueId, columnName) => {
   const columnField = projectData.user.projectNext.fields.nodes.find(
     (field) => field.name === "Status"
   );
-  
+
   if (!columnField) {
     throw new Error("Column 'Status' not found in project.");
   }
