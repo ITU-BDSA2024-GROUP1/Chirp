@@ -1,18 +1,29 @@
-name: move assigned issues
-on: 
+# Made by help of ChatGPT
+name: Move Assigned Issues to In Progress
+
+on:
   issues:
     types:
       - assigned
+
 jobs:
-  move-assigned-card:
+  move-issue:
     runs-on: ubuntu-latest
+
     steps:
-      - name: List projects (debugging)
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Move issue to "In Progress"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -H "Authorization: token ${{ secrets.ACTIONS_TOKEN }}" \
-               https://api.github.com/repos/OWNER/REPO/projects
-      - uses: alex-page/github-project-automation-plus@7ffb872c64bd809d23563a130a0a97d01dfa8f43
+          node ./scripts/move-issue.js $GITHUB_TOKEN ${{ github.event.issue.node_id }} "In Progress"
+
+      - name: Install Node.js (for the script)
+        uses: actions/setup-node@v3
         with:
-          project: ITU-BDSA2024-GROUP1 Chirp
-          column: In Progress
-          repo-token: ${{ secrets.ACTIONS_TOKEN }}
+          node-version: '16'
+          
+      - name: Run script
+        run: node scripts/move-issue.js
