@@ -1,5 +1,5 @@
 // Made by ChatGPT
-const { graphql } = require("@octokit/graphql");
+const { graphql } = import("@octokit/graphql");
 
 const moveIssue = async (token, issueId, columnName) => {
   const graphqlWithAuth = graphql.defaults({
