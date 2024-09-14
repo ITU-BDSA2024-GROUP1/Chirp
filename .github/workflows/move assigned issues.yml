@@ -14,16 +14,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Set up Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # or 18 if you prefer to match your local environment
+
+      - name: Install dependencies
+        run: npm install @octokit/graphql
+
       - name: Move issue to "In Progress"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
         run: |
           node ./scripts/move-issue.js $GITHUB_TOKEN ${{ github.event.issue.node_id }} "In Progress"
 
-      - name: Install Node.js (for the script)
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          
-      - name: Run script
-        run: node scripts/move-issue.js
