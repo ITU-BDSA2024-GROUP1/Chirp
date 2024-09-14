@@ -6,6 +6,8 @@ on:
     types:
       - assigned
 
+permissions: write-all
+
 jobs:
   move-issue:
     runs-on: ubuntu-latest
@@ -17,7 +19,7 @@ jobs:
       - name: Set up Node.js environment
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # or 18 if you prefer to match your local environment
+          node-version: '18' 
 
       - name: Install dependencies
         run: npm install @octokit/graphql
