@@ -7,9 +7,12 @@ jobs:
   move-assigned-card:
     runs-on: ubuntu-latest
     steps:
+      - name: List projects (debugging)
+        run: |
+          curl -H "Authorization: token ${{ secrets.ACTIONS_TOKEN }}" \
+               https://api.github.com/repos/OWNER/REPO/projects
       - uses: alex-page/github-project-automation-plus@7ffb872c64bd809d23563a130a0a97d01dfa8f43
         with:
           project: ITU-BDSA2024-GROUP1 Chirp
           column: In Progress
           repo-token: ${{ secrets.ACTIONS_TOKEN }}
-          organization: ITU-BDSA2024-GROUP1
