@@ -17,7 +17,7 @@ jobs:
       - name: Fetch Status Field ID and In Progress Option ID
         id: get_status_field_id
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
           ORGANIZATION: YOUR_ORGANIZATION
           PROJECT_NUMBER: YOUR_PROJECT_NUMBER
         run: |
