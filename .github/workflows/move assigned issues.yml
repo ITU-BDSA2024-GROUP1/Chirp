@@ -52,10 +52,6 @@ jobs:
           # echo "Issue IDs and Titles:"
           # cat project_data.json | jq -r '.data.organization.projectV2.items.nodes[] | "ID: \(.content.id), Title: \(.content.title)"
 
-      - name: testing away
-        run : |
-          curl -H "Authorization: bearer ${{ secrets.ACTIONS_TOKEN }}" https://api.github.com/graphql
-
 
       # Step 2: Update the issue status to "In Progress"
       - name: Modify issue status to "In Progress"
@@ -65,9 +61,17 @@ jobs:
           curl --request POST \
           --url https://api.github.com/graphql \
           --header 'Authorization: Bearer ${{ secrets.ACTIONS_TOKEN }}' \
-          --data '{"query":"mutation {updateProjectV2ItemFieldValue( input: { projectId: \"${{ env.PROJECT_ID }}\" itemId: \"I_kwDOMpeEds6WL0U7\" fieldId: \"PVTSSF_lADOCrYi5c4AnZd9zgfI8tk\" value: { singleSelectOptionId: \"47fc9ee4\" }}) { projectV2Item { id }}}"}'
+          --data '{"query":"mutation {updateProjectV2ItemFieldValue( input: { projectId: \"'${{ env.PROJECT_ID }}'\" itemId: \"I_kwDOMpeEds6WL0U7\" fieldId: \"PVTSSF_lADOCrYi5c4AnZd9zgfI8tk\" value: { singleSelectOptionId: \"47fc9ee4\" }}) { projectV2Item { id }}}"}'
+
+      - name: testing away
+        run : |
+          curl -i -H "Authorization: bearer ${{ secrets.ACTIONS_TOKEN }}" https://api.github.com/graphql
 
       - name: t2
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
+          ORGANIZATION: ITU-BDSA2024-GROUP1
+          PROJECT_NUMBER: 1
         run : |
           gh api graphql -f query='
             query { 
