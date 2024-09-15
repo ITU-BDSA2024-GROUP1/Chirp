@@ -20,25 +20,25 @@ jobs:
           response=$(curl -X POST \
             -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d @- https://api.github.com/graphql << 'EOF'
+            -d @- https://api.github.com/graphql <<'EOF'
           {
-            "query": "query { \
-              organization(login: \"${{ github.event.organization.login }}\") { \
-                projectsV2(first: 1) { \
-                  nodes { \
-                    id \
-                    fields(first: 20) { \
-                      nodes { \
-                        id \
-                        name \
-                        ... on ProjectV2SingleSelectField { \
-                          options { id name } \
-                        } \
-                      } \
-                    } \
-                  } \
-                } \
-              } \
+            "query": "query { 
+              organization(login: \"${{ github.event.organization.login }}\") { 
+                projectsV2(number: 1) { 
+                  nodes { 
+                    id 
+                    fields(first: 20) { 
+                      nodes { 
+                        id 
+                        name 
+                        ... on ProjectV2SingleSelectField { 
+                          options { id name } 
+                        } 
+                      } 
+                    } 
+                  } 
+                } 
+              } 
             }"
           }
           EOF
@@ -64,18 +64,19 @@ jobs:
           curl -X POST \
             -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d '{
-              "query": "mutation { \
-                updateIssue(input: { \
-                  id: \"'${{ github.event.issue.node_id }}'\", \
-                  body: \"Status updated to: In Progress\", \
-                  projectV2ItemFieldValue: { \
-                    fieldId: \"'${{ env.STATUS_FIELD_ID }}'\", \
-                    value: { singleSelectOptionId: \"'${{ env.IN_PROGRESS_OPTION_ID }}'\" } \
-                  } \
-                }) { \
-                  issue { id } \
-                } \
-              }"
-            }' \
-            https://api.github.com/graphql
+            -d @- https://api.github.com/graphql <<'EOF'
+          {
+            "query": "mutation { 
+              updateIssue(input: { 
+                id: \"${{ github.event.issue.node_id }}\", 
+                body: \"Status updated to: In Progress\", 
+                projectV2ItemFieldValue: { 
+                  fieldId: \"${{ env.STATUS_FIELD_ID }}\", 
+                  value: { singleSelectOptionId: \"${{ env.IN_PROGRESS_OPTION_ID }}\" } 
+                } 
+              }) { 
+                issue { id } 
+              } 
+            }"
+          }
+          EOF
