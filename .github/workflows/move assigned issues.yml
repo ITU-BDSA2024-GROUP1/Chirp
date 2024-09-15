@@ -59,4 +59,4 @@ jobs:
             --url https://api.github.com/graphql \
             --header 'Authorization: Bearer ${{ secrets.ACTIONS_TOKEN }}' \
             --header 'Content-Type: application/json' \
-            --data-raw '{"query":"mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $statusValue: ID!) { updateProjectV2ItemFieldValue(input: { projectId: $projectId, itemId: $itemId, fieldId: $fieldId, value: { singleSelectOptionId: $statusValue } }) { projectV2Item { id } } }","variables":{"projectId":"'"${{ env.PROJECT_ID }}"'","itemId":"'"${{ github.event.issue.node_id }}"'","fieldId":"'"${{ env.STATUS_FIELD_ID }}"'","statusValue":"'"${{ env.IN_PROGRESS_OPTION_ID }}"'"}}'
+            --data-raw '{"query":"mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $statusValue: ID!) { updateProjectV2ItemFieldValue(input: { projectId: $projectId, itemId: $itemId, fieldId: $fieldId, value: { singleSelectOptionId: $statusValue } }) { projectV2Item { id } } }","variables":{"projectId":"${{ env.PROJECT_ID }}","itemId":"${{ github.event.issue.node_id }}","fieldId":"${{ env.STATUS_FIELD_ID }}","statusValue":"${{ env.IN_PROGRESS_OPTION_ID }}"}}'
