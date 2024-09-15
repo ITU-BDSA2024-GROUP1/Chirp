@@ -49,8 +49,8 @@ jobs:
           echo 'STATUS_FIELD_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .id' project_data.json) >> $GITHUB_ENV
           echo 'IN_PROGRESS_OPTION_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .options[] | select(.name=="In Progress") |.id' project_data.json) >> $GITHUB_ENV
 
-          echo "Issue IDs and Titles:"
-          cat project_data.json | jq -r '.data.organization.projectV2.items.nodes[] | "ID: \(.content.id), Title: \(.content.title)"
+          # echo "Issue IDs and Titles:"
+          # cat project_data.json | jq -r '.data.organization.projectV2.items.nodes[] | "ID: \(.content.id), Title: \(.content.title)"
 
       - name: testing away
         run : |
@@ -67,3 +67,34 @@ jobs:
           --header 'Authorization: Bearer ${{ secrets.ACTIONS_TOKEN }}' \
           --data '{"query":"mutation {updateProjectV2ItemFieldValue( input: { projectId: \"${{ env.PROJECT_ID }}\" itemId: \"I_kwDOMpeEds6WL0U7\" fieldId: \"PVTSSF_lADOCrYi5c4AnZd9zgfI8tk\" value: { singleSelectOptionId: \"47fc9ee4\" }}) { projectV2Item { id }}}"}'
 
+      - name: t2
+        run : |
+          gh api graphql -f query='
+            query { 
+              organization(login: $org){
+                projectV2(number: $number) {
+                  issues(last:100, states:OPEN) {
+                     edges {
+                       node {
+                          id 
+                          title
+                          url
+                          number
+                          state
+                          author {
+                            url
+                          }
+                          labels(first:5) {
+                            edges {
+                              node {
+                                name
+                              }
+                            }
+                          }
+                        body
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER
