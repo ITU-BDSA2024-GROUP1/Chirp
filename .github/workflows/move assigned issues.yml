@@ -50,9 +50,8 @@ jobs:
           echo 'STATUS_FIELD_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .id' project_data.json) >> $GITHUB_ENV
           echo 'IN_PROGRESS_OPTION_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .options[] | select(.name=="In Progress") |.id' project_data.json) >> $GITHUB_ENV
 
-          # echo "Issue IDs and Titles:"
-          # cat project_data.json | jq -r '.data.organization.projectV2.items.nodes[] | "ID: \(.content.id), Title: \(.content.title)"
-
+      # This step has been made with help from ChatGPT
+      # Step 2: Ensure that the issue id used is correct
       - name: Fetch ProjectV2Item ID for Issue
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
@@ -81,7 +80,7 @@ jobs:
           # Find the ProjectV2Item ID for the current issue using the node_id
           echo 'PROJECT_ITEM_ID='$(jq --arg NODE_ID "${{ github.event.issue.node_id }}" '.data.organization.projectV2.items.nodes[] | select(.content.id == $NODE_ID) | .id' project_items.json) >> $GITHUB_ENV
 
-      # Step 2: Update the issue status to "In Progress"
+      # Step 3: Update the issue status to "In Progress"
       - name: Modify issue status to "In Progress"
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
@@ -90,32 +89,3 @@ jobs:
           --url https://api.github.com/graphql \
           --header 'Authorization: Bearer ${{ secrets.ACTIONS_TOKEN }}' \
           --data '{"query":"mutation {updateProjectV2ItemFieldValue( input: { projectId: \"'${{ env.PROJECT_ID }}'\" itemId: \"'${{ env.PROJECT_ITEM_ID }}'\" fieldId: \"'${{ env.STATUS_FIELD_ID }}'\" value: { singleSelectOptionId: \"'${{ env.IN_PROGRESS_OPTION_ID }}'\" }}) { projectV2Item { id }}}"}'
-
-
-      - name: testing away
-        env:
-          GH_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
-          ORGANIZATION: ITU-BDSA2024-GROUP1
-          PROJECT_NUMBER: 1
-        run : |
-          gh api graphql -f query='
-            query($org: String!, $number: Int!) {
-              organization(login: $org){
-                projectV2(number: $number) {
-                  id
-                  items(first:20) {
-                    nodes {
-                      ... on ProjectV2Item {
-                        id
-                        content {
-                          ... on Issue {
-                            id
-                            title
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER
