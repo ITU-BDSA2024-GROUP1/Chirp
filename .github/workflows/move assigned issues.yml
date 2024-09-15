@@ -20,33 +20,40 @@ jobs:
           response=$(curl -X POST \
             -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d '{
-              "query": "query { \
-                organization(login: \"'${{ github.event.organization.login }}'\") { \
-                  projectsV2(number: 1) { \
-                    nodes { \
-                      id \
-                      fields(first: 20) { \
-                        nodes { \
-                          id \
-                          name \
-                          ... on ProjectV2SingleSelectField { \
-                            options { id name } \
-                          } \
+            -d @- https://api.github.com/graphql << 'EOF'
+          {
+            "query": "query { \
+              organization(login: \"${{ github.event.organization.login }}\") { \
+                projectsV2(first: 1) { \
+                  nodes { \
+                    id \
+                    fields(first: 20) { \
+                      nodes { \
+                        id \
+                        name \
+                        ... on ProjectV2SingleSelectField { \
+                          options { id name } \
                         } \
                       } \
                     } \
                   } \
                 } \
-              }"
-            }' \
-            https://api.github.com/graphql)
+              } \
+            }"
+          }
+          EOF
 
           echo "$response"
 
-          # Extract STATUS_FIELD_ID and IN_PROGRESS_OPTION_ID from the response
-          STATUS_FIELD_ID=$(echo "$response" | jq -r '.data.organization.projectsV2.nodes[0].fields.nodes[] | select(.name == "Status") | .id')
-          IN_PROGRESS_OPTION_ID=$(echo "$response" | jq -r '.data.organization.projectsV2.nodes[0].fields.nodes[] | select(.name == "Status").options[] | select(.name == "In Progress") | .id')
+          # Ensure the response contains data and handle potential errors
+          STATUS_FIELD_ID=$(echo "$response" | jq -r '.data.organization.projectsV2.nodes[0].fields.nodes[]? | select(.name == "Status") | .id')
+          IN_PROGRESS_OPTION_ID=$(echo "$response" | jq -r '.data.organization.projectsV2.nodes[0].fields.nodes[]? | select(.name == "Status").options[]? | select(.name == "In Progress") | .id')
+
+          # Fail early if either ID is missing
+          if [[ -z "$STATUS_FIELD_ID" || -z "$IN_PROGRESS_OPTION_ID" ]]; then
+            echo "Error: Could not retrieve STATUS_FIELD_ID or IN_PROGRESS_OPTION_ID."
+            exit 1
+          fi
 
           echo "STATUS_FIELD_ID=$STATUS_FIELD_ID" >> $GITHUB_ENV
           echo "IN_PROGRESS_OPTION_ID=$IN_PROGRESS_OPTION_ID" >> $GITHUB_ENV
