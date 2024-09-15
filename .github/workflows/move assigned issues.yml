@@ -57,7 +57,7 @@ jobs:
         run: |
           curl --request POST \
             --url https://api.github.com/graphql \
-            --header 'Authorization: Bearer TOKEN' \
+            --header 'Authorization: Bearer ${{ secrets.ACTIONS_TOKEN }}' \
             --data '{"query":"mutation {updateProjectV2ItemFieldValue( input: { \
               projectId: \"'${{ env.PROJECT_ID }}'\" \
               itemId: \"'${{ github.event.issue.node_id }}'\" \
