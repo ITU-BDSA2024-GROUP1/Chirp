@@ -59,11 +59,11 @@ jobs:
             mutation {
               updateProjectV2ItemFieldValue(
                 input: {
-                  projectId: "${{ env.PROJECT_ID }}"
+                  projectId: ${{ env.PROJECT_ID }}
                   itemId: "${{ github.event.issue.node_id }}"
-                  fieldId: "${{ env.STATUS_FIELD_ID }}"
+                  fieldId: ${{ env.STATUS_FIELD_ID }}
                   value: { 
-                    singleSelectOptionId: "${{ env.IN_PROGRESS_OPTION_ID }}"        
+                    singleSelectOptionId: ${{ env.IN_PROGRESS_OPTION_ID }}     
                   }
                 }
               ) {
