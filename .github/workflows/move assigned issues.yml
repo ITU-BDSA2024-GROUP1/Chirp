@@ -3,30 +3,72 @@ name: Move Assigned Issues to In Progress
 
 on:
   issues:
-    types:
-      - assigned
-
-permissions: write-all
+    types: [assigned]
 
 jobs:
-  move-issue:
+  update_issue_status:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js environment
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18' 
-
-      - name: Install dependencies
-        run: npm install @octokit/graphql
-
-      - name: Move issue to "In Progress"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Step 1: Retrieve the STATUS_FIELD_ID and IN_PROGRESS_OPTION_ID from the organization project
+      - name: Fetch Status Field ID and In Progress Option ID
+        id: get_status_field_id
         run: |
-          node ./scripts/move-issue.js $GITHUB_TOKEN ${{ github.event.issue.node_id }} "In Progress"
+          response=$(curl -X POST \
+            -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "query": "query { \
+                organization(login: \"'${{ github.event.organization.login }}'\") { \
+                  projectsV2(number: 1) { \
+                    nodes { \
+                      id \
+                      fields(first: 20) { \
+                        nodes { \
+                          id \
+                          name \
+                          ... on ProjectV2SingleSelectField { \
+                            options { id name } \
+                          } \
+                        } \
+                      } \
+                    } \
+                  } \
+                } \
+              }"
+            }' \
+            https://api.github.com/graphql)
 
+          echo "$response"
+
+          # Extract STATUS_FIELD_ID and IN_PROGRESS_OPTION_ID from the response
+          STATUS_FIELD_ID=$(echo "$response" | jq -r '.data.organization.projectsV2.nodes[0].fields.nodes[] | select(.name == "Status") | .id')
+          IN_PROGRESS_OPTION_ID=$(echo "$response" | jq -r '.data.organization.projectsV2.nodes[0].fields.nodes[] | select(.name == "Status").options[] | select(.name == "In Progress") | .id')
+
+          echo "STATUS_FIELD_ID=$STATUS_FIELD_ID" >> $GITHUB_ENV
+          echo "IN_PROGRESS_OPTION_ID=$IN_PROGRESS_OPTION_ID" >> $GITHUB_ENV
+
+      # Step 2: Update the issue status to "In Progress"
+      - name: Modify issue status to "In Progress"
+        run: |
+          curl -X POST \
+            -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "query": "mutation { \
+                updateIssue(input: { \
+                  id: \"'${{ github.event.issue.node_id }}'\", \
+                  body: \"Status updated to: In Progress\", \
+                  projectV2ItemFieldValue: { \
+                    fieldId: \"'${{ env.STATUS_FIELD_ID }}'\", \
+                    value: { singleSelectOptionId: \"'${{ env.IN_PROGRESS_OPTION_ID }}'\" } \
+                  } \
+                }) { \
+                  issue { id } \
+                } \
+              }"
+            }' \
+            https://api.github.com/graphql
