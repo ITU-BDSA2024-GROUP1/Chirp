@@ -18,8 +18,8 @@ jobs:
         id: get_status_field_id
         env:
           GH_TOKEN: ${{ github.token }}
-          ORGANIZATION: YOUR_ORGANIZATION
-          PROJECT_NUMBER: YOUR_PROJECT_NUMBER
+          ORGANIZATION: ITU-BDSA2024-GROUP1
+          PROJECT_NUMBER: 1
         run: |
           gh api graphql -f query='
             query($org: String!, $number: Int!) {
