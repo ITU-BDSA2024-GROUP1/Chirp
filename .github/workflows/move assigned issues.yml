@@ -61,7 +61,7 @@ jobs:
                 input: {
                   projectId: "${{ env.PROJECT_ID }}"
                   itemId: "${{ github.event.issue.node_id }}"
-                  fieldId: "${{ env.FIELD_ID }}"
+                  fieldId: "${{ env.STATUS_FIELD_ID }}"
                   value: { 
                     singleSelectOptionId: "${{ env.IN_PROGRESS_OPTION_ID }}"        
                   }
