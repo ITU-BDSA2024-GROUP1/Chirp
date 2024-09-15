@@ -18,7 +18,7 @@ namespace Chirp.CLI
         /// Sets the cheepBase repository. Used for test purposes.
         /// </summary>
         /// <param name="repository">The repository to set.</param>
-        public static void SetCheepBase(IDatabaseRepository<Cheep> repository)
+        internal static void SetCheepBase(IDatabaseRepository<Cheep> repository)
         {
             cheepBase = repository;
         }

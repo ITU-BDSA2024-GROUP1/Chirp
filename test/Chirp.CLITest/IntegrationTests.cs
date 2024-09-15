@@ -1,9 +1,8 @@
 ﻿using Chirp.CLI;
 
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 namespace Chirp.CLITest
 {
+    [Collection("Non-Parallel Collection")]
     public class IntegrationTests
     {
         [Fact]

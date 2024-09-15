@@ -8,6 +8,7 @@ using SimpleDB;
 
 namespace Chirp.CLITest
 {
+    [Collection("Non-Parallel Collection")]
     public class UnitTests
     {
         [Fact]
@@ -155,6 +156,11 @@ namespace Chirp.CLITest
         [Fact]
         public void UserInterace_ReadCheeps_Exception()
         {
+            // Arrange
+            // Make sure csvPath and cheepBase is not set
+            UserInterface.SetCheepsCsvPath("");
+            UserInterface.SetCheepBase(null);
+
             // Act & Assert
             Assert.Throws(typeof(InvalidOperationException), () =>  UserInterface.ReadCheeps(null));
         }
@@ -184,6 +190,11 @@ namespace Chirp.CLITest
         [Fact]
         public void UserInterace_WriteCheep_Exception()
         {
+            // Arrange
+            // Make sure csvPath and cheepBase is not set
+            UserInterface.SetCheepsCsvPath("");
+            UserInterface.SetCheepBase(null);
+
             // Act & Assert
             Assert.Throws(typeof(InvalidOperationException), () => UserInterface.WriteCheep(null));
         }
