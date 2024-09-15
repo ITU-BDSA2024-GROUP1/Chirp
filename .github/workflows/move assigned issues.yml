@@ -79,7 +79,12 @@ jobs:
                     nodes {
                       ... on ProjectV2Item {
                         id
-                        title
+                        content {
+                          ... on Issue {
+                            id
+                            title
+                          }
+                        }
                       }
                     }
                   }
