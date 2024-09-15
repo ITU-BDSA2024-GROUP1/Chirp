@@ -77,7 +77,7 @@ jobs:
                   id
                   fields(first:20) {
                     nodes {
-                      ... on ProjectV2Field {
+                      ... on ProjectV2Item {
                         id
                         name
                       }
