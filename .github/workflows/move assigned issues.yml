@@ -75,19 +75,11 @@ jobs:
               organization(login: $org){
                 projectV2(number: $number) {
                   id
-                  fields(first:20) {
+                  items(first:20) {
                     nodes {
                       ... on ProjectV2Item {
                         id
-                        name
-                      }
-                      ... on ProjectV2SingleSelectField {
-                        id
-                        name
-                        options {
-                          id
-                          name
-                        }
+                        title
                       }
                     }
                   }
