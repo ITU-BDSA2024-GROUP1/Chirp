@@ -50,7 +50,7 @@ jobs:
           echo 'IN_PROGRESS_OPTION_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .options[] | select(.name=="In Progress") |.id' project_data.json) >> $GITHUB_ENV
 
           echo "Issue IDs and Titles:"
-          cat project_issues.json | jq -r '.data.organization.projectV2.items.nodes[] | "ID: \(.content.id), Title: \(.content.title)"
+          cat project_data.json | jq -r '.data.organization.projectV2.items.nodes[] | "ID: \(.content.id), Title: \(.content.title)"
 
       - name: testing away
         run : |
