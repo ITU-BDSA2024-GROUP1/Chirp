@@ -75,4 +75,4 @@ jobs:
                   id
                   }
               }
-            }' -f project=¨${{ env.PROJECT_ID }} -f item=${{ github.event.issue.node_id }} -f status_field=${{ env.STATUS_FIELD_ID }} -f status_value=${{ env.IN_PROGRESS_OPTION_ID }}
+            }' -f project=${{ env.PROJECT_ID }} -f item=${{ github.event.issue.node_id }} -f status_field=${{ env.STATUS_FIELD_ID }} -f status_value=${{ env.IN_PROGRESS_OPTION_ID }}
