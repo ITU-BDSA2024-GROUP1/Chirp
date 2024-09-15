@@ -22,8 +22,8 @@ jobs:
           PROJECT_NUMBER: 1
         run: |
           gh api graphql -f query='
-            query {
-              organization(login: ITU-BDSA2024-GROUP1){
+            query{
+              organization(login: "ITU-BDSA2024-GROUP1"){
                 projectV2(number: 1) {
                   id
                   fields(first:20) {
