@@ -22,9 +22,9 @@ jobs:
           PROJECT_NUMBER: 1
         run: |
           gh api graphql -f query='
-            query($org: String!, $number: Int!) {
-              organization(login: $org){
-                projectV2(first: 1) {
+            query {
+              organization(login: ITU-BDSA2024-GROUP1){
+                projectV2(number: 1) {
                   id
                   fields(first:20) {
                     nodes {
@@ -44,7 +44,7 @@ jobs:
                   }
                 }
               }
-            }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > project_data.json
+            }' > project_data.json
 
           # echo 'PROJECT_ID='$(jq '.data.organization.projectV2.id' project_data.json) >> $GITHUB_ENV
           # echo 'DATE_FIELD_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Date posted") | .id' project_data.json) >> $GITHUB_ENV
