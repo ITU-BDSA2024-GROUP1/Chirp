@@ -15,16 +15,15 @@ jobs:
 
       # Step 1: Retrieve the STATUS_FIELD_ID and IN_PROGRESS_OPTION_ID from the organization project
       - name: Fetch Status Field ID and In Progress Option ID
-        id: get_status_field_id
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
           ORGANIZATION: ITU-BDSA2024-GROUP1
           PROJECT_NUMBER: 1
         run: |
           gh api graphql -f query='
-            query{
-              organization(login: "ITU-BDSA2024-GROUP1"){
-                projectV2(number: 1) {
+            query($org: String!, $number: Int!) {
+              organization(login: $org){
+                projectV2(number: $number) {
                   id
                   fields(first:20) {
                     nodes {
@@ -44,30 +43,34 @@ jobs:
                   }
                 }
               }
-            }' > project_data.json
+            }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > project_data.json
 
-          # echo 'PROJECT_ID='$(jq '.data.organization.projectV2.id' project_data.json) >> $GITHUB_ENV
+           echo 'PROJECT_ID='$(jq '.data.organization.projectV2.id' project_data.json) >> $GITHUB_ENV
           # echo 'DATE_FIELD_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Date posted") | .id' project_data.json) >> $GITHUB_ENV
           echo 'STATUS_FIELD_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .id' project_data.json) >> $GITHUB_ENV
           # echo 'TODO_OPTION_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .options[] | select(.name=="Todo") |.id' project_data.json) >> $GITHUB_ENV
           echo 'IN_PROGRESS_OPTION_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .options[] | select(.name=="In Progress") |.id' project_data.json) >> $GITHUB_ENV
 
-      # Made by help of ChatGPT
       # Step 2: Update the issue status to "In Progress"
       - name: Modify issue status to "In Progress"
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
         run: |
-          curl -X POST \
-            -H "Authorization: bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d '{ \
-              "query": "mutation { \
-                updateIssue(input: { id: \\"'${{ github.event.issue.node_id }}'\\", projectV2ItemFieldValue: { \
-                    fieldId: \\"'${{ env.STATUS_FIELD_ID }}'\\", \
-                    value: { singleSelectOptionId: \\"'${{ env.IN_PROGRESS_OPTION_ID }}'\\" } \
-                  } \
-                }) { \
-                  issue { id } \
-                } \
-              }" \
-            }' \
-            https://api.github.com/graphql
+          gh api graphql -f query='
+            mutation (
+              $project: ID!
+              $item: ID!
+              $status_field: ID!
+              $status_value: String!
+              $date_field: ID!
+              $date_value: Date!
+            ) {
+              set_status: updateProjectV2ItemFieldValue(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $status_field
+                value: {
+                  singleSelectOptionId: $status_value
+                  }
+              }) 
+            }' -f project=$PROJECT_ID -f item=${{ github.event.issue.node_id }} -f status_field=${{ env.STATUS_FIELD_ID }} -f status_value=${{ env.IN_PROGRESS_OPTION_ID }}
