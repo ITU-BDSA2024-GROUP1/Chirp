@@ -55,20 +55,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
         run: |
-          gh api graphql -f query='
-            mutation {
-              updateProjectV2ItemFieldValue(
-                input: {
-                  projectId: ${{ env.PROJECT_ID }}
-                  itemId: "${{ github.event.issue.node_id }}"
-                  fieldId: ${{ env.STATUS_FIELD_ID }}
-                  value: { 
-                    singleSelectOptionId: ${{ env.IN_PROGRESS_OPTION_ID }}     
-                  }
-                }
-              ) {
-                projectV2Item {
-                  id
-                }
-              }
-            }'
+          curl --request POST \
+          --url https://api.github.com/graphql \
+          --header 'Authorization: Bearer TOKEN' \
+          --data '{"query":"mutation {updateProjectV2ItemFieldValue( input: { projectId: \"PVT_kwDOCrYi5c4AnZd9\" itemId: \"I_kwDOMpeEds6WL0U7\" fieldId: \"PVTSSF_lADOCrYi5c4AnZd9zgfI8tk\" value: { singleSelectOptionId: \"47fc9ee4\" }}) { projectV2Item { id }}}"}'
+
