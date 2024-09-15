@@ -61,7 +61,7 @@ jobs:
           curl --request POST \
           --url https://api.github.com/graphql \
           --header 'Authorization: Bearer ${{ secrets.ACTIONS_TOKEN }}' \
-          --data '{"query":"mutation {updateProjectV2ItemFieldValue( input: { projectId: \"'${{ env.PROJECT_ID }}'\" itemId: \"I_kwDOMpeEds6WL0U7\" fieldId: \"PVTSSF_lADOCrYi5c4AnZd9zgfI8tk\" value: { singleSelectOptionId: \"47fc9ee4\" }}) { projectV2Item { id }}}"}'
+          --data '{"query":"mutation {updateProjectV2ItemFieldValue( input: { projectId: \"'${{ env.PROJECT_ID }}'\" itemId: \"'${{ github.event.issue.node_id }}'\" fieldId: \"'${{ env.STATUS_FIELD_ID }}'\" value: { singleSelectOptionId: \"'${{ env.IN_PROGRESS_OPTION_ID }}'\" }}) { projectV2Item { id }}}"}'
 
 
       - name: testing away
@@ -71,27 +71,24 @@ jobs:
           PROJECT_NUMBER: 1
         run : |
           gh api graphql -f query='
-            query { 
+            query($org: String!, $number: Int!) {
               organization(login: $org){
                 projectV2(number: $number) {
-                   edges {
-                     node {
-                        id 
-                        title
-                        url
-                        number
-                        state
-                        author {
-                          url
+                  id
+                  fields(first:20) {
+                    nodes {
+                      ... on ProjectV2Field {
+                        id
+                        name
+                      }
+                      ... on ProjectV2SingleSelectField {
+                        id
+                        name
+                        options {
+                          id
+                          name
                         }
-                        labels(first:5) {
-                          edges {
-                            node {
-                              name
-                            }
-                          }
-                        }
-                      body
+                      }
                     }
                   }
                 }
