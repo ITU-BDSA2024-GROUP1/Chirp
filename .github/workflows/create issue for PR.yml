@@ -4,7 +4,7 @@
 name: Add PR to project
 on:
   pull_request:
-    types: [opened, closed]
+    types: [opened, reopened]
 jobs:
   track_pr:
     runs-on: ubuntu-latest
