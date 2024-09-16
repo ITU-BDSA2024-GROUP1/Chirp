@@ -8,6 +8,9 @@ namespace SimpleDB
     public class CSVDatabase<T> : IDatabaseRepository<T>
     {
         private const string Path = "data/chirp_cli_db.csv";
+        private const string TestPath = "data/test.csv";
+
+        public static bool InTestingDatabase = false;
 
         private static CSVDatabase<T>? s_instance;
         private CSVDatabase() {}
@@ -18,7 +21,7 @@ namespace SimpleDB
 
         public IEnumerable<T> Read(int? limit = null)
         {
-            StreamReader reader = new(Path);
+            StreamReader reader = new(InTestingDatabase ? TestPath : Path);
             CsvReader csv = new(reader, CultureInfo.InvariantCulture);
             
             IEnumerable<T> records = csv.GetRecords<T>();
@@ -33,7 +36,7 @@ namespace SimpleDB
                 HasHeaderRecord = false
             };
 
-            using (FileStream stream = File.Open(Path, FileMode.Append))
+            using (FileStream stream = File.Open(InTestingDatabase ? TestPath : Path, FileMode.Append))
             using (StreamWriter writer = new(stream))
             using (CsvWriter csv = new(writer, config))
             {
