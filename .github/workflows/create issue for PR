@@ -63,7 +63,7 @@ jobs:
 # Sets environment variables for this step. Replace `YOUR_TOKEN` with the name of the secret that contains your personal access token.
       - name: Add PR to project
         env:
-          GH_TOKEN: ${{ secrets.YOUR_TOKEN }}
+          GH_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
           PR_ID: ${{ github.event.pull_request.node_id }}
         # Uses [GitHub CLI](https://cli.github.com/manual/) and the API to add the pull request that triggered this workflow to the project. The `jq` flag parses the response to get the ID of the created item.
         run: |
@@ -86,7 +86,7 @@ jobs:
 # Sets environment variables for this step. Replace `YOUR_TOKEN` with the name of the secret that contains your personal access token.
       - name: Set fields
         env:
-          GH_TOKEN: ${{ secrets.YOUR_TOKEN }}
+          GH_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
         # Sets the value of the `Status` field to `Todo`. Sets the value of the `Date posted` field.
         run: |
           gh api graphql -f query='
