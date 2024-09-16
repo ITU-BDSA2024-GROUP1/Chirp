@@ -1,4 +1,8 @@
-﻿using Chirp.CLI;
+﻿using System.IO;
+
+using Chirp.CLI;
+
+using SimpleDB;
 
 namespace Chirp.CLITest
 {
@@ -10,11 +14,12 @@ namespace Chirp.CLITest
         {
             // Arrange
             int limit = 1;
+            string path = "data/test.csv";
             string message = "Test message";
             string expected = $"{Environment.UserName}           @ {((DateTimeOffset)DateTime.Now),17:MM/dd/yy HH:mm:ss}: {message}\r\n";
-            string relativePath = Path.Combine("..", "..", "..", "..", "..", "data", "testWrite.csv");
-            string path = Path.GetFullPath(relativePath);
-            UserInterface.SetCheepsCsvPath(path);
+            string cheep = $"{Environment.UserName},{message},{(DateTimeOffset)DateTime.Now}";
+            Program.SetWorkingDirectoryToProjectRoot();
+            CSVDatabase<Cheep>.InTestingDatabase = true;
             UserInterface.WriteCheep(message);
 
             using (StringWriter sw = new StringWriter())
@@ -27,6 +32,14 @@ namespace Chirp.CLITest
                 // Assert
                 Assert.Equal(expected, sw.ToString());
             }
+
+            // Clean up - Remove the cheep
+            string[] cheeps = File.ReadAllLines(path);
+            File.WriteAllLines(path, cheeps.Take(cheeps.Length - 1).ToArray());
+
+            // Verify the cheep has been removed
+            cheeps = File.ReadAllLines(path);
+            Assert.DoesNotContain(cheep, cheeps[cheeps.Length - 1]);
         }
     }
 }

@@ -1,9 +1,9 @@
 using System;
+using System.IO;
 using System.Reflection;
 
 using Chirp.CLI;
 
-using Moq;
 using SimpleDB;
 
 namespace Chirp.CLITest
@@ -63,36 +63,11 @@ namespace Chirp.CLITest
         }
 
         [Fact]
-        public void UserInterface_SetCheepsCsvPath()
-        {
-            // Act
-            string path = "file.csv";
-            UserInterface.SetCheepsCsvPath(path);
-
-            // Assert
-            // Gets the values from variables that are not public or are static
-            var cheepsCsvPathField = typeof(UserInterface).GetField("cheepsCsvPath", BindingFlags.NonPublic | BindingFlags.Static);
-            var cheepBaseField = typeof(UserInterface).GetField("cheepBase", BindingFlags.NonPublic | BindingFlags.Static);
-
-            // Check the variables are not null
-            Assert.NotNull(cheepsCsvPathField);
-            Assert.NotNull(cheepBaseField);
-
-            // Retuns the values of the two variables declared above
-            string? actualPath = cheepsCsvPathField.GetValue(null) as string;
-            var actualCheepBase = cheepBaseField.GetValue(null);
-
-            Assert.Equal(path, actualPath);
-            Assert.NotNull(actualCheepBase);
-        }
-
-        [Fact]
         public void UserInterace_ReadCheeps_ReadAll()
         {
             // Arrange
-            string relativePath = Path.Combine("..", "..", "..", "..", "..", "data", "testRead.csv");
-            string path = Path.GetFullPath(relativePath);
-            UserInterface.SetCheepsCsvPath(path);
+            Program.SetWorkingDirectoryToProjectRoot();
+            CSVDatabase<Cheep>.InTestingDatabase = true;
 
             using (StringWriter sw = new StringWriter())
             {
@@ -116,9 +91,8 @@ namespace Chirp.CLITest
         public void UserInterace_ReadCheeps_ReadSpecific(int? limit, string expected)
         {
             // Arrange
-            string relativePath = Path.Combine("..", "..", "..", "..", "..", "data", "testRead.csv");
-            string path = Path.GetFullPath(relativePath);
-            UserInterface.SetCheepsCsvPath(path);
+            Program.SetWorkingDirectoryToProjectRoot();
+            CSVDatabase<Cheep>.InTestingDatabase = true;
 
             using (StringWriter sw = new StringWriter())
             {
@@ -137,9 +111,8 @@ namespace Chirp.CLITest
         {
             // Arrange
             int limit = -1;
-            string relativePath = Path.Combine("..", "..", "..", "..", "..", "data", "testRead.csv");
-            string path = Path.GetFullPath(relativePath);
-            UserInterface.SetCheepsCsvPath(path);
+            Program.SetWorkingDirectoryToProjectRoot();
+            CSVDatabase<Cheep>.InTestingDatabase = true;
 
             using (StringWriter sw = new StringWriter())
             {
@@ -154,49 +127,31 @@ namespace Chirp.CLITest
         }
 
         [Fact]
-        public void UserInterace_ReadCheeps_Exception()
-        {
-            // Arrange
-            // Make sure csvPath and cheepBase is not set
-            UserInterface.SetCheepsCsvPath("");
-            UserInterface.SetCheepBase(null);
-
-            // Act & Assert
-            Assert.Throws(typeof(InvalidOperationException), () =>  UserInterface.ReadCheeps(null));
-        }
-
-        [Fact]
         public void UserInterface_WriteCheep()
         {
             // Arrange
-            var mockRepository = new Mock<IDatabaseRepository<Cheep>>();
-            UserInterface.SetCheepsCsvPath("testWrite.csv");
-            UserInterface.SetCheepBase(mockRepository.Object);
+            Program.SetWorkingDirectoryToProjectRoot();
+            CSVDatabase<Cheep>.InTestingDatabase = true;
+            string path = "data/test.csv";
             string message = "Test message";
             string expectedUserName = Environment.UserName;
             long expectedTimestamp = ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
+            string cheep = $"{expectedUserName},{message},{expectedTimestamp}";
 
             // Act
             UserInterface.WriteCheep(message);
 
             // Assert
-            mockRepository.Verify(repo => repo.Store(It.Is<Cheep>(cheep =>
-                cheep.Author == expectedUserName &&
-                cheep.Message == message &&
-                cheep.Timestamp == expectedTimestamp
-            )), Times.Once);
-        }
+            // Verify the cheep has been stored
+            string[] cheeps = File.ReadAllLines(path);
+            Assert.Contains(cheep, cheeps[cheeps.Length - 1]);
 
-        [Fact]
-        public void UserInterace_WriteCheep_Exception()
-        {
-            // Arrange
-            // Make sure csvPath and cheepBase is not set
-            UserInterface.SetCheepsCsvPath("");
-            UserInterface.SetCheepBase(null);
+            // Clean up - Remove the cheep
+            File.WriteAllLines(path, cheeps.Take(cheeps.Length - 1).ToArray());
 
-            // Act & Assert
-            Assert.Throws(typeof(InvalidOperationException), () => UserInterface.WriteCheep(null));
+            // Verify the cheep has been removed
+            cheeps = File.ReadAllLines(path);
+            Assert.DoesNotContain(cheep, cheeps[cheeps.Length - 1]);
         }
     }
 }

@@ -8,15 +8,20 @@ namespace Chirp.CLITest
         [Fact]
         public void TestReadCheeps()
         {
+            // Arrange
+            string testPath = Path.Combine("..", "..", "..", "..");
+            string path = Path.GetFileName(Directory.GetCurrentDirectory()) == "Chirp" ? Path.GetFullPath(Directory.GetCurrentDirectory()) : Path.GetFullPath(testPath);
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(path));
+
             // Act
             string output = "";
             using (var process = new Process())
             {
                 process.StartInfo.FileName = "dotnet";
-                string projectPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..\src\Chirp.CLI\Chirp.CLI.csproj"));
+                string projectPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "src", "Chirp.CLI", "Chirp.CLI.csproj"));
                 process.StartInfo.Arguments = $"run --project {projectPath} read";
                 process.StartInfo.UseShellExecute = false;
-                process.StartInfo.WorkingDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..\src\Chirp.CLI"));
+                process.StartInfo.WorkingDirectory = Directory.GetCurrentDirectory();
                 process.StartInfo.RedirectStandardOutput = true;
                 process.Start();
 
@@ -52,17 +57,19 @@ namespace Chirp.CLITest
             string cheepMessage = "Test cheep message";
             string author = Environment.UserName;
             string cheep = $"{author},{cheepMessage}";
-            string relativePath = Path.Combine("..", "..", "..", "..", "..", "data", "chirp_cli_db.csv");
-            string path = Path.GetFullPath(relativePath);
+            string basePath = Path.Combine(Directory.GetCurrentDirectory(), "data", "chirp_cli_db.csv");
+            string testPath = Path.Combine("..", "..", "..", "..", "..", "data", "chirp_cli_db.csv");
+            string path = Path.GetFileName(Directory.GetCurrentDirectory()) == "Chirp" ? Path.GetFullPath(basePath) : Path.GetFullPath(testPath);
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(path));
 
             // Act
             using (var process = new Process())
             {
                 process.StartInfo.FileName = "dotnet";
-                string projectPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..\src\Chirp.CLI\Chirp.CLI.csproj"));
+                string projectPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "src", "Chirp.CLI", "Chirp.CLI.csproj"));
                 process.StartInfo.Arguments = $"run --project {projectPath} cheep \"{cheepMessage}\"";
                 process.StartInfo.UseShellExecute = false;
-                process.StartInfo.WorkingDirectory = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..\src\Chirp.CLI"));
+                process.StartInfo.WorkingDirectory = Directory.GetCurrentDirectory();
                 process.StartInfo.RedirectStandardOutput = true;
                 process.Start();
                 process.WaitForExit();

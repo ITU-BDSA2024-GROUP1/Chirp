@@ -21,11 +21,12 @@ namespace SimpleDB
 
         public IEnumerable<T> Read(int? limit = null)
         {
-            StreamReader reader = new(InTestingDatabase ? TestPath : Path);
-            CsvReader csv = new(reader, CultureInfo.InvariantCulture);
-            
-            IEnumerable<T> records = csv.GetRecords<T>();
-            return limit == null ? records : records.TakeLast((int)limit);
+            using (StreamReader reader = new(InTestingDatabase ? TestPath : Path))
+            using (CsvReader csv = new(reader, CultureInfo.InvariantCulture))
+            {
+                IEnumerable<T> records = csv.GetRecords<T>().ToList();
+                return limit == null ? records : records.TakeLast((int)limit).ToList();
+            }
         }
 
         public void Store(T record)
