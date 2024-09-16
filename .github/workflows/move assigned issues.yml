@@ -1,0 +1,92 @@
+name: Move Assigned Issues to In Progress
+permissions: write-all
+
+on:
+  issues:
+    types: [assigned]
+
+jobs:
+  update_issue_status:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+
+      # Step 1: Retrieve the STATUS_FIELD_ID and IN_PROGRESS_OPTION_ID from the organization project
+      - name: Fetch Status Field ID and In Progress Option ID
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
+          ORGANIZATION: ITU-BDSA2024-GROUP1
+          PROJECT_NUMBER: 1
+        run: |
+          gh api graphql -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org){
+                projectV2(number: $number) {
+                  id
+                  fields(first:100) {
+                    nodes {
+                      ... on ProjectV2Field {
+                        id
+                        name
+                      }
+                      ... on ProjectV2SingleSelectField {
+                        id
+                        name
+                        options {
+                          id
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > project_data.json
+
+          echo 'PROJECT_ID='$(jq '.data.organization.projectV2.id' project_data.json) >> $GITHUB_ENV
+          echo 'STATUS_FIELD_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .id' project_data.json) >> $GITHUB_ENV
+          echo 'IN_PROGRESS_OPTION_ID='$(jq '.data.organization.projectV2.fields.nodes[] | select(.name== "Status") | .options[] | select(.name=="In Progress") |.id' project_data.json) >> $GITHUB_ENV
+
+      # This step has been made with help from ChatGPT
+      # Step 2: Ensure that the issue id used is correct
+      - name: Fetch ProjectV2Item ID for Issue
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
+          ORGANIZATION: ITU-BDSA2024-GROUP1
+          PROJECT_NUMBER: 1
+        run: |
+          gh api graphql -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org){
+                projectV2(number: $number) {
+                  items(first: 100) {
+                    nodes {
+                      id
+                      content {
+                        ... on Issue {
+                          id
+                          title
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > project_items.json
+      
+          # Find the ProjectV2Item ID for the current issue using the node_id
+          echo 'PROJECT_ITEM_ID='$(jq --arg NODE_ID "${{ github.event.issue.node_id }}" '.data.organization.projectV2.items.nodes[] | select(.content.id == $NODE_ID) | .id' project_items.json) >> $GITHUB_ENV
+
+      # Step 3: Update the issue status to "In Progress"
+      - name: Modify issue status to "In Progress"
+        env:
+          GH_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
+        run: |
+          curl --request POST \
+          --url https://api.github.com/graphql \
+          --header 'Authorization: Bearer ${{ secrets.ACTIONS_TOKEN }}' \
+          --data '{"query":"mutation {updateProjectV2ItemFieldValue( input: { projectId: \"'${{ env.PROJECT_ID }}'\" itemId: \"'${{ env.PROJECT_ITEM_ID }}'\" fieldId: \"'${{ env.STATUS_FIELD_ID }}'\" value: { singleSelectOptionId: \"'${{ env.IN_PROGRESS_OPTION_ID }}'\" }}) { projectV2Item { id }}}"}'
+

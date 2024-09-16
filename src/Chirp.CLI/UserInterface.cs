@@ -5,7 +5,7 @@ namespace Chirp.CLI
     internal static class UserInterface
     {
         private static IDatabaseRepository<Cheep> CheepBase => CSVDatabase<Cheep>.Instance;
-        
+       
         public static void ReadCheeps(int? value)
         {
             var cheeps = CheepBase.Read(value);
