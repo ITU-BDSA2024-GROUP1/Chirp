@@ -4,11 +4,9 @@ namespace Chirp.CLI
 {
     internal class Program
     {
-        const string CheepCsvPath = "data/chirp_cli_db.csv";
         static async Task<int> Main(string[] args)
         {
             SetWorkingDirectoryToProjectRoot();
-            UserInterface.SetCheepsCsvPath(CheepCsvPath);
             var rootCommand = new RootCommand("Chirp where you can send cheeps and read others");
 
             var readCommand = new Command("read", "Read information stored in database");
@@ -28,7 +26,7 @@ namespace Chirp.CLI
         }
 
         // With the help of ChatGPT since I could not find a solution through searching google.
-        static void SetWorkingDirectoryToProjectRoot()
+        public static void SetWorkingDirectoryToProjectRoot()
         {
             // Locate the project directory by navigating up from the binary directory
             string projectDirectory = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
@@ -36,7 +34,7 @@ namespace Chirp.CLI
             // Set the working directory to the project directory
             Directory.SetCurrentDirectory(projectDirectory);
 
-            Console.WriteLine("Current Working Directory Set To: " + Directory.GetCurrentDirectory());
+            //Console.WriteLine("Current Working Directory Set To: " + Directory.GetCurrentDirectory());
         }
     }
 }
