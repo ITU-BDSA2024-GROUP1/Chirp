@@ -83,11 +83,16 @@ namespace Chirp.CLITest
             }
         }
 
+        public static IEnumerable<object[]> GetTestData()
+        {
+            yield return new object[] { 0, "" };
+            yield return new object[] { 1, $"Author2         @ 08/01/21 21:31:02: Message2{Environment.NewLine}" };
+            yield return new object[] { 2, $"Author1         @ 08/01/21 21:31:01: Message1{Environment.NewLine}Author2         @ 08/01/21 21:31:02: Message2{Environment.NewLine}" };
+            yield return new object[] { null, $"Author1         @ 08/01/21 21:31:01: Message1{Environment.NewLine}Author2         @ 08/01/21 21:31:02: Message2{Environment.NewLine}" };
+        }
+
         [Theory]
-        [InlineData(0, "")]
-        [InlineData(1, "Author2         @ 08/01/21 21:31:02: Message2\r\n")]
-        [InlineData(2, "Author1         @ 08/01/21 21:31:01: Message1\r\nAuthor2         @ 08/01/21 21:31:02: Message2\r\n")]
-        [InlineData(null, "Author1         @ 08/01/21 21:31:01: Message1\r\nAuthor2         @ 08/01/21 21:31:02: Message2\r\n")]
+        [MemberData(nameof(GetTestData))]
         public void UserInterace_ReadCheeps_ReadSpecific(int? limit, string expected)
         {
             // Arrange
