@@ -132,7 +132,7 @@ namespace Chirp.CLITest
             // Arrange
             Program.SetWorkingDirectoryToProjectRoot();
             CSVDatabase<Cheep>.InTestingDatabase = true;
-            string path = "data/test.csv";
+            string path = Path.Combine(End2EndTests.FindPathToMainDirectoryChirp(), "data/test.csv");
             string message = "Test message";
             string expectedUserName = Environment.UserName;
             long expectedTimestamp = ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
