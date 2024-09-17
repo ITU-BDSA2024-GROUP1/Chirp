@@ -36,7 +36,7 @@ namespace Chirp.CLITest
             string message = "Message";
             long timestamp = 1627846261;
             var cheep = new Cheep(author, message, timestamp);
-            string expected = "Author          @ 08-01-21 21:31:01: Message";
+            string expected = "Author          @ 08/01/21 21:31:01: Message";
 
             // Act
             string result = cheep.ToString();
@@ -46,10 +46,10 @@ namespace Chirp.CLITest
         }
 
         [Theory]
-        [InlineData("Author", "Message", 0, "Author          @ 01-01-70 01:00:00: Message")] // Unix epoch start
-        [InlineData("Author", "Message", 253402300799, "Author          @ 12-31-99 23:59:59: Message")] // End of 9999 year
-        [InlineData("Author", "Message", 10000000000, "Author          @ 11-20-86 18:46:40: Message")] // Far future date
-        [InlineData("Author", "Message", -315619200, "Author          @ 01-01-60 01:00:00: Message")] // Date before Unix epoch
+        [InlineData("Author", "Message", 0, "Author          @ 01/01/70 01:00:00: Message")] // Unix epoch start
+        [InlineData("Author", "Message", 253402300799, "Author          @ 12/31/99 23:59:59: Message")] // End of 9999 year
+        [InlineData("Author", "Message", 10000000000, "Author          @ 11/20/86 18:46:40: Message")] // Far future date
+        [InlineData("Author", "Message", -315619200, "Author          @ 01/01/60 01:00:00: Message")] // Date before Unix epoch
         public void Cheep_ToString_ExtremeTimestamps(string author, string message, long timestamp, string expected)
         {
             // Arrange
@@ -77,17 +77,17 @@ namespace Chirp.CLITest
                 UserInterface.ReadCheeps(null);
 
                 // Assert
-                string expectedOutput = "Author1         @ 08-01-21 21:31:01: Message1" + Environment.NewLine +
-                                        "Author2         @ 08-01-21 21:31:02: Message2" + Environment.NewLine;
+                string expectedOutput = "Author1         @ 08/01/21 21:31:01: Message1" + Environment.NewLine +
+                                        "Author2         @ 08/01/21 21:31:02: Message2" + Environment.NewLine;
                 Assert.Equal(expectedOutput, sw.ToString());
             }
         }
 
         [Theory]
         [InlineData(0, "")]
-        [InlineData(1, "Author2         @ 08-01-21 21:31:02: Message2\r\n")]
-        [InlineData(2, "Author1         @ 08-01-21 21:31:01: Message1\r\nAuthor2         @ 08-01-21 21:31:02: Message2\r\n")]
-        [InlineData(null, "Author1         @ 08-01-21 21:31:01: Message1\r\nAuthor2         @ 08-01-21 21:31:02: Message2\r\n")]
+        [InlineData(1, "Author2         @ 08/01/21 21:31:02: Message2\r\n")]
+        [InlineData(2, "Author1         @ 08/01/21 21:31:01: Message1\r\nAuthor2         @ 08/01/21 21:31:02: Message2\r\n")]
+        [InlineData(null, "Author1         @ 08/01/21 21:31:01: Message1\r\nAuthor2         @ 08/01/21 21:31:02: Message2\r\n")]
         public void UserInterace_ReadCheeps_ReadSpecific(int? limit, string expected)
         {
             // Arrange

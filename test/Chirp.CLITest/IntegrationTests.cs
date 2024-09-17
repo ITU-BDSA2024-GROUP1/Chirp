@@ -16,7 +16,7 @@ namespace Chirp.CLITest
             int limit = 1;
             string path = "data/test.csv";
             string message = "Test message";
-            string expected = $"{Environment.UserName}           @ {((DateTimeOffset)DateTime.Now),17:MM/dd/yy HH:mm:ss}: {message}\r\n";
+            string expected = $"{Environment.UserName}           @ {((DateTimeOffset)DateTime.Now),17:MM/dd/yy HH\\:mm\\:ss}: {message}\r\n";
             string cheep = $"{Environment.UserName},{message},{(DateTimeOffset)DateTime.Now}";
             Program.SetWorkingDirectoryToProjectRoot();
             CSVDatabase<Cheep>.InTestingDatabase = true;
