@@ -1,4 +1,6 @@
-﻿namespace Chirp.CLI;
+﻿using System;
+
+namespace Chirp.CLI;
 
 internal record Cheep(string Author, string Message, long Timestamp) 
 { 
@@ -13,7 +15,10 @@ internal record Cheep(string Author, string Message, long Timestamp)
     private static DateTime ParseUnixTimeToDateTime(long date)
     {
         DateTime dateTime = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        dateTime = dateTime.AddSeconds(date).ToLocalTime();
+        dateTime = dateTime.AddSeconds(date);
+
+        TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+        dateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTime, timeZone);
         
         return dateTime;
     }
