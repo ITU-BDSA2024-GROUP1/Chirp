@@ -36,7 +36,7 @@ namespace Chirp.CLITest
             string message = "Message";
             long timestamp = 1627846261;
             var cheep = new Cheep(author, message, timestamp);
-            string expected = "Author          @ 08/01/21 21:31:01: Message";
+            string expected = "Author          @ 08/01/21 19:31:01: Message";
 
             // Act
             string result = cheep.ToString();
@@ -46,10 +46,10 @@ namespace Chirp.CLITest
         }
 
         [Theory]
-        [InlineData("Author", "Message", 0, "Author          @ 01/01/70 01:00:00: Message")] // Unix epoch start
+        [InlineData("Author", "Message", 0, "Author          @ 01/01/70 00:00:00: Message")] // Unix epoch start
         [InlineData("Author", "Message", 253402300799, "Author          @ 12/31/99 23:59:59: Message")] // End of 9999 year
-        [InlineData("Author", "Message", 10000000000, "Author          @ 11/20/86 18:46:40: Message")] // Far future date
-        [InlineData("Author", "Message", -315619200, "Author          @ 01/01/60 01:00:00: Message")] // Date before Unix epoch
+        [InlineData("Author", "Message", 10000000000, "Author          @ 11/20/86 17:46:40: Message")] // Far future date
+        [InlineData("Author", "Message", -315619200, "Author          @ 01/01/60 00:00:00: Message")] // Date before Unix epoch
         public void Cheep_ToString_ExtremeTimestamps(string author, string message, long timestamp, string expected)
         {
             // Arrange
@@ -77,8 +77,8 @@ namespace Chirp.CLITest
                 UserInterface.ReadCheeps(null);
 
                 // Assert
-                string expectedOutput = "Author1         @ 08/01/21 21:31:01: Message1" + Environment.NewLine +
-                                        "Author2         @ 08/01/21 21:31:02: Message2" + Environment.NewLine;
+                string expectedOutput = "Author1         @ 08/01/21 19:31:01: Message1" + Environment.NewLine +
+                                        "Author2         @ 08/01/21 19:31:02: Message2" + Environment.NewLine;
                 Assert.Equal(expectedOutput, sw.ToString());
             }
         }
@@ -86,9 +86,9 @@ namespace Chirp.CLITest
         public static IEnumerable<object[]> GetTestData()
         {
             yield return new object[] { 0, "" };
-            yield return new object[] { 1, $"Author2         @ 08/01/21 21:31:02: Message2{Environment.NewLine}" };
-            yield return new object[] { 2, $"Author1         @ 08/01/21 21:31:01: Message1{Environment.NewLine}Author2         @ 08/01/21 21:31:02: Message2{Environment.NewLine}" };
-            yield return new object[] { null, $"Author1         @ 08/01/21 21:31:01: Message1{Environment.NewLine}Author2         @ 08/01/21 21:31:02: Message2{Environment.NewLine}" };
+            yield return new object[] { 1, $"Author2         @ 08/01/21 19:31:02: Message2{Environment.NewLine}" };
+            yield return new object[] { 2, $"Author1         @ 08/01/21 19:31:01: Message1{Environment.NewLine}Author2         @ 08/01/21 19:31:02: Message2{Environment.NewLine}" };
+            yield return new object[] { null, $"Author1         @ 08/01/21 19:31:01: Message1{Environment.NewLine}Author2         @ 08/01/21 19:31:02: Message2{Environment.NewLine}" };
         }
 
         [Theory]
@@ -140,7 +140,7 @@ namespace Chirp.CLITest
             string path = Path.Combine(End2EndTests.FindPathToMainDirectoryChirp(), "data/test.csv");
             string message = "Test message";
             string expectedUserName = Environment.UserName;
-            long expectedTimestamp = ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
+            long expectedTimestamp = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
             string cheep = $"{expectedUserName},{message},{expectedTimestamp}";
 
             // Act
