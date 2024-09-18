@@ -1,9 +1,9 @@
-name: Move Assigned Issues to In Progress
+name: make release on tagged push
 permissions: write-all
 
 on:
   push:
-    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+    tags: ["v[0-9]+.[0-9]+.[0-9]+[a-zA-Z0-9.,-]*"]
     branches: ["main"]
 
 jobs:
@@ -11,7 +11,9 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-          - run: echo push tag{:} ${{ github.event.push.tag }}
+          - run: |
+             echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
+             echo "Tag name from github.ref_name: ${{  github.ref_name }}"
           - uses: actions/checkout@v4
           - name: Setup .NET
             uses: actions/setup-dotnet@v4
