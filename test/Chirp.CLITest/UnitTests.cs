@@ -74,7 +74,7 @@ namespace Chirp.CLITest
                 Console.SetOut(sw);
 
                 // Act
-                UserInterface.ReadCheeps(null);
+                UserInterface.ReadCheeps();
 
                 // Assert
                 string expectedOutput = "Author1         @ 08/01/21 19:31:01: Message1" + Environment.NewLine +
