@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{AAF0C3E6-2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleDBTest", "test\SimpleDBTest\SimpleDBTest.csproj", "{EC69DBBF-7546-406B-980E-C6EA83A3CBEA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.CSVDBService", "src\Chirp.CSVDBService\Chirp.CSVDBService.csproj", "{C9367545-CF43-4709-A7D7-EFE620E0C0E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{EC69DBBF-7546-406B-980E-C6EA83A3CBEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC69DBBF-7546-406B-980E-C6EA83A3CBEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC69DBBF-7546-406B-980E-C6EA83A3CBEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9367545-CF43-4709-A7D7-EFE620E0C0E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9367545-CF43-4709-A7D7-EFE620E0C0E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9367545-CF43-4709-A7D7-EFE620E0C0E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9367545-CF43-4709-A7D7-EFE620E0C0E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 		{51F57B5E-1B9D-498A-A47E-5706EC34E613} = {8F8A6A34-59A8-446F-A994-A98F574F9A3E}
 		{FB3065B1-5801-4C04-9E1E-6C6422072F8E} = {AAF0C3E6-2C01-4C84-9E9D-77812EF704AD}
 		{EC69DBBF-7546-406B-980E-C6EA83A3CBEA} = {AAF0C3E6-2C01-4C84-9E9D-77812EF704AD}
+		{C9367545-CF43-4709-A7D7-EFE620E0C0E3} = {8F8A6A34-59A8-446F-A994-A98F574F9A3E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BA90D36C-5292-4D69-A21F-53581CFC6B5E}
