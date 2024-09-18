@@ -10,6 +10,8 @@ namespace SimpleDBTest;
 [Collection("Non-Parallel Collection")]
 public class IntegrationTestDB
 {
+    const string Path = "data/test.csv";
+    
     private record struct TestRecord(String Author, String Message, long Timestamp);
 
     private static IDatabaseRepository<TestRecord> TestBase => CSVDatabase<TestRecord>.Instance;
@@ -19,10 +21,10 @@ public class IntegrationTestDB
     {
         //Arrange
         Program.SetWorkingDirectoryToProjectRoot();
-        int limit = 1;
-        string path = "data/test.csv";
+        const int limit = 1;
+        
         TestRecord message = new ("test", "integration", 1);
-        string expected = "TestRecord { Author = test, Message = integration, Timestamp = 1 }\r\n";
+        string expected = $"TestRecord {{ Author = test, Message = integration, Timestamp = 1 }}{Environment.NewLine}";
         CSVDatabase<TestRecord>.InTestingDatabase = true;
         TestBase.Store(message);
             
@@ -34,17 +36,17 @@ public class IntegrationTestDB
         {
             Console.SetOut(sw);
                 
-            foreach (TestRecord r in result) { Console.WriteLine(r); }
+            foreach (TestRecord r in result) Console.WriteLine(r);
             
             Assert.Equal(expected, sw.ToString());
 
         }
             
         
-        String[] strings = File.ReadAllLines(path);
-        File.WriteAllLines(path, strings.Take(strings.Length - 1).ToArray());
+        String[] strings = File.ReadAllLines(Path);
+        File.WriteAllLines(Path, strings.Take(strings.Length - 1).ToArray());
 
-        strings = File.ReadAllLines(path);
-        Assert.DoesNotContain(message.ToString(), strings[strings.Length - 1]);
+        strings = File.ReadAllLines(Path);
+        Assert.DoesNotContain(message.ToString(), strings[^1]);
     }
 }

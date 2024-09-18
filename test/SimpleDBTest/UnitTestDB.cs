@@ -8,58 +8,58 @@ namespace SimpleDBTest
     [Collection("Non-Parallel Collection")]
     public class UnitTestDB
     {
-        private record DBtestRecord(String Author, String Message, long Timestamp);
-        CSVDatabase<DBtestRecord> testbase;
+        const string Path = "data/test.csv";
+        private CSVDatabase<DBTestRecord>? _testBase;
+        
+        private record DBTestRecord(String Author, String Message, long Timestamp);
+        
         [Fact]
         public void SimpleDB_Instantiation()
         {
             //Arrange
-            testbase = CSVDatabase<DBtestRecord>.Instance;
+            _testBase = CSVDatabase<DBTestRecord>.Instance;
             //Assert
-            Assert.NotNull(testbase);
+            Assert.NotNull(_testBase);
         }
 
         [Fact]
         public void SimpleDB_read()
         {
             //Arrange
-            testbase = CSVDatabase<DBtestRecord>.Instance;
-            while (Path.GetFileName(Directory.GetCurrentDirectory()) != "Chirp")
+            _testBase = CSVDatabase<DBTestRecord>.Instance;
+            while (System.IO.Path.GetFileName(Directory.GetCurrentDirectory()) != "Chirp")
             {
-                Directory.SetCurrentDirectory(Path.GetFullPath(".."));
+                Directory.SetCurrentDirectory(System.IO.Path.GetFullPath(".."));
             }
-            string path = "data/test.csv";
-            CSVDatabase<DBtestRecord>.InTestingDatabase = true;
-            IEnumerable<DBtestRecord> results =  testbase.Read(1);
+
+            CSVDatabase<DBTestRecord>.InTestingDatabase = true;
+            IEnumerable<DBTestRecord> results =  _testBase.Read(1);
             
             //Act
             Assert.NotNull(results);
-
         }
 
         [Fact]
         public void SimpleDB_store()
         {
             //Arrange
-            testbase = CSVDatabase<DBtestRecord>.Instance;
-            while (Path.GetFileName(Directory.GetCurrentDirectory()) != "Chirp")
-            {
-                Directory.SetCurrentDirectory(Path.GetFullPath(".."));
-            }
-            string path = "data/test.csv";
-            String[] lines = File.ReadAllLines(path);
-            int expected = lines.Length+1 ;
-            CSVDatabase<DBtestRecord>.InTestingDatabase = true;
-            testbase.Store(new DBtestRecord( "AuthorDB", "DBmessage", 0));
+            _testBase = CSVDatabase<DBTestRecord>.Instance;
+            Program.SetWorkingDirectoryToProjectRoot();
+            
+            String[] lines = File.ReadAllLines(Path);
+            int expected = lines.Length + 1;
+            CSVDatabase<DBTestRecord>.InTestingDatabase = true;
+            _testBase.Store(new DBTestRecord( "AuthorDB", "DBMessage", 0));
             
             //Act
-            int result = File.ReadAllLines(path).Length;
+            int result = File.ReadAllLines(Path).Length;
             Assert.Equal(expected,result);
             
             //Clean-up
-            File.WriteAllLines(path, lines);
+            File.WriteAllLines(Path, lines);
+            
             //Verify that the line is gone
-            Assert.Equal(expected-1, File.ReadAllLines(path).Length);
+            Assert.Equal(expected - 1, File.ReadAllLines(Path).Length);
         }
     }
 }
