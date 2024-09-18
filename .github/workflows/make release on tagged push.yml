@@ -12,8 +12,8 @@ jobs:
          
         steps:
           - run: |
-             echo "Tag name from GITHUB_REF_NAME: ${GITHUB_REF##*/}"
-             echo "Tag name from github.ref_name: ${{  github.ref_name }}"
+             TAG_NAME=${GITHUB_REF#refs/tags/}
+             echo "Tag name extracted from GITHUB_REF: $TAG_NAME"
              echo "Tag name from github.ref_name: ${{  env.GIT_TAG_NAME }}"
           - uses: actions/checkout@v4
           - name: Setup .NET
