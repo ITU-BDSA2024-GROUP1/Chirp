@@ -16,17 +16,16 @@ namespace SimpleDB
         private CSVDatabase() {}
         public static CSVDatabase<T> Instance
         {
-            get => s_instance ??= new();
+            get => s_instance ??= new CSVDatabase<T>();
         }
 
         public IEnumerable<T> Read(int? limit = null)
         {
-            using (StreamReader reader = new(InTestingDatabase ? TestPath : Path))
-            using (CsvReader csv = new(reader, CultureInfo.InvariantCulture))
-            {
-                IEnumerable<T> records = csv.GetRecords<T>().ToList();
-                return limit == null ? records : records.TakeLast((int)limit).ToList();
-            }
+            using StreamReader reader = new(InTestingDatabase ? TestPath : Path);
+            using CsvReader csv = new(reader, CultureInfo.InvariantCulture);
+            
+            IEnumerable<T> records = csv.GetRecords<T>().ToList();
+            return limit == null ? records : records.TakeLast((int)limit).ToList();
         }
 
         public void Store(T record)
@@ -37,13 +36,12 @@ namespace SimpleDB
                 HasHeaderRecord = false
             };
 
-            using (FileStream stream = File.Open(InTestingDatabase ? TestPath : Path, FileMode.Append))
-            using (StreamWriter writer = new(stream))
-            using (CsvWriter csv = new(writer, config))
-            {
-                csv.WriteRecord(record);
-                csv.NextRecord();
-            }
+            using FileStream stream = File.Open(InTestingDatabase ? TestPath : Path, FileMode.Append);
+            using StreamWriter writer = new(stream);
+            using CsvWriter csv = new(writer, config);
+            
+            csv.WriteRecord(record);
+            csv.NextRecord();
         }
     }
 }
