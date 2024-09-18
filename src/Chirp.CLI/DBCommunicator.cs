@@ -2,16 +2,18 @@
 
 namespace Chirp.CLI;
 
-public static class DBCommunicator
+public class DBCommunicator
 {
-    private static IDatabaseRepository<Cheep> CheepBase => CSVDatabase<Cheep>.Instance;
+    private readonly IDatabaseRepository<Cheep> _repo;
 
-    public static IEnumerable<Cheep> ReadCheeps(int? limit = null) => CheepBase.Read(limit);
+    public DBCommunicator(IDatabaseRepository<Cheep> repository) => _repo = repository;
 
-    public static void WriteCheep(string message)
+    public IEnumerable<Cheep> ReadCheeps(int? limit = null) => _repo.Read(limit);
+
+    public void WriteCheep(string message)
     {
         Cheep cheep = new(Environment.UserName, message, ParseDateTimeToUnixTime(DateTime.Now));
-        CheepBase.Store(cheep);
+        _repo.Store(cheep);
 
         return;
         

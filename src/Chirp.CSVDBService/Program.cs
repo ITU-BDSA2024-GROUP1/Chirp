@@ -1,6 +1,21 @@
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+﻿using Chirp.CLI;
 
-app.MapGet("/", () => "Hello World!");
+using SimpleDB;
 
-app.Run();
+namespace Chirp.CSVDBService;
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        Chirp.CLI.Program.SetWorkingDirectoryToProjectRoot();
+        var builder = WebApplication.CreateBuilder(args);
+        var app = builder.Build();
+
+        var communicator = new DBCommunicator(CSVDatabase<Cheep>.Instance);
+        app.MapGet("/cheeps", communicator.ReadCheeps);
+        app.MapPost("/cheep", communicator.WriteCheep);
+
+        app.Run("http://localhost:5127");
+    }
+}

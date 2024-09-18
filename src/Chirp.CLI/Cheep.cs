@@ -1,6 +1,6 @@
 ﻿namespace Chirp.CLI;
 
-internal record Cheep(string Author, string Message, long Timestamp) 
+public record Cheep(string Author, string Message, long Timestamp) 
 { 
     override public string ToString()
     {
