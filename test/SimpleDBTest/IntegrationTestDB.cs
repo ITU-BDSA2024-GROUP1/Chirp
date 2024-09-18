@@ -7,40 +7,35 @@ using SimpleDB;
 
 namespace SimpleDBTest;
 
+[Collection("Non-Parallel Collection")]
 public class IntegrationTestDB
 {
-    private record struct test_record(String Author, String Message , long Timestamp);
+    private record struct TestRecord(String Author, String Message, long Timestamp);
 
-    private static IDatabaseRepository<test_record> TestBase  => CSVDatabase<test_record>.Instance;
-   
-
+    private static IDatabaseRepository<TestRecord> TestBase => CSVDatabase<TestRecord>.Instance;
+    
     [Fact]
     public void CSVDatabase_StoreRead()
     {
         //Arrange
-        //Program.SetWorkingDirectoryToProjectRoot();
-        while (Path.GetFileName(Directory.GetCurrentDirectory()) != "Chirp")
-        {
-            Directory.SetCurrentDirectory(Path.GetFullPath(".."));
-        }
+        Program.SetWorkingDirectoryToProjectRoot();
         int limit = 1;
         string path = "data/test.csv";
-        test_record message = new ("test", "integration", 1) ;
-        string expected = "test_record { Author = test, Message = integration, Timestamp = 1 }\r\n";
-        CSVDatabase<test_record>.InTestingDatabase = true;
+        TestRecord message = new ("test", "integration", 1);
+        string expected = "TestRecord { Author = test, Message = integration, Timestamp = 1 }\r\n";
+        CSVDatabase<TestRecord>.InTestingDatabase = true;
         TestBase.Store(message);
             
         //ACT
-        IEnumerable<test_record> result = TestBase.Read(limit);
+        IEnumerable<TestRecord> result = TestBase.Read(limit);
             
 
         using (StringWriter sw = new StringWriter())
         {
             Console.SetOut(sw);
                 
-            foreach (test_record r in result){Console.WriteLine(r);}
-                
-                
+            foreach (TestRecord r in result) { Console.WriteLine(r); }
+            
             Assert.Equal(expected, sw.ToString());
 
         }
