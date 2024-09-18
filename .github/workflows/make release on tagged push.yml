@@ -9,7 +9,7 @@ on:
 jobs:
     build_and_test:
         runs-on: ubuntu-latest
-
+         
         steps:
           - run: |
              echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
