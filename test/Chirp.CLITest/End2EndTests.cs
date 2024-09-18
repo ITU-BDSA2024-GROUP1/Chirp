@@ -86,14 +86,14 @@ namespace Chirp.CLITest
             // Assert
             // Verify the cheep has been stored
             string[] cheeps = File.ReadAllLines(dbPath);
-            Assert.Contains(cheep, cheeps[cheeps.Length - 1]);
+            Assert.Contains(cheep, cheeps[^1]);
 
             // Clean up - Remove the cheep
             File.WriteAllLines(dbPath, cheeps.Take(cheeps.Length - 1).ToArray());
 
             // Verify the cheep has been removed
             cheeps = File.ReadAllLines(dbPath);
-            Assert.DoesNotContain(cheep, cheeps[cheeps.Length - 1]);
+            Assert.DoesNotContain(cheep, cheeps[^1]);
         }
 
         public static string FindPathToMainDirectoryChirp()

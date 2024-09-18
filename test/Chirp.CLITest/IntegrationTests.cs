@@ -1,6 +1,7 @@
 ﻿using System.IO;
 
 using Chirp.CLI;
+using Chirp.Core;
 
 using SimpleDB;
 
@@ -16,9 +17,9 @@ namespace Chirp.CLITest
             int limit = 1;
             string path = "data/test.csv";
             string message = "Test message";
-            string expected = $"{Environment.UserName,-15} @ {((DateTimeOffset)DateTime.UtcNow),17:MM\\/dd\\/yy HH\\:mm\\:ss}: {message}{Environment.NewLine}";
+            string expected = $@"{Environment.UserName,-15} @ {((DateTimeOffset)DateTime.UtcNow),17:MM\/dd\/yy HH\:mm\:ss}: {message}{Environment.NewLine}";
             string cheep = $"{Environment.UserName},{message},{(DateTimeOffset)DateTime.UtcNow}";
-            Program.SetWorkingDirectoryToProjectRoot();
+            DirectoryFixer.SetWorkingDirectoryToProjectRoot();
             CSVDatabase<Cheep>.InTestingDatabase = true;
             UserInterface.WriteCheep(message);
 
@@ -39,7 +40,7 @@ namespace Chirp.CLITest
 
             // Verify the cheep has been removed
             cheeps = File.ReadAllLines(path);
-            Assert.DoesNotContain(cheep, cheeps[cheeps.Length - 1]);
+            Assert.DoesNotContain(cheep, cheeps[^1]);
         }
     }
 }

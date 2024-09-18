@@ -1,4 +1,4 @@
-﻿using Chirp.CLI;
+﻿using Chirp.Core;
 
 using SimpleDB;
 
@@ -8,7 +8,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Chirp.CLI.Program.SetWorkingDirectoryToProjectRoot();
+        DirectoryFixer.SetWorkingDirectoryToProjectRoot();
         var builder = WebApplication.CreateBuilder(args);
         var app = builder.Build();
 

@@ -1,6 +1,5 @@
-using System.IO;
 using SimpleDB;
-using Chirp.CLI;
+using Chirp.Core;
 
 
 namespace SimpleDBTest
@@ -44,7 +43,7 @@ namespace SimpleDBTest
         {
             //Arrange
             _testBase = CSVDatabase<DBTestRecord>.Instance;
-            Program.SetWorkingDirectoryToProjectRoot();
+            DirectoryFixer.SetWorkingDirectoryToProjectRoot();
             
             String[] lines = File.ReadAllLines(Path);
             int expected = lines.Length + 1;

@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-using Chirp.CLI;
+﻿using Chirp.Core;
 
 using SimpleDB;
 
@@ -20,7 +18,7 @@ public class IntegrationTestDB
     public void CSVDatabase_StoreRead()
     {
         //Arrange
-        Program.SetWorkingDirectoryToProjectRoot();
+        DirectoryFixer.SetWorkingDirectoryToProjectRoot();
         const int limit = 1;
         
         TestRecord message = new ("test", "integration", 1);

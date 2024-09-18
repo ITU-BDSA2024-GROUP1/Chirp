@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 
 using Chirp.CLI;
+using Chirp.Core;
 
 using SimpleDB;
 
@@ -66,7 +67,7 @@ namespace Chirp.CLITest
         public void UserInterace_ReadCheeps_ReadAll()
         {
             // Arrange
-            Program.SetWorkingDirectoryToProjectRoot();
+            DirectoryFixer.SetWorkingDirectoryToProjectRoot();
             CSVDatabase<Cheep>.InTestingDatabase = true;
 
             using (StringWriter sw = new StringWriter())
@@ -74,7 +75,7 @@ namespace Chirp.CLITest
                 Console.SetOut(sw);
 
                 // Act
-                UserInterface.ReadCheeps(null);
+                UserInterface.ReadCheeps();
 
                 // Assert
                 string expectedOutput = "Author1         @ 08/01/21 19:31:01: Message1" + Environment.NewLine +
@@ -88,15 +89,15 @@ namespace Chirp.CLITest
             yield return new object[] { 0, "" };
             yield return new object[] { 1, $"Author2         @ 08/01/21 19:31:02: Message2{Environment.NewLine}" };
             yield return new object[] { 2, $"Author1         @ 08/01/21 19:31:01: Message1{Environment.NewLine}Author2         @ 08/01/21 19:31:02: Message2{Environment.NewLine}" };
-            yield return new object[] { null, $"Author1         @ 08/01/21 19:31:01: Message1{Environment.NewLine}Author2         @ 08/01/21 19:31:02: Message2{Environment.NewLine}" };
+            yield return new object[] { null!, $"Author1         @ 08/01/21 19:31:01: Message1{Environment.NewLine}Author2         @ 08/01/21 19:31:02: Message2{Environment.NewLine}" };
         }
 
         [Theory]
         [MemberData(nameof(GetTestData))]
-        public void UserInterace_ReadCheeps_ReadSpecific(int? limit, string expected)
+        public void UserInterface_ReadCheeps_ReadSpecific(int? limit, string expected)
         {
             // Arrange
-            Program.SetWorkingDirectoryToProjectRoot();
+            DirectoryFixer.SetWorkingDirectoryToProjectRoot();
             CSVDatabase<Cheep>.InTestingDatabase = true;
 
             using (StringWriter sw = new StringWriter())
@@ -116,7 +117,7 @@ namespace Chirp.CLITest
         {
             // Arrange
             int limit = -1;
-            Program.SetWorkingDirectoryToProjectRoot();
+            DirectoryFixer.SetWorkingDirectoryToProjectRoot();
             CSVDatabase<Cheep>.InTestingDatabase = true;
 
             using (StringWriter sw = new StringWriter())
@@ -135,7 +136,7 @@ namespace Chirp.CLITest
         public void UserInterface_WriteCheep()
         {
             // Arrange
-            Program.SetWorkingDirectoryToProjectRoot();
+            DirectoryFixer.SetWorkingDirectoryToProjectRoot();
             CSVDatabase<Cheep>.InTestingDatabase = true;
             string path = Path.Combine(End2EndTests.FindPathToMainDirectoryChirp(), "data/test.csv");
             string message = "Test message";
@@ -149,14 +150,14 @@ namespace Chirp.CLITest
             // Assert
             // Verify the cheep has been stored
             string[] cheeps = File.ReadAllLines(path);
-            Assert.Contains(cheep, cheeps[cheeps.Length - 1]);
+            Assert.Contains(cheep, cheeps[^1]);
 
             // Clean up - Remove the cheep
             File.WriteAllLines(path, cheeps.Take(cheeps.Length - 1).ToArray());
 
             // Verify the cheep has been removed
             cheeps = File.ReadAllLines(path);
-            Assert.DoesNotContain(cheep, cheeps[cheeps.Length - 1]);
+            Assert.DoesNotContain(cheep, cheeps[^1]);
         }
     }
 }

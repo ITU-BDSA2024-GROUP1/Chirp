@@ -1,6 +1,6 @@
 ﻿using SimpleDB;
 
-namespace Chirp.CLI;
+namespace Chirp.Core;
 
 public class DBCommunicator
 {
