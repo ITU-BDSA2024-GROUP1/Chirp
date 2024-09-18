@@ -1,31 +1,15 @@
-﻿using SimpleDB;
+﻿namespace Chirp.CLI;
 
-namespace Chirp.CLI
+internal static class UserInterface
 {
-    internal static class UserInterface
+    public static void ReadCheeps(int? limit = null)
     {
-        private static IDatabaseRepository<Cheep> CheepBase => CSVDatabase<Cheep>.Instance;
-       
-        public static void ReadCheeps(int? value)
+        var cheeps = DBCommunicator.ReadCheeps(limit);
+        foreach (Cheep cheep in cheeps)
         {
-            var cheeps = CheepBase.Read(value);
-            PrintCheeps(cheeps);
+            Console.WriteLine(cheep);
         }
-        
-        private static void PrintCheeps(IEnumerable<Cheep> cheeps)
-        {
-            foreach (Cheep cheep in cheeps)
-            {
-                Console.WriteLine(cheep);
-            }
-        }
-
-        public static void WriteCheep(string message)
-        {
-            Cheep cheep = new(Environment.UserName, message, ParseDateTimeToUnixTime(DateTime.Now));
-            CheepBase.Store(cheep);
-        }
-
-        private static long ParseDateTimeToUnixTime(DateTime date) => ((DateTimeOffset)date).ToUnixTimeSeconds();
     }
+
+    public static void WriteCheep(string message) => DBCommunicator.WriteCheep(message);
 }
