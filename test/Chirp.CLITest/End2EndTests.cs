@@ -1,10 +1,12 @@
 ﻿using System.Diagnostics;
 
+using Chirp.Core;
+
 using Xunit.Abstractions;
 
 namespace Chirp.CLITest
 {
-    [Collection("Non-Parallel Collection")]
+    [Collection("Chirp.CLI Collection")]
     public class End2EndTests
     {
         private readonly ITestOutputHelper _output;
@@ -17,16 +19,12 @@ namespace Chirp.CLITest
         [Fact]
         public void TestReadCheeps()
         {
-            // Arrange
-            string path = FindPathToMainDirectoryChirp();
-            Directory.SetCurrentDirectory(path);
-
             // Act
             string output = "";
             using (var process = new Process())
             {
                 process.StartInfo.FileName = "dotnet";
-                string projectPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "src", "Chirp.CLI", "Chirp.CLI.csproj"));
+                string projectPath = "src/Chirp.CLI/Chirp.CLI.csproj";
                 process.StartInfo.Arguments = $"run --project {projectPath} read";
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.WorkingDirectory = Directory.GetCurrentDirectory();
@@ -67,8 +65,8 @@ namespace Chirp.CLITest
             string cheepMessage = "Test cheep message";
             string author = Environment.UserName;
             string cheep = $"{author},{cheepMessage}";
-            string path = FindPathToMainDirectoryChirp();
-            string dbPath = Path.GetFullPath(Path.Combine(path, "data", "chirp_cli_db.csv"));
+
+            string dbPath = "data/chirp_cli_db.csv";
 
             // Act
             using (var process = new Process())
@@ -94,31 +92,6 @@ namespace Chirp.CLITest
             // Verify the cheep has been removed
             cheeps = File.ReadAllLines(dbPath);
             Assert.DoesNotContain(cheep, cheeps[^1]);
-        }
-
-        public static string FindPathToMainDirectoryChirp()
-        {
-            string path = "";
-            if (Path.GetFileName(Directory.GetCurrentDirectory()) == "Chirp")
-            {
-                path = Path.GetFullPath(Directory.GetCurrentDirectory());
-            }
-            else
-            {
-                while (true)
-                {
-                    if (Path.GetFileName(Directory.GetCurrentDirectory()) == "Chirp")
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        Directory.SetCurrentDirectory(Path.GetFullPath(".."));
-                    }
-                }
-                path = Directory.GetCurrentDirectory();
-            }
-            return path;
         }
     }
 }

@@ -7,7 +7,7 @@ using SimpleDB;
 
 namespace Chirp.CLITest
 {
-    [Collection("Non-Parallel Collection")]
+    [Collection("Chirp.CLI Collection")]
     public class IntegrationTests
     {
         [Fact]
@@ -19,8 +19,6 @@ namespace Chirp.CLITest
             string message = "Test message";
             string expected = $@"{Environment.UserName,-15} @ {((DateTimeOffset)DateTime.UtcNow),17:MM\/dd\/yy HH\:mm\:ss}: {message}{Environment.NewLine}";
             string cheep = $"{Environment.UserName},{message},{(DateTimeOffset)DateTime.UtcNow}";
-            DirectoryFixer.SetWorkingDirectoryToProjectRoot();
-            CSVDatabase<Cheep>.InTestingDatabase = true;
             UserInterface.WriteCheep(message);
 
             using (StringWriter sw = new StringWriter())

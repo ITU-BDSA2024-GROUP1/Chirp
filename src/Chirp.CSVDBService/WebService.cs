@@ -6,10 +6,13 @@ namespace Chirp.CSVDBService;
 
 public class WebService
 {
+    public static readonly CancellationTokenSource CTS = new();
+    
     public static void Main(string[] args)
     {
         DirectoryFixer.SetWorkingDirectoryToProjectRoot();
         var builder = WebApplication.CreateBuilder(args);
+        builder.WebHost.UseUrls("http://localhost:5127");
         var app = builder.Build();
 
         var dbInstance = CSVDatabase<Cheep>.Instance;
@@ -30,6 +33,6 @@ public class WebService
             dbInstance.InTestingDatabase = false;
         });
 
-        app.Run("http://localhost:5127");
+        app.RunAsync(CTS.Token);
     }
 }
