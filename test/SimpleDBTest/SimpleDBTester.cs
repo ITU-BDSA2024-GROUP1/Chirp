@@ -1,7 +1,7 @@
 ﻿namespace SimpleDBTest;
 
 [Collection("SimpleDB Collection")]
-public abstract class SimpleDBTester : IDisposable, IClassFixture<SimpleDBFixture>
+public abstract class SimpleDBTester : IDisposable
 {
     private const string Path = "data/test.csv";
     private readonly string[] _originalDBContent;

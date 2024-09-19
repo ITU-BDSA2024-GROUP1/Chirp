@@ -2,7 +2,6 @@ using Chirp.Core;
 
 namespace SimpleDBTest;
 
-[Collection("SimpleDB Collection")]
 public class UnitTestDB : SimpleDBTester
 {
     public UnitTestDB(SimpleDBFixture fixture) : base(fixture) { }

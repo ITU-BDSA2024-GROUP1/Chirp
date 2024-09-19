@@ -4,7 +4,6 @@ using SimpleDB;
 
 namespace SimpleDBTest;
 
-[Collection("SimpleDB Collection")]
 public class IntegrationTestDB : SimpleDBTester
 {
     public IntegrationTestDB(SimpleDBFixture fixture) : base(fixture) { }
