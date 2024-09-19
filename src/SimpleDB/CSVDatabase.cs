@@ -7,11 +7,11 @@ namespace SimpleDB;
 
 public class CSVDatabase<T> : IDatabaseRepository<T>
 {
-    private const string Path = "data/chirp_cli_db.csv";
+    private const string ProdPath = "data/chirp_cli_db.csv";
     private const string TestPath = "data/test.csv";
 
     public bool InTestingDatabase = false;
-    private string CurrentDBPath => InTestingDatabase ? TestPath : Path;
+    private string CurrentDBPath => InTestingDatabase ? TestPath : ProdPath;
 
     private static CSVDatabase<T>? s_instance;
     private CSVDatabase() {}
