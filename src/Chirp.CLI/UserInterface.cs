@@ -1,19 +1,23 @@
 ﻿using Chirp.Core;
 
+using SimpleDB;
+
 namespace Chirp.CLI;
 
-internal static class UserInterface
+public class UserInterface
 {
-    private static readonly DBCommunicator Communicator = new DBCommunicator(WebDB<Cheep>.Instance);
+    private readonly DBCommunicator _communicator;
     
-    public static void ReadCheeps(int? limit = null)
+    public UserInterface(IDatabaseRepository<Cheep> repository) => _communicator = new DBCommunicator(repository);
+
+    public void ReadCheeps(int? limit = null)
     {
-        var cheeps = Communicator.ReadCheeps(limit);
+        var cheeps = _communicator.ReadCheeps(limit);
         foreach (Cheep cheep in cheeps)
         {
             Console.WriteLine(cheep);
         }
     }
 
-    public static void WriteCheep(string message) => Communicator.WriteCheep(message);
+    public void WriteCheep(string message) => _communicator.WriteCheep(message);
 }

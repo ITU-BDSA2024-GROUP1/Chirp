@@ -3,7 +3,6 @@
 [Collection("SimpleDB Collection")]
 public abstract class SimpleDBTester : IDisposable
 {
-    private const string Path = "data/test.csv";
     private readonly string[] _originalDBContent;
     protected readonly int _originalDBLength;
     
@@ -22,12 +21,12 @@ public abstract class SimpleDBTester : IDisposable
         var newDBLength = ReadFile().Length;
         if (newDBLength != _originalDBLength)
         {
-            File.WriteAllLines(Path, _originalDBContent);
+            File.WriteAllLines(SimpleDBFixture.Path, _originalDBContent);
             newDBLength = ReadFile().Length;
         }
         
         Assert.Equal(_originalDBLength, newDBLength);
     }
 
-    protected static string[] ReadFile() => File.ReadAllLines(Path);
+    protected static string[] ReadFile() => File.ReadAllLines(SimpleDBFixture.Path);
 }

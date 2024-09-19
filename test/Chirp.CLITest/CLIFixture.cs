@@ -1,24 +1,19 @@
 ﻿using Chirp.CLI;
 using Chirp.Core;
 
+using SimpleDB;
+
 namespace Chirp.CLITest;
 
-public class CLIFixture : IDisposable
+public class CLIFixture
 {
-    private readonly WebDB<Cheep> _testBase = WebDB<Cheep>.Instance;
+    public readonly UserInterface UserInterface;
 
     public CLIFixture()
     {
         DirectoryFixer.SetWorkingDirectoryToProjectRoot();
-        _testBase.TestingDatabase = true;
-
-        new Thread(() => CSVDBService.WebService.Main(Array.Empty<string>())).Start();
-        Thread.Sleep(1000);
-    }
-
-    public void Dispose()
-    {
-        _testBase.TestingDatabase = false;
-        CSVDBService.WebService.CTS.Cancel();
+        
+        IDatabaseRepository<Cheep> repo = new CSVDatabase<Cheep>("data/test.csv");
+        UserInterface = new UserInterface(repo);
     }
 }

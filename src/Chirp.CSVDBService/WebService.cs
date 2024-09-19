@@ -4,35 +4,27 @@ using SimpleDB;
 
 namespace Chirp.CSVDBService;
 
-public class WebService
+public class WebService : IAsyncDisposable
 {
-    public static readonly CancellationTokenSource CTS = new();
-    
+    private readonly WebApplication _app;
+
+    public WebService(IDatabaseRepository<Cheep> repository)
+    {
+        var builder = WebApplication.CreateBuilder();
+        _app = builder.Build();
+        
+        _app.MapGet("/cheeps", repository.Read);
+        _app.MapPost("/cheep", repository.Store);
+    }
+
     public static void Main(string[] args)
     {
         DirectoryFixer.SetWorkingDirectoryToProjectRoot();
-        var builder = WebApplication.CreateBuilder(args);
-        builder.WebHost.UseUrls("http://localhost:5127");
-        var app = builder.Build();
-
-        var dbInstance = CSVDatabase<Cheep>.Instance;
-        app.MapGet("/cheeps", dbInstance.Read);
-        app.MapPost("/cheep", dbInstance.Store);
-        
-        app.MapGet("/test/cheeps", (int? limit) =>
-        {
-            dbInstance.InTestingDatabase = true;
-            var response = dbInstance.Read(limit);
-            dbInstance.InTestingDatabase = false;
-            return response;
-        });
-        app.MapPost("/test/cheep", (Cheep record) =>
-        {
-            dbInstance.InTestingDatabase = true;
-            dbInstance.Store(record);
-            dbInstance.InTestingDatabase = false;
-        });
-
-        app.RunAsync(CTS.Token);
+        var webService = new WebService(new CSVDatabase<Cheep>("data/chirp_cli_db.csv"));
+        webService.Run();
     }
+
+    public void Run(int port = 5000) => _app.Run($"http://localhost:{port}");
+
+    public ValueTask DisposeAsync() => _app.DisposeAsync();
 }

@@ -1,10 +1,12 @@
-using Chirp.CLI;
-
 namespace Chirp.CLITest;
 
 [Collection("Chirp.CLI Collection")]
 public class UnitTestCLI
 {
+    private readonly CLIFixture _fixture;
+    
+    public UnitTestCLI(CLIFixture fixture) => _fixture = fixture;
+
     [Fact]
     public void UserInterface_ReadCheeps_ReadAll()
     {
@@ -14,7 +16,7 @@ public class UnitTestCLI
             Console.SetOut(sw);
 
             // Act
-            UserInterface.ReadCheeps();
+            _fixture.UserInterface.ReadCheeps();
 
             // Assert
             string expectedOutput = "Author1         @ 08/01/21 19:31:01: Message1" + Environment.NewLine +
@@ -41,7 +43,7 @@ public class UnitTestCLI
             Console.SetOut(sw);
 
             // Act
-            UserInterface.ReadCheeps(limit);
+            _fixture.UserInterface.ReadCheeps(limit);
 
             // Assert
             Assert.Equal(expected, sw.ToString());
@@ -57,7 +59,7 @@ public class UnitTestCLI
             Console.SetOut(sw);
 
             // Act
-            UserInterface.ReadCheeps(-1);
+            _fixture.UserInterface.ReadCheeps(-1);
 
             // Assert
             Assert.Equal("", sw.ToString());
@@ -75,7 +77,7 @@ public class UnitTestCLI
         string cheep = $"{expectedUserName},{message},{expectedTimestamp}";
 
         // Act
-        UserInterface.WriteCheep(message);
+        _fixture.UserInterface.WriteCheep(message);
 
         // Assert
         // Verify the cheep has been stored

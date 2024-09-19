@@ -10,6 +10,10 @@ namespace Chirp.CLITest
     [Collection("Chirp.CLI Collection")]
     public class IntegrationTests
     {
+        private readonly CLIFixture _fixture;
+    
+        public IntegrationTests(CLIFixture fixture) => _fixture = fixture;
+        
         [Fact]
         public void UserInterface_WriteReadCheeps()
         {
@@ -19,14 +23,14 @@ namespace Chirp.CLITest
             string message = "Test message";
             string expected = $@"{Environment.UserName,-15} @ {((DateTimeOffset)DateTime.UtcNow),17:MM\/dd\/yy HH\:mm\:ss}: {message}{Environment.NewLine}";
             string cheep = $"{Environment.UserName},{message},{(DateTimeOffset)DateTime.UtcNow}";
-            UserInterface.WriteCheep(message);
+            _fixture.UserInterface.WriteCheep(message);
 
             using (StringWriter sw = new StringWriter())
             {
                 Console.SetOut(sw);
 
                 // Act
-                UserInterface.ReadCheeps(limit);
+                _fixture.UserInterface.ReadCheeps(limit);
 
                 // Assert
                 Assert.Equal(expected, sw.ToString());

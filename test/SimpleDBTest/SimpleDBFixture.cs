@@ -4,18 +4,14 @@ using SimpleDB;
 
 namespace SimpleDBTest;
 
-public class SimpleDBFixture : IDisposable
+public class SimpleDBFixture
 {
-    public readonly CSVDatabase<Cheep> TestBase = CSVDatabase<Cheep>.Instance;
+    public readonly IDatabaseRepository<Cheep> TestBase;
+    public const string Path = "data/test.csv";
     
     public SimpleDBFixture()
     {
         DirectoryFixer.SetWorkingDirectoryToProjectRoot();
-        TestBase.InTestingDatabase = true;
-    }
-
-    public void Dispose()
-    {
-        TestBase.InTestingDatabase = false;
+        TestBase = new CSVDatabase<Cheep>(Path);
     }
 }
