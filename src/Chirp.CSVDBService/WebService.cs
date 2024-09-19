@@ -12,9 +12,23 @@ public class WebService
         var builder = WebApplication.CreateBuilder(args);
         var app = builder.Build();
 
-        IDatabaseRepository<Cheep> instance = CSVDatabase<Cheep>.Instance;
-        app.MapGet("/cheeps", instance.Read);
-        app.MapPost("/cheep", instance.Store);
+        var dbInstance = CSVDatabase<Cheep>.Instance;
+        app.MapGet("/cheeps", dbInstance.Read);
+        app.MapPost("/cheep", dbInstance.Store);
+        
+        app.MapGet("/test/cheeps", (int? limit) =>
+        {
+            dbInstance.InTestingDatabase = true;
+            var response = dbInstance.Read(limit);
+            dbInstance.InTestingDatabase = false;
+            return response;
+        });
+        app.MapPost("/test/cheep", (Cheep record) =>
+        {
+            dbInstance.InTestingDatabase = true;
+            dbInstance.Store(record);
+            dbInstance.InTestingDatabase = false;
+        });
 
         app.Run("http://localhost:5127");
     }
