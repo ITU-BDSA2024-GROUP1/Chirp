@@ -4,7 +4,7 @@ using SimpleDB;
 
 namespace Chirp.CSVDBService;
 
-public class Program
+public class WebService
 {
     public static void Main(string[] args)
     {
