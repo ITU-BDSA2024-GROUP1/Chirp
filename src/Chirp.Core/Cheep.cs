@@ -1,7 +1,8 @@
 ﻿namespace Chirp.Core;
 
-public record Cheep(string Author, string Message, long Timestamp) 
+public record Cheep(string Author, string Message, long Timestamp)
 {
+    public Cheep() : this(string.Empty, string.Empty, 0) { }
     public Cheep(string message) : this(Environment.UserName, message, ParseDateTimeToUnixTime(DateTime.Now)) { }
     
     override public string ToString()
