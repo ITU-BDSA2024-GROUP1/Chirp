@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 using SimpleDB;
 
@@ -13,7 +14,7 @@ public class WebDB<T> : IDatabaseRepository<T>
         _client = new HttpClient();
         _client.BaseAddress = new Uri(baseUrl);
         _client.DefaultRequestHeaders.Accept.Clear();
-        _client.DefaultRequestHeaders.Accept.Add(new("application/json"));
+        _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
     }
 
     public IEnumerable<T> Read(int? limit = null)
@@ -24,8 +25,5 @@ public class WebDB<T> : IDatabaseRepository<T>
         return cheeps.Result!;
     }
 
-    public void Store(T record)
-    {
-        _client.PostAsJsonAsync("cheep", record).Wait();
-    }
+    public void Store(T record) => _client.PostAsJsonAsync("cheep", record).Wait();
 }
