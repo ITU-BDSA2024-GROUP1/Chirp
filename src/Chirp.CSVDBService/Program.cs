@@ -12,9 +12,9 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         var app = builder.Build();
 
-        var communicator = new DBCommunicator(CSVDatabase<Cheep>.Instance);
-        app.MapGet("/cheeps", communicator.ReadCheeps);
-        app.MapPost("/cheep", communicator.WriteCheep);
+        IDatabaseRepository<Cheep> instance = CSVDatabase<Cheep>.Instance;
+        app.MapGet("/cheeps", instance.Read);
+        app.MapPost("/cheep", instance.Store);
 
         app.Run("http://localhost:5127");
     }
