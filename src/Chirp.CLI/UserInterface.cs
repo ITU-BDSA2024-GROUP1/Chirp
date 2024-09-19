@@ -6,18 +6,18 @@ namespace Chirp.CLI;
 
 public class UserInterface
 {
-    private readonly DBCommunicator _communicator;
+    private readonly IDatabaseRepository<Cheep> _repo;
     
-    public UserInterface(IDatabaseRepository<Cheep> repository) => _communicator = new DBCommunicator(repository);
+    public UserInterface(IDatabaseRepository<Cheep> repository) => _repo = repository;
 
     public void ReadCheeps(int? limit = null)
     {
-        var cheeps = _communicator.ReadCheeps(limit);
+        var cheeps = _repo.Read(limit);
         foreach (Cheep cheep in cheeps)
         {
             Console.WriteLine(cheep);
         }
     }
 
-    public void WriteCheep(string message) => _communicator.WriteCheep(message);
+    public void WriteCheep(string message) => _repo.Store(new Cheep(message));
 }

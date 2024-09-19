@@ -1,7 +1,9 @@
 ﻿namespace Chirp.Core;
 
 public record Cheep(string Author, string Message, long Timestamp) 
-{ 
+{
+    public Cheep(string message) : this(Environment.UserName, message, ParseDateTimeToUnixTime(DateTime.Now)) { }
+    
     override public string ToString()
     {
         // Help from https://www.codeproject.com/Answers/555757/C-23plusString-FormatplusAlignment
@@ -17,4 +19,6 @@ public record Cheep(string Author, string Message, long Timestamp)
         
         return dateTime;
     }
+    
+    private static long ParseDateTimeToUnixTime(DateTime date) => ((DateTimeOffset)date).ToUnixTimeSeconds();
 }
