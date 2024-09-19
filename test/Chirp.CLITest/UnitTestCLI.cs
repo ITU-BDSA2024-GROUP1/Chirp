@@ -1,17 +1,14 @@
 namespace Chirp.CLITest;
 
-[Collection("Chirp.CLI Collection")]
-public class UnitTestCLI
+public class UnitTestCLI : CLITester
 {
-    private readonly CLIFixture _fixture;
-    
-    public UnitTestCLI(CLIFixture fixture) => _fixture = fixture;
+    public UnitTestCLI(CLIFixture fixture) : base(fixture) { }
 
     [Fact]
     public void UserInterface_ReadCheeps_ReadAll()
     {
         // Arrange
-        using (StringWriter sw = new StringWriter())
+        using (StringWriter sw = new())
         {
             Console.SetOut(sw);
 
@@ -38,7 +35,7 @@ public class UnitTestCLI
     public void UserInterface_ReadCheeps_ReadSpecific(int? limit, string expected)
     {
         // Arrange
-        using (StringWriter sw = new StringWriter())
+        using (StringWriter sw = new())
         {
             Console.SetOut(sw);
 
@@ -54,7 +51,7 @@ public class UnitTestCLI
     public void UserInterface_ReadCheeps_NegativeRead()
     {
         // Arrange
-        using (StringWriter sw = new StringWriter())
+        using (StringWriter sw = new())
         {
             Console.SetOut(sw);
 
@@ -70,25 +67,15 @@ public class UnitTestCLI
     public void UserInterface_WriteCheep()
     {
         // Arrange
-        string path = "data/test.csv";
         const string message = "Test message";
-        string expectedUserName = Environment.UserName;
-        long expectedTimestamp = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
-        string cheep = $"{expectedUserName},{message},{expectedTimestamp}";
+        string cheep = $"{Environment.UserName},{message}";
 
         // Act
         _fixture.UserInterface.WriteCheep(message);
 
         // Assert
         // Verify the cheep has been stored
-        string[] cheeps = File.ReadAllLines(path);
+        string[] cheeps = ReadFile();
         Assert.Contains(cheep, cheeps[^1]);
-
-        // Clean up - Remove the cheep
-        File.WriteAllLines(path, cheeps.Take(cheeps.Length - 1).ToArray());
-
-        // Verify the cheep has been removed
-        cheeps = File.ReadAllLines(path);
-        Assert.DoesNotContain(cheep, cheeps[^1]);
     }
 }

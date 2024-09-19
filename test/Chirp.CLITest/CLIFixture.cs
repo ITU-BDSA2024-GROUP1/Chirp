@@ -8,12 +8,14 @@ namespace Chirp.CLITest;
 public class CLIFixture
 {
     public readonly UserInterface UserInterface;
+    public readonly IDatabaseRepository<Cheep> CheepRepository;
+    public const string Path = "data/test.csv";
 
     public CLIFixture()
     {
         DirectoryFixer.SetWorkingDirectoryToProjectRoot();
         
-        IDatabaseRepository<Cheep> repo = new CSVDatabase<Cheep>("data/test.csv");
-        UserInterface = new UserInterface(repo);
+        CheepRepository = new CSVDatabase<Cheep>(Path);
+        UserInterface = new UserInterface(CheepRepository);
     }
 }
