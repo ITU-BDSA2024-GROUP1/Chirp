@@ -9,6 +9,8 @@ public class WebDB<T> : IDatabaseRepository<T>
     private const string BaseUrl = "http://localhost:5127";
     private readonly HttpClient _client;
     
+    public bool TestingDatabase = false;
+    
     private static WebDB<T>? s_instance;
     private WebDB()
     {
@@ -24,7 +26,7 @@ public class WebDB<T> : IDatabaseRepository<T>
 
     public IEnumerable<T> Read(int? limit = null)
     {
-        string endpoint = "cheeps";
+        string endpoint = (TestingDatabase ? "test/" : "") + "cheeps";
         if (limit != null) endpoint += $"?limit={limit}";
 
         var cheeps = _client.GetFromJsonAsync<IEnumerable<T>>(endpoint);
@@ -33,6 +35,7 @@ public class WebDB<T> : IDatabaseRepository<T>
 
     public void Store(T record)
     {
-        _client.PostAsJsonAsync("cheep", record).Wait();
+        string endpoint = (TestingDatabase ? "test/" : "") + "cheep";
+        _client.PostAsJsonAsync(endpoint, record).Wait();
     }
 }
