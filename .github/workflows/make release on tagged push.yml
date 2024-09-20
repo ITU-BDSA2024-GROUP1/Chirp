@@ -15,9 +15,10 @@ jobs:
              TAG_NAME=${GITHUB_REF#refs/tags/}
              echo "Tag name extracted from GITHUB_REF: $TAG_NAME"
              echo "Tag name from github.ref_name: ${{  env.GIT_TAG_NAME }}"
+             echo ${{ env.RELEASE_VERSION }}
+             echo ${GITHUB_REF#refs/*/}
              echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
              echo $RELEASE_VERSION
-             echo ${{ env.RELEASE_VERSION }}
           - uses: actions/checkout@v4
           - name: Setup .NET
             uses: actions/setup-dotnet@v4
