@@ -2,9 +2,9 @@
 
 namespace Chirp.CLITest;
 
-public class IntegrationTests : CLITester
+public class IntegrationTestCLI : CLITester
 {
-    public IntegrationTests(CLIFixture fixture) : base(fixture) { }
+    public IntegrationTestCLI(CLIFixture fixture) : base(fixture) { }
         
     [Fact]
     public void UserInterface_WriteReadCheeps()

@@ -2,11 +2,11 @@
 
 namespace Chirp.CLITest;
 
-public class End2EndTests : CLITester
+public class End2EndTestCLI : CLITester
 {
-    public End2EndTests(CLIFixture fixture) : base(fixture)
+    public End2EndTestCLI(CLIFixture fixture) : base(fixture)
     {
-        var webService = new CSVDBService.WebService(fixture.CheepRepository);
+        var webService = new CSVDBService.WebService(fixture.TestBase);
         Task.Run(() => webService.Run());
         Thread.Sleep(1000); // Just to make sure the webservice has enough time to boot up
     }
