@@ -1,65 +1,36 @@
-using System.IO;
-using SimpleDB;
-using Chirp.CLI;
+using Chirp.Core;
 
+namespace SimpleDBTest;
 
-namespace SimpleDBTest
+public class UnitTestDB : SimpleDBTester
 {
-    [Collection("Non-Parallel Collection")]
-    public class UnitTestDB
+    public UnitTestDB(SimpleDBFixture fixture) : base(fixture) { }
+
+    [Fact]
+    public void SimpleDB_Instantiation()
     {
-        const string Path = "data/test.csv";
-        private CSVDatabase<DBTestRecord>? _testBase;
-        
-        private record DBTestRecord(String Author, String Message, long Timestamp);
-        
-        [Fact]
-        public void SimpleDB_Instantiation()
-        {
-            //Arrange
-            _testBase = CSVDatabase<DBTestRecord>.Instance;
-            //Assert
-            Assert.NotNull(_testBase);
-        }
+        //Act
+        Assert.NotNull(_fixture.TestBase);
+    }
 
-        [Fact]
-        public void SimpleDB_read()
-        {
-            //Arrange
-            _testBase = CSVDatabase<DBTestRecord>.Instance;
-            while (System.IO.Path.GetFileName(Directory.GetCurrentDirectory()) != "Chirp")
-            {
-                Directory.SetCurrentDirectory(System.IO.Path.GetFullPath(".."));
-            }
+    [Fact]
+    public void SimpleDB_Read()
+    {
+        //Arrange
+        var results = _fixture.TestBase.Read();
+            
+        //Act
+        Assert.NotNull(results);
+    }
 
-            CSVDatabase<DBTestRecord>.InTestingDatabase = true;
-            IEnumerable<DBTestRecord> results =  _testBase.Read(1);
+    [Fact]
+    public void SimpleDB_Store()
+    {
+        //Arrange
+        _fixture.TestBase.Store(new Cheep("AuthorDB", "DBMessage", 0));
             
-            //Act
-            Assert.NotNull(results);
-        }
-
-        [Fact]
-        public void SimpleDB_store()
-        {
-            //Arrange
-            _testBase = CSVDatabase<DBTestRecord>.Instance;
-            Program.SetWorkingDirectoryToProjectRoot();
-            
-            String[] lines = File.ReadAllLines(Path);
-            int expected = lines.Length + 1;
-            CSVDatabase<DBTestRecord>.InTestingDatabase = true;
-            _testBase.Store(new DBTestRecord( "AuthorDB", "DBMessage", 0));
-            
-            //Act
-            int result = File.ReadAllLines(Path).Length;
-            Assert.Equal(expected,result);
-            
-            //Clean-up
-            File.WriteAllLines(Path, lines);
-            
-            //Verify that the line is gone
-            Assert.Equal(expected - 1, File.ReadAllLines(Path).Length);
-        }
+        //Act
+        int newDBLength = ReadFile().Length;
+        Assert.Equal(_originalDBLength + 1, newDBLength);
     }
 }
