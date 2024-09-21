@@ -58,7 +58,7 @@ jobs:
             shell: bash
             run: |
                 # Build everything
-                dotnet publish src/App/App.csproj --framework netcoreapp3.1 --runtime "${{ matrix.target }}" -c Release -o "$release_name"
+                dotnet publish ./Chirp.sln --framework netcoreapp3.1 --runtime "${{ matrix.target }}" -c Release -o "$release_name"
 
                 # Pack files
                 if [ "${{ matrix.target }}" == "win-x64" ]; then

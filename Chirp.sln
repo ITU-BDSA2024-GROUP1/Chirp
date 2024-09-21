@@ -23,11 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{AAF0C3E6-2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleDBTest", "test\SimpleDBTest\SimpleDBTest.csproj", "{EC69DBBF-7546-406B-980E-C6EA83A3CBEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.CSVDBService", "src\Chirp.CSVDBService\Chirp.CSVDBService.csproj", "{C9367545-CF43-4709-A7D7-EFE620E0C0E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chirp.CSVDBService", "src\Chirp.CSVDBService\Chirp.CSVDBService.csproj", "{C9367545-CF43-4709-A7D7-EFE620E0C0E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Core", "src\Chirp.Core\Chirp.Core.csproj", "{046F33B0-9573-4AFA-9A68-9B16344F9AF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chirp.Core", "src\Chirp.Core\Chirp.Core.csproj", "{046F33B0-9573-4AFA-9A68-9B16344F9AF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.CoreTest", "test\Chirp.CoreTest\Chirp.CoreTest.csproj", "{A55A0AD5-17E3-46E3-BB49-A75FA973B78D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chirp.CoreTest", "test\Chirp.CoreTest\Chirp.CoreTest.csproj", "{A55A0AD5-17E3-46E3-BB49-A75FA973B78D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
