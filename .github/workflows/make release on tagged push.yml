@@ -53,9 +53,10 @@ jobs:
               dotnet-version: 7.0.x
 
           - name: Build
+            env:
+                release_name: "App-${{ env.RELEASE_VERSION }}-${{ matrix.target }}"
             shell: bash
             run: |
-                release_name = "App-${{ env.RELEASE_VERSION }}-${{ matrix.target }}"
                 # Build everything
                 dotnet publish src/App/App.csproj --framework netcoreapp3.1 --runtime "${{ matrix.target }}" -c Release -o "$release_name"
 
