@@ -4,21 +4,13 @@ permissions: write-all
 on:
   push:
     tags: ["v[0-9]+.[0-9]+.[0-9]+[a-zA-Z0-9]*"]
-    branches: ["main"]
+    # branches: ["main"]
 
 jobs:
     build_and_test:
         runs-on: ubuntu-latest
          
         steps:
-          - run: |
-             TAG_NAME=${GITHUB_REF#refs/tags/}
-             echo "Tag name extracted from GITHUB_REF: $TAG_NAME"
-             echo "Tag name from github.ref_name: ${{  env.GIT_TAG_NAME }}"
-             echo ${{ env.RELEASE_VERSION }}
-             echo ${GITHUB_REF#refs/*/}
-             echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-             echo $RELEASE_VERSION
           - uses: actions/checkout@v4
           - name: Setup .NET
             uses: actions/setup-dotnet@v4
@@ -33,15 +25,57 @@ jobs:
 
     make_executables:
         needs: build_and_test
+        strategy:
+          matrix:
+            kind: ['linux', 'windows', 'macOS']
+            include:
+              - kind: linux
+                target: linux-x64
+              - kind: windows
+                target: win-x64
+              - kind: macOS
+                target: osx-x64
         runs-on: ubuntu-latest
         
         steps: 
           - name: Checkout
             uses: actions/checkout@v1
 
+          - name: Set env
+            # With the help of https://stackoverflow.com/a/58178121/23907907
+            run: |
+                echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+                echo ${{ env.RELEASE_VERSION }}
+
           - name: Setup dotnet
             uses: actions/setup-dotnet@v1
             with:
-              dotnet-version: 3.1.101
+              dotnet-version: 7.0.x
+
+          - name: Build
+            shell: bash
+            run: |
+                release_name = "App-${{ env.RELEASE_VERSION }}-${{ matrix.target }}"
+                # Build everything
+                dotnet publish src/App/App.csproj --framework netcoreapp3.1 --runtime "${{ matrix.target }}" -c Release -o "$release_name"
+
+                # Pack files
+                if [ "${{ matrix.target }}" == "win-x64" ]; then
+                7z a -tzip "${release_name}.zip" "./${release_name}/*"
+                else
+                tar czvf "${release_name}.tar.gz" "$release_name"
+                fi
+                
+                # Delete output directory
+                rm -r "$release_name"
+          - name: Publish
+            uses: softprops/action-gh-release@v1
+            with:
+                files: "App*"
+            env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                
+                
+
             
 
