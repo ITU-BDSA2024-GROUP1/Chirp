@@ -20,11 +20,11 @@ public class WebService : IAsyncDisposable
     public static void Main(string[] args)
     {
         DirectoryFixer.SetWorkingDirectoryToProjectRoot();
-        var webService = new WebService(new CSVDatabase<Cheep>("data/chirp_cli_db.csv"));
+        var webService = new WebService(new CSVDatabase<Cheep>(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "chirp_cli_db.csv")));
         webService.Run();
     }
 
-    public void Run(int port = 5000) => _app.Run($"http://localhost:{port}");
+    public void Run() => _app.Run($"https://bdsagroup1chirpremotedb.azurewebsites.net");
 
     public ValueTask DisposeAsync() => _app.DisposeAsync();
 }
