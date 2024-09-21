@@ -13,12 +13,8 @@ jobs:
         steps:
           - run: |
              TAG_NAME=${GITHUB_REF#refs/tags/}
-             echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV"
-             echo "T1: $TAG_NAME"
-             echo "T2: ${{ env.GIT_TAG_NAME }}"
-             echo "T3: ${{ env.RELEASE_VERSION }}"
-             echo "T4: ${GITHUB_REF#refs/*/}"
-             echo "T6: ${GITHUB_REF/refs/*/}"
+             echo "Tag name extracted from GITHUB_REF: $TAG_NAME"
+             echo "Tag name from github.ref_name: ${{  steps.changelog.outputs.tag }}"
           - uses: actions/checkout@v4
           - name: Setup .NET
             uses: actions/setup-dotnet@v4
