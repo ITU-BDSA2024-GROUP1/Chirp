@@ -24,7 +24,11 @@ public class WebService : IAsyncDisposable
         webService.Run();
     }
 
-    public void Run() => _app.Run($"https://bdsagroup1chirpremotedb.azurewebsites.net");
+    public void Run()
+    {
+        var port = Environment.GetEnvironmentVariable("WEBSITES_PORT") ?? "443"; // Default to 80 if not set
+        _app.Run($"http://0.0.0.0:{port}");
+    }
 
     public ValueTask DisposeAsync() => _app.DisposeAsync();
 }
