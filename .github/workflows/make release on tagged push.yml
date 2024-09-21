@@ -18,7 +18,7 @@ jobs:
              echo "T2: ${{ env.GIT_TAG_NAME }}"
              echo "T3: ${{ env.RELEASE_VERSION }}"
              echo "T4: ${GITHUB_REF#refs/*/}"
-             echo "T5:" $RELEASE_VERSION
+             echo T5 $RELEASE_VERSION
              echo "T6: ${GITHUB_REF/refs/*/}"
           - uses: actions/checkout@v4
           - name: Setup .NET
