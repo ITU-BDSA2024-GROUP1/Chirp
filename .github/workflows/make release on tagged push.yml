@@ -11,10 +11,8 @@ jobs:
         runs-on: ubuntu-latest
          
         steps:
-          - run: |
-             TAG_NAME=${GITHUB_REF#refs/tags/}
-             echo "Tag name extracted from GITHUB_REF: $TAG_NAME"
-             echo "Tag name from github.ref_name: ${{  steps.changelog.outputs.tag }}"
+          - run: echo ${{ inputs.tags }}
+          - run: echo ${{ inputs.print_tags }}
           - uses: actions/checkout@v4
           - name: Setup .NET
             uses: actions/setup-dotnet@v4
