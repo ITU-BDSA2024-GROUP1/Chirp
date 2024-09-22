@@ -15,6 +15,7 @@ public class WebService : IAsyncDisposable
         
         _app.MapGet("/cheeps", repository.Read);
         _app.MapPost("/cheep", repository.Store);
+        _app.MapGet("/health", () => Results.Ok("Healthy")); // Health check endpoint
     }
 
     public static void Main(string[] args)
@@ -26,7 +27,7 @@ public class WebService : IAsyncDisposable
 
     public void Run()
     {
-        var port = Environment.GetEnvironmentVariable("WEBSITES_PORT") ?? "443"; // Default to 80 if not set
+        var port = Environment.GetEnvironmentVariable("WEBSITES_PORT") ?? "80"; // Default to 80 if not set
         _app.Run($"http://0.0.0.0:{port}");
     }
 
