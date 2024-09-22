@@ -23,9 +23,10 @@ jobs:
 
       - name: Install Oryx
         run: |
-          wget https://github.com/microsoft/Oryx/releases/download/20231027.1/oryx_linux_x64.tar.gz
-          tar -xzf oryx_linux_x64.tar.gz
-          sudo mv oryx /usr/local/bin/oryx
+          curl -L https://github.com/microsoft/Oryx/releases/download/20231027.1/oryx_linux_x64.tar.gz -o oryx-linux-x64.tar.gz
+          mkdir oryx-install
+          tar -xzf oryx-linux-x64.tar.gz -C oryx-install
+          sudo mv oryx-install/oryx /usr/local/bin/oryx
 
       - name: Build with dotnet
         run: dotnet build src/Chirp.CSVDBService/ --configuration Release
