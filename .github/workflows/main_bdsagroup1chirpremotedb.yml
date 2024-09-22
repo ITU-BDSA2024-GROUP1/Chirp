@@ -27,6 +27,13 @@ jobs:
       - name: dotnet publish
         run: dotnet publish src/Chirp.CSVDBService/ -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
+      - name: Install Oryx
+        run: |
+          curl -L https://github.com/microsoft/Oryx/releases/download/v0.2.20200911.1/oryx-linux-x64.tar.gz -o oryx.tar.gz
+          mkdir oryx
+          tar -xzf oryx.tar.gz -C oryx
+          sudo mv oryx /usr/local/bin/oryx
+
       - name: Run Oryx Build
         run: |
           oryx build ${{env.DOTNET_ROOT}}/myapp --platform dotnet --platform-version 7.0 -o ${{env.DOTNET_ROOT}}/myapp
