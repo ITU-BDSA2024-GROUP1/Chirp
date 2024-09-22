@@ -27,6 +27,10 @@ jobs:
       - name: dotnet publish
         run: dotnet publish src/Chirp.CSVDBService/ -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
+      - name: Run Oryx Build
+        run: |
+          oryx build ${{env.DOTNET_ROOT}}/myapp --platform dotnet --platform-version 7.0 -o ${{env.DOTNET_ROOT}}/myapp
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
