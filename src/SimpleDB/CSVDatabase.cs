@@ -9,7 +9,16 @@ public class CSVDatabase<T> : IDatabaseRepository<T>
 {
     private readonly string _csvDBPath;
 
-    public CSVDatabase(string path) => _csvDBPath = path;
+    public CSVDatabase(string path)
+    {
+        if (File.Exists(path))
+        {
+            _csvDBPath = path;
+        } else
+        {
+            throw new Exception("No such file exists at path");
+        }
+    }
 
     public IEnumerable<T> Read(int? limit = null)
     {
