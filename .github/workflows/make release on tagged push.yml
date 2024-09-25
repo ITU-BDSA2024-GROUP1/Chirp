@@ -6,6 +6,8 @@ on:
     tags: ["v[0-9]+.[0-9]+.[0-9]+[a-zA-Z0-9]*"]
     # branches: ["main"]
 
+
+# Very much help from ChatGPT and Sif <esja@itu.dk>
 jobs:
     build_and_test:
         runs-on: ubuntu-latest
