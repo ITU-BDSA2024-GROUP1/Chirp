@@ -10,6 +10,7 @@ internal class Program
 {
     static async Task<int> Main(string[] args)
     {
+        Console.WriteLine("Hello, World!");
         DirectoryFixer.SetWorkingDirectoryToProjectRoot();
         var rootCommand = new RootCommand("Chirp where you can send cheeps and read others");
 
