@@ -11,7 +11,8 @@ public class WebService : IAsyncDisposable
     public WebService(IDatabaseRepository<Cheep> repository)
     {
         var builder = WebApplication.CreateBuilder();
-
+        _app = builder.Build();
+        
         _app.MapGet("/cheeps", repository.Read);
         _app.MapPost("/cheep", repository.Store);
     }
