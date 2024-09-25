@@ -11,13 +11,9 @@ public class CSVDatabase<T> : IDatabaseRepository<T>
 
     public CSVDatabase(string path)
     {
-        if (File.Exists(path))
-        {
-            _csvDBPath = path;
-        } else
-        {
-            throw new Exception("No such file exists at path");
-        }
+        if (!File.Exists(path)) throw new FileNotFoundException("No such file exists at path");
+        
+        _csvDBPath = path;
     }
 
     public IEnumerable<T> Read(int? limit = null)
