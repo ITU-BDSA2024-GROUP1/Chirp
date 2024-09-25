@@ -13,7 +13,8 @@ internal class Program
         DirectoryFixer.SetWorkingDirectoryToProjectRoot();
         var rootCommand = new RootCommand("Chirp where you can send cheeps and read others");
 
-        UserInterface userInterface = new(new WebDB<Cheep>("https://mychirptestremotedb.azurewebsites.net"));
+        //UserInterface userInterface = new(new WebDB<Cheep>("https://mychirptestremotedb.azurewebsites.net"));
+        UserInterface userInterface = new(new WebDB<Cheep>("http://localhost:8080"));
 
         var readCommand = new Command("read", "Read information stored in database");
         var readArgument = new Argument<int?>("value", "The amount of latest cheeps you want to read");
