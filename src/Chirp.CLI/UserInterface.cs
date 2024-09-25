@@ -15,5 +15,9 @@ public class UserInterface(IDatabaseRepository<Cheep> repository)
         }
     }
 
-    public void WriteCheep(string message) => repository.Store(new Cheep(message));
+    public void WriteCheep(string message)
+    {
+        Cheep cheep = new(message);
+        repository.Store(cheep);
+    }
 }
