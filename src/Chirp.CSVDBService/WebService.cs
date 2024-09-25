@@ -12,7 +12,9 @@ public class WebService : IAsyncDisposable
     {
         var builder = WebApplication.CreateBuilder();
         _app = builder.Build();
-        
+
+        _app.UseHttpsRedirection();
+
         _app.MapGet("/cheeps", repository.Read);
         _app.MapPost("/cheep", repository.Store);
     }

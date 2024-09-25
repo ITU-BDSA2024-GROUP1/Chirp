@@ -26,7 +26,7 @@ public class WebDB<T> : IDatabaseRepository<T>
 
         var response = _client.GetAsync(endpoint).Result;
         response.EnsureSuccessStatusCode();
-        
+
         var cheeps = response.Content.ReadFromJsonAsync<IEnumerable<T>>().Result;
         return cheeps ?? throw new HttpRequestException($"Cheeps HTTP response from WebDB at {response.RequestMessage?.RequestUri} was null for some reason.");
     }
