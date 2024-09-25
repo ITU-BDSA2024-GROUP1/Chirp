@@ -4,20 +4,16 @@ using SimpleDB;
 
 namespace Chirp.CLI;
 
-public class UserInterface
+public class UserInterface(IDatabaseRepository<Cheep> repository)
 {
-    private readonly IDatabaseRepository<Cheep> _repo;
-    
-    public UserInterface(IDatabaseRepository<Cheep> repository) => _repo = repository;
-
     public void ReadCheeps(int? limit = null)
     {
-        var cheeps = _repo.Read(limit);
+        var cheeps = repository.Read(limit);
         foreach (Cheep cheep in cheeps)
         {
             Console.WriteLine(cheep);
         }
     }
 
-    public void WriteCheep(string message) => _repo.Store(new Cheep(message));
+    public void WriteCheep(string message) => repository.Store(new Cheep(message));
 }
