@@ -21,7 +21,7 @@ public class WebService : IAsyncDisposable
     {
         DirectoryFixer.SetWorkingDirectoryToProjectRoot();
         //var webService = new WebService(new CSVDatabase<Cheep>(Path.Combine(Directory.GetCurrentDirectory(), "chirp_cli_db.csv")));
-        var webService = new WebService(new CSVDatabase<Cheep>("chirp_cli_db.csv"));
+        var webService = new WebService(new CSVDatabase<Cheep>("data/chirp_cli_db.csv"));
         webService.Run();
     }
 
