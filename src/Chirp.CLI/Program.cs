@@ -10,8 +10,8 @@ internal class Program
 {
     static async Task<int> Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
         DirectoryFixer.SetWorkingDirectoryToProjectRoot();
+        Console.WriteLine("Hello, World!");
         var rootCommand = new RootCommand("Chirp where you can send cheeps and read others");
 
         //UserInterface userInterface = new(new WebDB<Cheep>("https://mychirptestremotedb.azurewebsites.net"));
