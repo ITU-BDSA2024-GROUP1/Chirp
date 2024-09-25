@@ -25,10 +25,10 @@ public class WebService : IAsyncDisposable
         webService.Run();
     }
 
-    public void Run()
+    public void Run(int port = 8080)
     {
         //var port = Environment.GetEnvironmentVariable("WEBSITES_PORT") ?? "80"; // Default to 80 if not set
-        _app.Run("http://*:8080");
+        _app.Run($"http://*:{port}");
     }
 
     public ValueTask DisposeAsync() => _app.DisposeAsync();
