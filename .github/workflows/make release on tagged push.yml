@@ -25,58 +25,50 @@ jobs:
 
     make_executables:
         needs: build_and_test
+        runs-on: ubuntu-latest
+        env:
+            GH_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
+
         strategy:
           matrix:
-            kind: ['linux', 'windows', 'macOS']
+            os: [ubuntu-latest, macos-latest, windows-latest]
             include:
-              - kind: linux
-                target: linux-x64
-              - kind: windows
-                target: win-x64
-              - kind: macOS
-                target: osx-x64
-        runs-on: ubuntu-latest
+              - os: ubuntu-latest
+                rid: linux-x64
+              - os: macos-latest
+                rid: osx-x64
+              - os: windows-latest
+                rid: win-x64
         
-        steps: 
-          - name: Checkout
-            uses: actions/checkout@v1
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
 
-          - name: Set env
-            # With the help of https://stackoverflow.com/a/58178121/23907907
-            run: |
-                echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-                echo ${{ env.RELEASE_VERSION }}
+        - name: Setup .NET 8 SDK
+          uses: actions/setup-dotnet@v3
+          with:
+            dotnet-version: '8.x'
+    
+        - name: restoring projects
+          run: | 
+              dotnet restore 
 
-          - name: Setup dotnet
-            uses: actions/setup-dotnet@v1
-            with:
-              dotnet-version: 7.0.x
+        - name: building projects
+          run: |
+            dotnet build 
 
-          - name: Build
-            env:
-                release_name: "App-${{ env.RELEASE_VERSION }}-${{ matrix.target }}"
-            shell: bash
-            run: |
-                # Build everything
-                dotnet publish src/Chirp.CLI/Chirp.CLI.csproj --framework netcoreapp5.0.0 --runtime "${{ matrix.target }}" -c Release -o "$release_name"
+        - name: Publish standalone app for each platform
+          run: |
+            dotnet publish ./src/Chirp.CLI -c Release -r ${{ matrix.rid }} --self-contained -o ./artifacts/${{ matrix.os }}
+          shell: bash
 
-                # Pack files
-                if [ "${{ matrix.target }}" == "win-x64" ]; then
-                7z a -tzip "${release_name}.zip" "./${release_name}/*"
-                else
-                tar czvf "${release_name}.tar.gz" "$release_name"
-                fi
-                
-                # Delete output directory
-                rm -r "$release_name"
-          - name: Publish
-            uses: softprops/action-gh-release@v1
-            with:
-                files: "App*"
-            env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                
-                
+        - name: zips
+          run: |
+            zip -r Chirp-${{ matrix.os }}.zip ./artifacts/${{ matrix.os }}
 
-            
-
+        - name: Release
+          uses: softprops/action-gh-release@v2
+          with:
+            name: release ${{ github.ref_name }}
+            files: | 
+                Chirp-${{ matrix.os }}.zip
