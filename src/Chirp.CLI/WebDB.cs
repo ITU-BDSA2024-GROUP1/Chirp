@@ -11,18 +11,24 @@ public class WebDB<T> : IDatabaseRepository<T>
     
     public WebDB(string baseUrl)
     {
-        _client = new HttpClient();
-        _client.BaseAddress = new Uri(baseUrl);
+        _client = new();
+        _client.BaseAddress = new(baseUrl);
         _client.DefaultRequestHeaders.Accept.Clear();
-        _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        _client.DefaultRequestHeaders.Accept.Add(new("application/json"));
     }
 
     public IEnumerable<T> Read(int? limit = null)
     {
-        string endpoint = limit == null ? "cheeps" : $"cheeps?limit={limit}";
+        string endpoint = 
+            limit == null ? 
+            "cheeps" : 
+            $"cheeps?limit={limit}";
 
-        var cheeps = _client.GetFromJsonAsync<IEnumerable<T>>(endpoint);
-        return cheeps.Result!;
+        var response = _client.GetAsync(endpoint).Result;
+        response.EnsureSuccessStatusCode();
+        
+        var cheeps = response.Content.ReadFromJsonAsync<IEnumerable<T>>().Result;
+        return cheeps!;
     }
 
     public void Store(T record) => _client.PostAsJsonAsync("cheep", record).Wait();
