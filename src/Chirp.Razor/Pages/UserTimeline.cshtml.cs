@@ -13,9 +13,19 @@ public class UserTimelineModel : PageModel
         _service = service;
     }
 
-    public ActionResult OnGet(string author)
+    [HttpGet("{author}")]
+    public ActionResult OnGet([FromRoute] string author)
     {
-        Cheeps = _service.GetCheepsFromAuthor(author);
+        if (string.IsNullOrEmpty(author))
+        {
+            // Handle the case where author is null or empty
+            // For example, you could return an empty list or a default page
+            Cheeps = new List<CheepViewModel>();
+        }
+        else
+        {
+            Cheeps = _service.GetCheepsFromAuthor(author);
+        }
         return Page();
     }
 }
