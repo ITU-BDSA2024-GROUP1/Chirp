@@ -1,11 +1,19 @@
 using Chirp.Razor;
 
+using Microsoft.Data.Sqlite;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-string dbPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "chirp.db"); // Environment.GetEnvironmentVariable("CHIRPDBPATH") ??
+string dbPath = Environment.GetEnvironmentVariable("CHIRPDBPATH") ?? System.IO.Path.Combine(System.IO.Path.GetTempPath(), "chirp.db");
+
+// Initialize the database if it doesn't exist
+if (!File.Exists(dbPath))
+{
+    InitializeDatabase(dbPath);
+}
 
 builder.Services.AddSingleton(new DBFacade(dbPath));
 
@@ -30,3 +38,27 @@ app.UseRouting();
 app.MapRazorPages();
 
 app.Run();
+
+static void InitializeDatabase(string dbPath)
+{
+    using var connection = new SqliteConnection($"Data Source={dbPath};");
+    connection.Open();
+
+    var command = connection.CreateCommand();
+    command.CommandText = @"
+        create table if not exists user (
+          user_id integer primary key autoincrement,
+          username string not null,
+          email string not null,
+          pw_hash string not null
+        );
+
+        create table if not exists message (
+          message_id integer primary key autoincrement,
+          author_id integer not null,
+          text string not null,
+          pub_date integer
+        );
+    ";
+    command.ExecuteNonQuery();
+}
