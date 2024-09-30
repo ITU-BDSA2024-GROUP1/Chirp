@@ -2,9 +2,14 @@
 
 namespace Chirp.Razor
 {
-    public class DBFacade(string dbPath)
+    public class DBFacade
     {
-        private readonly string _connectionString = $"Data Source={dbPath};";
+        private readonly string _connectionString;
+
+        public DBFacade(string dbPath)
+        {
+            _connectionString = $"Data Source={dbPath};"; ;
+        }
 
         public SqliteConnection GetConnection()
         {
