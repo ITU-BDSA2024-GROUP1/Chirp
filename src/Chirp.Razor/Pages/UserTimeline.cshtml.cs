@@ -13,7 +13,6 @@ public class UserTimelineModel : PageModel
         _service = service;
     }
 
-    [HttpGet("{author}")]
     public ActionResult OnGet([FromRoute] string author)
     {
         if (string.IsNullOrEmpty(author))
