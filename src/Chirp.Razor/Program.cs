@@ -1,26 +1,33 @@
-using Chirp.Razor;
+using Chirp.Core.Data;
 
-using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Chirp.Core.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Load database connection via configuration
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
+
+// Register the repositories
+builder.Services.AddScoped<ICheepRepository, CheepRepository>();
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-string dbPath = Environment.GetEnvironmentVariable("CHIRPDBPATH") ?? System.IO.Path.Combine(System.IO.Path.GetTempPath(), "chirp.db");
-
-// Initialize the database if it doesn't exist
-if (!File.Exists(dbPath))
-{
-    InitializeDatabase(dbPath);
-}
-
-builder.Services.AddSingleton(new DBFacade(dbPath));
-
-builder.Services.AddSingleton<ICheepService, CheepService>();
+builder.Services.AddScoped<ICheepService, CheepService>();
 
 
 var app = builder.Build();
+
+// Seed the database
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ChirpDBContext>();
+    DbInitializer.SeedDatabase(context);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -38,27 +45,3 @@ app.UseRouting();
 app.MapRazorPages();
 
 app.Run();
-
-static void InitializeDatabase(string dbPath)
-{
-    using var connection = new SqliteConnection($"Data Source={dbPath};");
-    connection.Open();
-
-    var command = connection.CreateCommand();
-    command.CommandText = @"
-        create table if not exists user (
-          user_id integer primary key autoincrement,
-          username string not null,
-          email string not null,
-          pw_hash string not null
-        );
-
-        create table if not exists message (
-          message_id integer primary key autoincrement,
-          author_id integer not null,
-          text string not null,
-          pub_date integer
-        );
-    ";
-    command.ExecuteNonQuery();
-}

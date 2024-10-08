@@ -1,47 +1,31 @@
-using Chirp.Razor;
+using Chirp.Core.Repositories;
 
-public record CheepViewModel(string Author, string Message, long Timestamp);
+public record CheepViewModel(string Author, string Message, string Timestamp);
 
 public interface ICheepService
 {
-    public List<CheepViewModel> GetCheeps();
-    public List<CheepViewModel> GetCheepsFromAuthor(string author);
+    public Task<List<CheepViewModel>> GetCheeps();
+    public Task<List<CheepViewModel>> GetCheepsFromAuthor(string author);
 }
 
 public class CheepService : ICheepService
 {
-    private readonly DBFacade _dbFacade;
+    private readonly ICheepRepository _cheepRepository;
 
-    public CheepService(DBFacade dbFacade)
+    public CheepService(ICheepRepository cheepRepository)
     {
-        _dbFacade = dbFacade;
+        _cheepRepository = cheepRepository;
     }
 
-    public List<CheepViewModel> GetCheeps()
+    public async Task<List<CheepViewModel>> GetCheeps()
     {
-        string query = @"
-            SELECT u.username, m.text, m.pub_date 
-            FROM message m 
-            JOIN user u ON m.author_id = u.user_id";
-        return _dbFacade.ExecuteQuery(query);
+        var cheeps = await _cheepRepository.GetAllCheepsAsync();
+        return cheeps.Select(c => new CheepViewModel(c.Name, c.Message, c.TimeStamp)).ToList();
     }
 
-    public List<CheepViewModel> GetCheepsFromAuthor(string author)
+    public async Task<List<CheepViewModel>> GetCheepsFromAuthor(string author)
     {
-        string query = @"
-            SELECT u.username, m.text, m.pub_date 
-            FROM message m 
-            JOIN user u ON m.author_id = u.user_id 
-            WHERE u.username = @Author";
-        return _dbFacade.ExecuteQuery(query, author);
+        var cheeps = await _cheepRepository.GetCheepsByAuthorNameAsync(author);
+        return cheeps.Select(c => new CheepViewModel(c.Name, c.Message, c.TimeStamp)).ToList();
     }
-
-    private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
-    {
-        // Unix timestamp is seconds past epoch
-        DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        dateTime = dateTime.AddSeconds(unixTimeStamp);
-        return dateTime.ToString("MM/dd/yy H:mm:ss");
-    }
-
 }
