@@ -4,7 +4,7 @@ public record CheepViewModel(string Author, string Message, long Timestamp);
 
 public interface ICheepService
 {
-    public List<CheepViewModel> GetCheeps();
+    public List<CheepViewModel> GetCheeps(int page);
     public List<CheepViewModel> GetCheepsFromAuthor(string author);
 }
 
@@ -16,13 +16,15 @@ public class CheepService : ICheepService
     {
         _dbFacade = dbFacade;
     }
-
-    public List<CheepViewModel> GetCheeps()
+    
+    public List<CheepViewModel> GetCheeps(int page)
     {
+        
         string query = @"
             SELECT u.username, m.text, m.pub_date 
             FROM message m 
-            JOIN user u ON m.author_id = u.user_id";
+            JOIN user u ON m.author_id = u.user_id"
+                       +$" ORDER BY m.pub_date DESC LIMIT {32} OFFSET {32 * page}";
         return _dbFacade.ExecuteQuery(query);
     }
 
