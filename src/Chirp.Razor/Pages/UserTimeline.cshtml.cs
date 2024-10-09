@@ -13,7 +13,7 @@ public class UserTimelineModel : PageModel
         _service = service;
     }
 
-    public ActionResult OnGet([FromRoute] string author)
+    public ActionResult OnGet([FromRoute] string author, [FromQuery] int page = 1)
     {
         if (string.IsNullOrEmpty(author))
         {
@@ -23,7 +23,7 @@ public class UserTimelineModel : PageModel
         }
         else
         {
-            Cheeps = _service.GetCheepsFromAuthor(author);
+            Cheeps = _service.GetCheepsFromAuthor(author,page);
         }
         return Page();
     }
