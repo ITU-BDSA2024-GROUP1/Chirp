@@ -1,6 +1,7 @@
 ﻿using Chirp.Core.Data;
 using Chirp.Core.DataTransferObject;
 using Chirp.Core.Entities;
+using Chirp.Core.Models;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -40,7 +41,7 @@ namespace Chirp.Core.Repositories
             return queryResult.Entity.CheepId;
         }
 
-        public async Task<CheepDTO> DeleteCheepAsync(int id)
+        public async Task<CheepDTO?> DeleteCheepAsync(int id)
         {
             var cheep = await _dbContext.Cheeps.Include(c => c.Author).FirstOrDefaultAsync(c => c.CheepId == id);
             if (cheep != null)
@@ -60,21 +61,34 @@ namespace Chirp.Core.Repositories
             return null;
         }
 
-        public async Task<IEnumerable<CheepDTO>> GetAllCheepsAsync(int page)
+        public async Task<PagedResult<CheepDTO>> GetAllCheepsAsync(int page, int pageSize)
         {
-            return await _dbContext.Cheeps.Include(c => c.Author).Select(c => new CheepDTO
+            var query = _dbContext.Cheeps.Include(c => c.Author).Select(c => new CheepDTO
             {
                 Id = c.CheepId,
                 Name = c.Author.Name,
                 Message = c.Text,
                 TimeStamp = c.TimeStamp.ToString(),
                 AuthorId = c.AuthorId
-            }).OrderByDescending(c => c.TimeStamp).Skip(page * 32).Take(32).ToListAsync();
+            });
+
+            var totalCheeps = await query.CountAsync();
+            var cheeps = await query.OrderByDescending(c => c.TimeStamp)
+                                    .Skip((page - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToListAsync();
+
+            return new PagedResult<CheepDTO>
+            {
+                Items = cheeps,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(totalCheeps / (double)pageSize)
+            };
         }
 
-        public async Task<IEnumerable<CheepDTO>> GetCheepsByAuthorNameAsync(string authorName, int page)
+        public async Task<PagedResult<CheepDTO>> GetCheepsByAuthorNameAsync(string authorName, int page, int pageSize)
         {
-            return await _dbContext.Cheeps
+            var query = _dbContext.Cheeps
                 .Include(c => c.Author)
                 .Where(c => c.Author.Name == authorName)
                 .Select(c => new CheepDTO
@@ -84,8 +98,22 @@ namespace Chirp.Core.Repositories
                     Message = c.Text,
                     TimeStamp = c.TimeStamp.ToString(),
                     AuthorId = c.AuthorId
-                }).OrderByDescending(c => c.TimeStamp).Skip(page * 32).Take(32).ToListAsync();
+                });
+
+            var totalCheeps = await query.CountAsync();
+            var cheeps = await query.OrderByDescending(c => c.TimeStamp)
+                                    .Skip((page - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToListAsync();
+
+            return new PagedResult<CheepDTO>
+            {
+                Items = cheeps,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling(totalCheeps / (double)pageSize)
+            };
         }
+
 
         public async Task UpdateCheepAsync(CheepDTO cheepDto)
         {

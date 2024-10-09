@@ -13,18 +13,24 @@ public class UserTimelineModel : PageModel
         _service = service;
     }
 
-    public async Task<ActionResult> OnGetAsync([FromRoute] string author, [FromQuery] int page)
+    public async Task<ActionResult> OnGetAsync([FromRoute] string author, [FromQuery] int page = 1)
     {
         if (string.IsNullOrEmpty(author))
         {
-            // Handle the case where author is null or empty
-            // For example, you could return an empty list or a default page
             Cheeps = new List<CheepViewModel>();
         }
         else
         {
-            Cheeps = await _service.GetCheepsFromAuthor(author, page);
+            var pageSize = 32; // Define your page size
+            var cheepsResult = await _service.GetCheepsFromAuthor(author, page, pageSize);
+            Cheeps = cheepsResult.Items;
+            CurrentPage = cheepsResult.CurrentPage;
+            TotalPages = cheepsResult.TotalPages;
         }
         return Page();
     }
+
+    public int CurrentPage { get; set; }
+    public int TotalPages { get; set; }
+
 }
