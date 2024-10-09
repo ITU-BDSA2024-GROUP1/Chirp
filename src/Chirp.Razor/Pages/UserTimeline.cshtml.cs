@@ -13,7 +13,7 @@ public class UserTimelineModel : PageModel
         _service = service;
     }
 
-    public async Task<ActionResult> OnGetAsync([FromRoute] string author)
+    public async Task<ActionResult> OnGetAsync([FromRoute] string author, [FromQuery] int page)
     {
         if (string.IsNullOrEmpty(author))
         {
@@ -23,7 +23,7 @@ public class UserTimelineModel : PageModel
         }
         else
         {
-            Cheeps = await _service.GetCheepsFromAuthor(author);
+            Cheeps = await _service.GetCheepsFromAuthor(author, page);
         }
         return Page();
     }

@@ -60,7 +60,7 @@ namespace Chirp.Core.Repositories
             return null;
         }
 
-        public async Task<IEnumerable<CheepDTO>> GetAllCheepsAsync()
+        public async Task<IEnumerable<CheepDTO>> GetAllCheepsAsync(int page)
         {
             return await _dbContext.Cheeps.Include(c => c.Author).Select(c => new CheepDTO
             {
@@ -69,10 +69,10 @@ namespace Chirp.Core.Repositories
                 Message = c.Text,
                 TimeStamp = c.TimeStamp.ToString(),
                 AuthorId = c.AuthorId
-            }).ToListAsync();
+            }).OrderByDescending(c => c.TimeStamp).Skip(page * 32).Take(32).ToListAsync();
         }
 
-        public async Task<IEnumerable<CheepDTO>> GetCheepsByAuthorNameAsync(string authorName)
+        public async Task<IEnumerable<CheepDTO>> GetCheepsByAuthorNameAsync(string authorName, int page)
         {
             return await _dbContext.Cheeps
                 .Include(c => c.Author)
@@ -84,7 +84,7 @@ namespace Chirp.Core.Repositories
                     Message = c.Text,
                     TimeStamp = c.TimeStamp.ToString(),
                     AuthorId = c.AuthorId
-                }).ToListAsync();
+                }).OrderByDescending(c => c.TimeStamp).Skip(page * 32).Take(32).ToListAsync();
         }
 
         public async Task UpdateCheepAsync(CheepDTO cheepDto)
