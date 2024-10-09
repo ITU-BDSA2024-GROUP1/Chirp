@@ -61,9 +61,9 @@ jobs:
 
         - name: Publish standalone app for each platform
           run: |
-            dotnet publish ./src/Chirp.CLI -c Release -r win-x64 --self-contained -o ./artifacts/win
-            dotnet publish ./src/Chirp.CLI -c Release -r linux-x64 --self-contained -o ./artifacts/linux
-            dotnet publish ./src/Chirp.CLI -c Release -r osx-x64 --self-contained -o ./artifacts/mac
+            dotnet publish ./src/Chirp.Razor -c Release -r win-x64 --self-contained -o ./artifacts/win
+            dotnet publish ./src/Chirp.Razor -c Release -r linux-x64 --self-contained -o ./artifacts/linux
+            dotnet publish ./src/Chirp.Razor -c Release -r osx-x64 --self-contained -o ./artifacts/mac
           shell: bash
 
         - name: zips
