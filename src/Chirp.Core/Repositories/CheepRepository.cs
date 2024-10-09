@@ -89,7 +89,7 @@ namespace Chirp.Core.Repositories
 
         public async Task UpdateCheepAsync(CheepDTO cheepDto)
         {
-            var cheep = await _dbContext.Cheeps.Include(c => c.Author).FirstOrDefaultAsync(c => c.CheepId == cheepDto.Id);
+            var cheep = await _dbContext.Cheeps.FindAsync(cheepDto.Id);
             if (cheep != null)
             {
                 cheep.Text = cheepDto.Message;

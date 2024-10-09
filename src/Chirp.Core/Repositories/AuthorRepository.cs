@@ -47,7 +47,7 @@ namespace Chirp.Core.Repositories
 
         public async Task<IEnumerable<AuthorDTO>> GetAllAuthorsAsync()
         {
-            return await _dbContext.Authors.Include(c => c.AuthorId).Select(c => new AuthorDTO
+            return await _dbContext.Authors.Select(c => new AuthorDTO
             {
                 Id = c.AuthorId,
                 Name = c.Name,
