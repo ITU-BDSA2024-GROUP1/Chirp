@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Chirp.Core.Entities;
+
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Chirp.Razor.Pages;
@@ -13,10 +15,16 @@ public class PublicModel : PageModel
         _service = service;
     }
 
-    
-    public ActionResult OnGet([FromQuery] int page)
+    public async Task<ActionResult> OnGetAsync([FromQuery] int page = 1)
     {
-        Cheeps = _service.GetCheeps(page);
+        var pageSize = 32; // Define your page size
+        var cheepsResult = await _service.GetCheeps(page, pageSize);
+        Cheeps = cheepsResult.Items;
+        CurrentPage = cheepsResult.CurrentPage;
+        TotalPages = cheepsResult.TotalPages;
         return Page();
     }
+
+    public int CurrentPage { get; set; }
+    public int TotalPages { get; set; }
 }
