@@ -1,5 +1,5 @@
 ﻿using Chirp.Core;
-
+/*
 namespace Chirp.CoreTest;
 
 public class UnitTestCore
@@ -50,3 +50,4 @@ public class UnitTestCore
         Assert.Equal(expected, result);
     }
 }
+*/

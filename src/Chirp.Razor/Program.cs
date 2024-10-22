@@ -7,10 +7,18 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        if (Environment.GetEnvironmentVariable("RUNNING_TESTS") == null)
+        {
+            Environment.SetEnvironmentVariable("RUNNING_TESTS", "false");
+        }
         var builder = WebApplication.CreateBuilder(args);
 
         // Load database connection via configuration
         string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        if (Environment.GetEnvironmentVariable("RUNNING_TESTS").Equals("true"))
+        {
+            connectionString = builder.Configuration.GetConnectionString("TestingConnection");
+        }
         builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
 
         // Register the repositories
