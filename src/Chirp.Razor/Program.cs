@@ -38,6 +38,7 @@ public class Program
         {
             var services = scope.ServiceProvider;
             var context = services.GetRequiredService<ChirpDBContext>();
+            context.Database.EnsureCreatedAsync();
             DbInitializer.SeedDatabase(context);
         }
 
