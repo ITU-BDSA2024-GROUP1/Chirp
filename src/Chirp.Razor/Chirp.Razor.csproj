@@ -18,4 +18,8 @@
         <ProjectReference Include="../Chirp.Infrastructure/Chirp.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Include="../../data/chirp.db" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
 </Project>

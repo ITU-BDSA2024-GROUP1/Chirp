@@ -41,7 +41,7 @@ public class Program
             context.Database.EnsureCreatedAsync();
             DbInitializer.SeedDatabase(context);
         }
-
+        
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
