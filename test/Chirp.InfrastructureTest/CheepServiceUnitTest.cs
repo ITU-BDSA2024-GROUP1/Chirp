@@ -139,7 +139,8 @@ public class CheepServiceUnitTest
                 Name = authors[i % authors.Length].Name,
                 Message = $"Text{i + 1}",
                 TimeStamp = timeStamp.ToString("yyyy\\-MM\\-dd HH\\:mm\\:ss"),
-                AuthorId = authors[i % authors.Length].Id
+                AuthorId = authors[i % authors.Length].Id,
+                AuthorEmail = authors[i % authors.Length].Email
             };
             cheeps[i].Id = await cheepRepository.AddCheepAsync(cheeps[i]);
         }
@@ -157,6 +158,7 @@ public class CheepServiceUnitTest
         Assert.Equal(expected.TimeStamp, actual.TimeStamp);
         Assert.Equal(expected.AuthorId, actual.AuthorId);
         Assert.Equal(expected.Message, actual.Message);
+        Assert.Equal(expected.AuthorEmail, actual.AuthorEmail);
     }
     public static void AssertCheepDTOVsAssertViewModel(CheepDTO expected, CheepViewModel actual)
     {
