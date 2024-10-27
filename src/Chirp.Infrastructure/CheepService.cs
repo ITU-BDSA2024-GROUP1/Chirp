@@ -9,6 +9,7 @@ public interface ICheepService
 {
     public Task<PagedResult<CheepViewModel>> GetCheeps(int page, int pageSize);
     public Task<PagedResult<CheepViewModel>> GetCheepsFromAuthor(string author, int page, int pageSize);
+    public Task<CheepViewModel> GetCheepById(int id);
     public Task<int> PostCheep(CheepViewModel cheep);
 }
 
@@ -42,6 +43,11 @@ public class CheepService : ICheepService
             CurrentPage = cheepsResult.CurrentPage,
             TotalPages = cheepsResult.TotalPages
         };
+    }
+
+    public async Task<CheepViewModel> GetCheepById(int id)
+    {
+        return CheepDTOToCheepViewModel(await _cheepRepository.GetCheepByIdAsync(id));
     }
 
     public async Task<int> PostCheep(CheepViewModel cheepViewModel)

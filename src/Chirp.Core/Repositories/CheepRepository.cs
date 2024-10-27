@@ -116,6 +116,19 @@ namespace Chirp.Core.Repositories
             };
         }
 
+        public async Task<CheepDTO> GetCheepByIdAsync(int id)
+        {
+            return await _dbContext.Cheeps.Where(c => c.CheepId == id).Select(c => new CheepDTO
+            {
+                Id = c.AuthorId,
+                Name = c.Author.Name,
+                Message = c.Text,
+                TimeStamp = c.TimeStamp.ToString(),
+                AuthorId = c.AuthorId,
+                AuthorEmail = c.Author.Email
+            }).FirstOrDefaultAsync();
+        }
+
 
         public async Task UpdateCheepAsync(CheepDTO cheepDto)
         {
