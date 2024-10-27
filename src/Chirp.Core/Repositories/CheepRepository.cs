@@ -23,6 +23,7 @@ namespace Chirp.Core.Repositories
                 throw new KeyNotFoundException("Author not found");
             }
 
+
             var cheep = new Cheep
             {
                 Text = cheepDto.Message,
@@ -30,12 +31,9 @@ namespace Chirp.Core.Repositories
                 AuthorId = cheepDto.AuthorId,
                 Author = author
             };
-
-            if (author != null)
-            {
+            
                 author.Cheeps.Add(cheep);
-            }
-
+            
             var queryResult = await _dbContext.Cheeps.AddAsync(cheep);
 
             await _dbContext.SaveChangesAsync();
@@ -56,7 +54,8 @@ namespace Chirp.Core.Repositories
                     Name = cheep.Author.Name,
                     Message = cheep.Text,
                     TimeStamp = cheep.TimeStamp.ToString(),
-                    AuthorId = cheep.AuthorId
+                    AuthorId = cheep.AuthorId,
+                    AuthorEmail = cheep.Author.Email
                 };
             }
             return null;
@@ -70,7 +69,8 @@ namespace Chirp.Core.Repositories
                 Name = c.Author.Name,
                 Message = c.Text,
                 TimeStamp = c.TimeStamp.ToString(),
-                AuthorId = c.AuthorId
+                AuthorId = c.AuthorId,
+                AuthorEmail = c.Author.Email
             });
 
             var totalCheeps = await query.CountAsync();
@@ -98,7 +98,8 @@ namespace Chirp.Core.Repositories
                     Name = c.Author.Name,
                     Message = c.Text,
                     TimeStamp = c.TimeStamp.ToString(),
-                    AuthorId = c.AuthorId
+                    AuthorId = c.AuthorId,
+                    AuthorEmail = c.Author.Email
                 });
 
             var totalCheeps = await query.CountAsync();
