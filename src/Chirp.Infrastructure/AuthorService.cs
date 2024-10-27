@@ -15,6 +15,7 @@ public interface IAuthorService
 {
     public Task<AuthorViewModel> GetAuthorByName(string author);
     public Task<AuthorViewModel> GetAuthorByEmail(string email);
+    public Task<AuthorViewModel> GetAuthorById(int id);
     public Task<int> CreateAuthor(AuthorViewModel author);
 }
 public class AuthorService : IAuthorService
@@ -44,6 +45,7 @@ public class AuthorService : IAuthorService
         return await _authorRepository.AddAuthorAsync(author);
     }
 
+    public async Task<AuthorViewModel> GetAuthorById(int id) { return AuthorDTOToAuthorViewModel(await _authorRepository.GetAuthorByIdAsync(id)); }
 
     public static AuthorViewModel AuthorDTOToAuthorViewModel(AuthorDTO authorDTO)
     {
