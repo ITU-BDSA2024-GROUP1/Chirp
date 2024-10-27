@@ -20,9 +20,9 @@ namespace Chirp.Core.Repositories
             var author = await _dbContext.Authors.FindAsync(cheepDto.AuthorId);
             if (author == null)
             {
-                author = new Author() { Name = cheepDto.Name, AuthorId = cheepDto.AuthorId, Email = cheepDto.AuthorEmail, };
-                // throw new KeyNotFoundException("Author not found");
+                throw new KeyNotFoundException("Author not found");
             }
+
 
             var cheep = new Cheep
             {
