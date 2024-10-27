@@ -3,7 +3,7 @@ using Chirp.Core.Models;
 using Chirp.Core.Repositories;
 
 public record CheepViewModel(string Author, string Message, string Timestamp);
-
+public record AuthorViewModel(int Id, string Name, string Email);
 public interface ICheepService
 {
     public Task<PagedResult<CheepViewModel>> GetCheeps(int page, int pageSize);
@@ -13,7 +13,7 @@ public interface ICheepService
 public class CheepService : ICheepService
 {
     private readonly ICheepRepository _cheepRepository;
-
+    private readonly IAuthorRepository _authorRepository;
     public CheepService(ICheepRepository cheepRepository)
     {
         _cheepRepository = cheepRepository;
@@ -41,4 +41,15 @@ public class CheepService : ICheepService
         };
     }
 
+    public async Task<AuthorViewModel> GetAuthorFromName(string author)
+    {
+        var authorResult = await _authorRepository.GetAuthorByNameAsync(author);
+        return new AuthorViewModel(authorResult.Id, authorResult.Name, authorResult.Email);
+    }
+    
+    public async Task<AuthorViewModel> GetAuthorFromEmail(string email)
+    {
+        var authorResult = await _authorRepository.GetAuthorByEmailAsync(email);
+        return new AuthorViewModel(authorResult.Id, authorResult.Name, authorResult.Email);
+    }
 }
