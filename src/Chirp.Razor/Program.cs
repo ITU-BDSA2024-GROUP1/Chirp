@@ -5,12 +5,12 @@ using Chirp.Core.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
-namespace Chirp.Razor;
+//namespace Chirp.Razor;
 
-public class Program
-{
-    public static void Main(string[] args)
-    {
+//public class Program
+//{
+    //public static void Main(string[] args)
+    //{
         if (Environment.GetEnvironmentVariable("RUNNING_TESTS") == null)
         {
             Environment.SetEnvironmentVariable("RUNNING_TESTS", "false");
@@ -82,5 +82,5 @@ public class Program
         app.MapRazorPages();
 
         app.Run();
-    }
-}
+    //}
+//}
