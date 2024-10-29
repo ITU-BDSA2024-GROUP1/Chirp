@@ -9,6 +9,6 @@ namespace Chirp.Core.Repositories
         Task<PagedResult<CheepDTO>> GetCheepsByAuthorNameAsync(string authorName, int page, int pageSize);
         Task<int> AddCheepAsync(CheepDTO cheepDto);
         Task UpdateCheepAsync(CheepDTO cheepDto);
-        Task<CheepDTO?> DeleteCheepAsync(int id);
+        Task<CheepDTO> DeleteCheepAsync(int id);
     }
 }

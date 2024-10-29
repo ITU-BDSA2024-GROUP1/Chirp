@@ -42,7 +42,7 @@ namespace Chirp.Core.Repositories
             return queryResult.Entity.CheepId;
         }
 
-        public async Task<CheepDTO?> DeleteCheepAsync(int id)
+        public async Task<CheepDTO> DeleteCheepAsync(int id)
         {
             var cheep = await _dbContext.Cheeps.Include(c => c.Author).FirstOrDefaultAsync(c => c.CheepId == id);
             if (cheep != null)

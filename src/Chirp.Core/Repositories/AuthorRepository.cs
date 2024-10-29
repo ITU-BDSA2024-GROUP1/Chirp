@@ -25,7 +25,7 @@ namespace Chirp.Core.Repositories
             
             var queryResult = await _dbContext.Authors.AddAsync(author);
             await _dbContext.SaveChangesAsync();
-            return queryResult.Entity.AuthorId;
+            return queryResult.Entity.Id;
         }
 
         public async Task<AuthorDTO> DeleteAuthorAsync(int id)
@@ -37,7 +37,7 @@ namespace Chirp.Core.Repositories
                 await _dbContext.SaveChangesAsync();
                 return new AuthorDTO
                 {
-                    Id = author.AuthorId,
+                    Id = author.Id,
                     Name = author.Name,
                     Email = author.Email
                 };
@@ -49,7 +49,7 @@ namespace Chirp.Core.Repositories
         {
             return await _dbContext.Authors.Select(c => new AuthorDTO
             {
-                Id = c.AuthorId,
+                Id = c.Id,
                 Name = c.Name,
                 Email = c.Email
             }).ToListAsync();
@@ -57,9 +57,9 @@ namespace Chirp.Core.Repositories
 
         public async Task<AuthorDTO> GetAuthorByIdAsync(int id)
         {
-            return await _dbContext.Authors.Where(a => a.AuthorId == id).Select(c => new AuthorDTO
+            return await _dbContext.Authors.Where(a => a.Id == id).Select(c => new AuthorDTO
             {
-                Id = c.AuthorId,
+                Id = c.Id,
                 Name = c.Name,
                 Email = c.Email
             }).FirstOrDefaultAsync();

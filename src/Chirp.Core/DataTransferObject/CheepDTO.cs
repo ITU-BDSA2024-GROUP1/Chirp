@@ -1,4 +1,6 @@
-﻿namespace Chirp.Core.DataTransferObject
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Chirp.Core.DataTransferObject
 {
     public class CheepDTO
     {
