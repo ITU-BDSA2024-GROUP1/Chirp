@@ -64,6 +64,24 @@ namespace Chirp.Core.Repositories
                 Email = c.Email
             }).FirstOrDefaultAsync();
         }
+        
+        public async Task<AuthorDTO> GetAuthorByNameAsync(string name)
+        {
+            return await _dbContext.Authors.Where(a => a.Name == name).Select(c => new AuthorDTO
+            {
+                Id = c.AuthorId, Name = c.Name, Email = c.Email
+            }).FirstOrDefaultAsync();
+        }
+
+        public async Task<AuthorDTO> GetAuthorByEmailAsync(string email)
+        {
+            return await _dbContext.Authors.Where(a=> a.Email == email).Select(c => new AuthorDTO
+            {
+                Id = c.AuthorId,
+                Name = c.Name,
+                Email = c.Email
+            }).FirstOrDefaultAsync();
+        }
 
         public async Task UpdateAuthorAsync(AuthorDTO authorDto)
         {

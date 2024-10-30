@@ -7,18 +7,6 @@ namespace Chirp.InfrastructureTest;
 
 public class CheepServiceUnitTest
 {
-    
-    [Fact]
-    public void MakeCheepViewModel()
-    {
-        // Act
-        CheepViewModel cvm = new CheepViewModel("te", "st", "0");
-
-        // Assert
-        Assert.NotNull(cvm);
-    }
-
-
     [Fact]
     public async Task MakeCheepService()
     {
@@ -36,7 +24,7 @@ public class CheepServiceUnitTest
         CheepDTO[] knownCheeps = await SetUpTestCheepDB(cheepRepository, connection, knownAuthors);
 
         // Act
-        CheepService cheepService = new CheepService(cheepRepository);
+        CheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Assert
         Assert.NotNull(cheepService);
@@ -44,7 +32,7 @@ public class CheepServiceUnitTest
     }
 
     [Fact]
-    public async Task Read()
+    public async Task GetCheeps()
     {
         // Arrange
         using var connection = new SqliteConnection("Data Source=memory");
@@ -59,17 +47,21 @@ public class CheepServiceUnitTest
         AuthorDTO[] knownAuthors = await SetUpTestAuthorDB(authorRepository, connection);
         CheepDTO[] knownCheeps = await SetUpTestCheepDB(cheepRepository, connection, knownAuthors);
         
-        CheepService cheepService = new CheepService(cheepRepository);
+        CheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act
         PagedResult<CheepViewModel> cheeps = await cheepService.GetCheeps(knownCheeps.Length/32, 32);
 
+        CheepViewModel
+            expected = CheepService.CheepDTOToCheepViewModel(knownCheeps[knownCheeps.Length - 1]),
+            actual = cheeps.Items[cheeps.Items.Count() - 1];
+
         // Assert
-        AssertCheepDTOVsAssertViewModel(knownCheeps[knownCheeps.Length - 1], cheeps.Items[cheeps.Items.Count() - 1]);
+        Assert.Equal(expected, actual);
     }
 
     [Fact]
-    public async Task ReadAuthor()
+    public async Task GetCheepsFromAuthor()
     {
         // Arrange
         using var connection = new SqliteConnection("Data Source=memory");
@@ -84,7 +76,7 @@ public class CheepServiceUnitTest
         AuthorDTO[] knownAuthors = await SetUpTestAuthorDB(authorRepository, connection);
         CheepDTO[] knownCheeps = await SetUpTestCheepDB(cheepRepository, connection, knownAuthors);
 
-        CheepService cheepService = new CheepService(cheepRepository);
+        CheepService cheepService = new CheepService(cheepRepository, authorRepository);
 
         // Act
         int pageNumber = knownCheeps.Length;
@@ -93,9 +85,71 @@ public class CheepServiceUnitTest
         pageNumber += (knownCheeps.Length / knownAuthors.Length) % 32 == 0 ? 0 : 1;
         PagedResult<CheepViewModel> cheeps = await cheepService.GetCheepsFromAuthor(knownAuthors[1].Name, pageNumber, 32);
 
+        CheepViewModel 
+            expected = CheepService.CheepDTOToCheepViewModel(knownCheeps[knownCheeps.Length - 2]),
+            actual = cheeps.Items[cheeps.Items.Count() - 1];
+
         // Assert
-        AssertCheepDTOVsAssertViewModel(knownCheeps[knownCheeps.Length - 2], cheeps.Items[cheeps.Items.Count() - 1]);
+        Assert.Equal(expected, actual);
     }
+
+    [Fact]
+    public static async Task GetCheepById()
+    {
+        // Arrange
+        using var connection = new SqliteConnection("Data Source=memory");
+        await connection.OpenAsync();
+        var builder = new DbContextOptionsBuilder<ChirpDBContext>().UseSqlite(connection);
+
+        using var context = new ChirpDBContext(builder.Options);
+        await context.Database.EnsureCreatedAsync();
+
+        ICheepRepository cheepRepository = new CheepRepository(context);
+        IAuthorRepository authorRepository = new AuthorRepository(context);
+        AuthorDTO[] knownAuthors = await SetUpTestAuthorDB(authorRepository, connection);
+        CheepDTO[] knownCheeps = await SetUpTestCheepDB(cheepRepository, connection, knownAuthors);
+
+        CheepService cheepService = new CheepService(cheepRepository, authorRepository);
+
+        // Act
+        CheepViewModel expected = CheepService.CheepDTOToCheepViewModel(knownCheeps[0]);
+        CheepViewModel actual = await cheepService.GetCheepById(knownCheeps[0].Id);
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+
+    [Fact]
+    public static async Task PostCheep()
+    {
+        // Arrange
+        using var connection = new SqliteConnection("Data Source=memory");
+        await connection.OpenAsync();
+        var builder = new DbContextOptionsBuilder<ChirpDBContext>().UseSqlite(connection);
+
+        using var context = new ChirpDBContext(builder.Options);
+        await context.Database.EnsureCreatedAsync();
+
+        ICheepRepository cheepRepository = new CheepRepository(context);
+        IAuthorRepository authorRepository = new AuthorRepository(context);
+        AuthorDTO[] knownAuthors = await SetUpTestAuthorDB(authorRepository, connection);
+        using (var command = new SqliteCommand("DELETE FROM cheeps", connection))
+        {
+            command.ExecuteNonQuery();
+        }
+
+        CheepService cheepService = new CheepService(cheepRepository, authorRepository);
+
+        // Act
+        CheepViewModel expected = new CheepViewModel("Test1", "Testing, attention please", DateTime.Now.ToString("yyyy\\-MM\\-dd HH\\:mm\\:ss"));
+        int cheepId = await cheepService.PostCheep(expected);
+        CheepViewModel actual = await cheepService.GetCheepById(cheepId);
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
 
     public static async Task<AuthorDTO[]> SetUpTestAuthorDB(IAuthorRepository authorRepository, SqliteConnection connection)
     {
@@ -115,6 +169,9 @@ public class CheepServiceUnitTest
             };
             authors[i].Id = await authorRepository.AddAuthorAsync(authors[i]);
         }
+
+        List<AuthorDTO> repoAuthors = new List<AuthorDTO> (await authorRepository.GetAllAuthorsAsync());
+        for (int i = 0; i < authors.Length; i++) authors[i].Id = repoAuthors[i].Id;
 
         return authors;
 
@@ -139,29 +196,19 @@ public class CheepServiceUnitTest
                 Name = authors[i % authors.Length].Name,
                 Message = $"Text{i + 1}",
                 TimeStamp = timeStamp.ToString("yyyy\\-MM\\-dd HH\\:mm\\:ss"),
-                AuthorId = authors[i % authors.Length].Id
+                AuthorId = authors[i % authors.Length].Id,
+                AuthorEmail = authors[i % authors.Length].Email
             };
             cheeps[i].Id = await cheepRepository.AddCheepAsync(cheeps[i]);
         }
 
         Array.Reverse(cheeps);
+
+        PagedResult<CheepDTO> pagedCheeps = await cheepRepository.GetAllCheepsAsync(1, cheeps.Length);
+        List<CheepDTO> repoCheeps = pagedCheeps.Items.ToList();
+        for (int i = 0; i < cheeps.Length; i++) cheeps[i].Id = repoCheeps[i].Id;
+
         return cheeps;
 
-    }
-
-
-    public static void AssertCheep(CheepDTO expected, CheepDTO actual)
-    {
-        Assert.Equal(expected.Id, actual.Id);
-        Assert.Equal(expected.Name, actual.Name);
-        Assert.Equal(expected.TimeStamp, actual.TimeStamp);
-        Assert.Equal(expected.AuthorId, actual.AuthorId);
-        Assert.Equal(expected.Message, actual.Message);
-    }
-    public static void AssertCheepDTOVsAssertViewModel(CheepDTO expected, CheepViewModel actual)
-    {
-        Assert.Equal(expected.Name, actual.Author);
-        Assert.Equal(expected.TimeStamp, actual.Timestamp);
-        Assert.Equal(expected.Message, actual.Message);
     }
 }
