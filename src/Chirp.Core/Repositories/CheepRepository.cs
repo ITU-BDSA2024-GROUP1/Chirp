@@ -64,7 +64,7 @@ namespace Chirp.Core.Repositories
 
         public async Task<PagedResult<CheepDTO>> GetAllCheepsAsync(int page, int pageSize)
         {
-            var query = _dbContext.Cheeps.Include(c => c.Author).Select(c => new CheepDTO
+            var query = _dbContext.Cheeps.Select(c => new CheepDTO
             {
                 Id = c.CheepId,
                 Name = c.Author.UserName,

@@ -120,7 +120,7 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                user.UserName = Input.UserName;  // Set the UserName
+                await _userManager.SetUserNameAsync(user, Input.UserName); //user.UserName = Input.UserName;  // Set the UserName SetUserNameAysnc
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
