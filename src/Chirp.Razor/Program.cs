@@ -59,7 +59,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
         {
             var services = scope.ServiceProvider;
             var context = services.GetRequiredService<ChirpDBContext>();
-            context.Database.EnsureCreatedAsync();
+            await context.Database.EnsureCreatedAsync();
             DbInitializer.SeedDatabase(context);
         }
         

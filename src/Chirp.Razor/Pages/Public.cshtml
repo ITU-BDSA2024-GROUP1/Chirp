@@ -11,7 +11,7 @@
         <div>
             <a href="/@(User.Identity.Name)">my timeline</a> |
             <a href="/">public timeline</a> |
-            <form method="post" asp-area="" asp-page="/Account/Logout" style="display: inline;">
+            <form method="post" asp-area="Identity" asp-page="/Account/Logout" style="display: inline;">
                 <button type="submit" class="btn btn-link p-0" style="padding: 0;">logout [@(User.Identity.Name)]</button>
             </form>
         </div>
@@ -20,8 +20,8 @@
     {
         <div>
             <a href="/">public timeline</a> |
-            <a asp-page="/Account/Register">register</a> |
-            <a asp-page="/Account/Login">login</a>
+            <a asp-area="Identity" asp-page="/Account/Register">register</a> |
+            <a asp-area="Identity" asp-page="/Account/Login">login</a>
         </div>
     }
 </div>

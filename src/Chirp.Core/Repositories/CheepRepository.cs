@@ -31,10 +31,10 @@ namespace Chirp.Core.Repositories
                 Author = author
             };
 
-            if (author != null)
+            /*if (author != null)
             {
                 author.Cheeps.Add(cheep);
-            }
+            }*/
 
             var queryResult = await _dbContext.Cheeps.AddAsync(cheep);
 
@@ -47,13 +47,13 @@ namespace Chirp.Core.Repositories
             var cheep = await _dbContext.Cheeps.Include(c => c.Author).FirstOrDefaultAsync(c => c.CheepId == id);
             if (cheep != null)
             {
-                cheep.Author.Cheeps.Remove(cheep);
+                //cheep.Author.Cheeps.Remove(cheep);
                 _dbContext.Cheeps.Remove(cheep);
                 await _dbContext.SaveChangesAsync();
                 return new CheepDTO
                 {
                     Id = cheep.CheepId,
-                    Name = cheep.Author.Name,
+                    Name = cheep.Author.UserName,
                     Message = cheep.Text,
                     TimeStamp = cheep.TimeStamp.ToString(),
                     AuthorId = cheep.AuthorId
@@ -67,7 +67,7 @@ namespace Chirp.Core.Repositories
             var query = _dbContext.Cheeps.Include(c => c.Author).Select(c => new CheepDTO
             {
                 Id = c.CheepId,
-                Name = c.Author.Name,
+                Name = c.Author.UserName,
                 Message = c.Text,
                 TimeStamp = c.TimeStamp.ToString(),
                 AuthorId = c.AuthorId
@@ -91,11 +91,11 @@ namespace Chirp.Core.Repositories
         {
             var query = _dbContext.Cheeps
                 .Include(c => c.Author)
-                .Where(c => c.Author.Name == authorName)
+                .Where(c => c.Author.UserName == authorName)
                 .Select(c => new CheepDTO
                 {
                     Id = c.CheepId,
-                    Name = c.Author.Name,
+                    Name = c.Author.UserName,
                     Message = c.Text,
                     TimeStamp = c.TimeStamp.ToString(),
                     AuthorId = c.AuthorId
@@ -126,11 +126,11 @@ namespace Chirp.Core.Repositories
 
                 if (cheep.AuthorId != cheepDto.AuthorId)
                 {
-                    cheep.Author.Cheeps.Remove(cheep);
+                    //cheep.Author.Cheeps.Remove(cheep);
                     var newAuthor = await _dbContext.Authors.FindAsync(cheepDto.AuthorId);
                     if (newAuthor != null)
                     {
-                        newAuthor.Cheeps.Add(cheep);
+                        //newAuthor.Cheeps.Add(cheep);
                         cheep.Author = newAuthor;
                     }
                 }

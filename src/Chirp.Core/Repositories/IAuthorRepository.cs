@@ -6,9 +6,9 @@ namespace Chirp.Core.Repositories
     public interface IAuthorRepository
     {
         Task<IEnumerable<AuthorDTO>> GetAllAuthorsAsync();
-        Task<AuthorDTO> GetAuthorByIdAsync(int id);
-        Task<int> AddAuthorAsync(AuthorDTO authorDto);
+        Task<AuthorDTO> GetAuthorByIdAsync(string id);
+        Task<string> AddAuthorAsync(AuthorDTO authorDto);
         Task UpdateAuthorAsync(AuthorDTO authorDto);
-        Task<AuthorDTO> DeleteAuthorAsync(int id);
+        Task<AuthorDTO> DeleteAuthorAsync(string id);
     }
 }

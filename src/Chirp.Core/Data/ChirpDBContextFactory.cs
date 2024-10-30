@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Chirp.Core.Data
 {
-    public class ChirpDbContextFactory : IDesignTimeDbContextFactory<ChirpDBContext>
+    /*public class ChirpDbContextFactory : IDesignTimeDbContextFactory<ChirpDBContext>
     {
         public ChirpDBContext CreateDbContext(string[] args)
         {
@@ -19,5 +19,5 @@ namespace Chirp.Core.Data
 
             return new ChirpDBContext(optionsBuilder.Options);
         }
-    }
+    }*/
 }
