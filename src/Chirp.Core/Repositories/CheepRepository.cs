@@ -43,22 +43,24 @@ namespace Chirp.Core.Repositories
         public async Task<CheepDTO?> DeleteCheepAsync(int id)
         {
             var cheep = await _dbContext.Cheeps.Include(c => c.Author).FirstOrDefaultAsync(c => c.CheepId == id);
-            if (cheep != null)
+            if (cheep == null) return null;
+
+            cheep.Author.Cheeps.Remove(cheep);
+            _dbContext.Cheeps.Remove(cheep);
+            
+            CheepDTO deletedCheep = new()
             {
-                cheep.Author.Cheeps.Remove(cheep);
-                _dbContext.Cheeps.Remove(cheep);
-                await _dbContext.SaveChangesAsync();
-                return new CheepDTO
-                {
-                    Id = cheep.CheepId,
-                    Name = cheep.Author.Name,
-                    Message = cheep.Text,
-                    TimeStamp = cheep.TimeStamp.ToString(),
-                    AuthorId = cheep.AuthorId,
-                    AuthorEmail = cheep.Author.Email
-                };
-            }
-            return null;
+                Id = cheep.CheepId,
+                Name = cheep.Author.Name,
+                Message = cheep.Text,
+                TimeStamp = cheep.TimeStamp.ToString(),
+                AuthorId = cheep.AuthorId,
+                AuthorEmail = cheep.Author.Email
+            };
+            
+            await _dbContext.SaveChangesAsync();
+            
+            return deletedCheep;
         }
 
         public async Task<PagedResult<CheepDTO>> GetAllCheepsAsync(int page, int pageSize)
