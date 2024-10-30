@@ -120,7 +120,7 @@ namespace Chirp.Core.Repositories
         {
             return await _dbContext.Cheeps.Where(c => c.CheepId == id).Select(c => new CheepDTO
             {
-                Id = c.AuthorId,
+                Id = c.CheepId,
                 Name = c.Author.Name,
                 Message = c.Text,
                 TimeStamp = c.TimeStamp.ToString(),
