@@ -4,6 +4,8 @@
 
 using System;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,20 +25,14 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
             _logger = logger;
         }
 
-        public async Task<IActionResult> OnPost(string returnUrl = null)
+        public async Task<IActionResult> OnPost()
         {
             await _signInManager.SignOutAsync();
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);  // Clear the application cookie
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);    // Clear the external login cookie
+
             _logger.LogInformation("User logged out.");
-            if (returnUrl != null)
-            {
-                return LocalRedirect(returnUrl);
-            }
-            else
-            {
-                // This needs to be a redirect so that the browser performs a new
-                // request and the identity for the user gets updated.
-                return RedirectToPage();
-            }
+            return LocalRedirect("~/"); // Always redirect to the homepage
         }
     }
 }
