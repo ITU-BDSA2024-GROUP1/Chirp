@@ -28,21 +28,19 @@ public class AuthorRepository : IAuthorRepository
         return queryResult.Entity.AuthorId;
     }
 
-    public async Task<AuthorDTO> DeleteAuthorAsync(int id)
+    public async Task<AuthorDTO?> DeleteAuthorAsync(int id)
     {
         var author = await _dbContext.Authors.FindAsync(id);
-        if (author != null)
+        if (author == null) return null;
+
+        _dbContext.Authors.Remove(author);
+        await _dbContext.SaveChangesAsync();
+        return new()
         {
-            _dbContext.Authors.Remove(author);
-            await _dbContext.SaveChangesAsync();
-            return new AuthorDTO
-            {
-                Id = author.AuthorId,
-                Name = author.Name,
-                Email = author.Email
-            };
-        }
-        return null;
+            Id = author.AuthorId,
+            Name = author.Name,
+            Email = author.Email
+        };
     }
 
     public async Task<IEnumerable<AuthorDTO>> GetAllAuthorsAsync()

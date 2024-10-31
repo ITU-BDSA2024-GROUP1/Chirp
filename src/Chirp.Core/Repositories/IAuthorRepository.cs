@@ -10,5 +10,5 @@ public interface IAuthorRepository
     Task<AuthorDTO> GetAuthorByEmailAsync(string email);
     Task<int> AddAuthorAsync(AuthorDTO authorDto);
     Task UpdateAuthorAsync(AuthorDTO authorDto);
-    Task<AuthorDTO> DeleteAuthorAsync(int id);
+    Task<AuthorDTO?> DeleteAuthorAsync(int id);
 }
