@@ -7,17 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Core.Repositories;
 
-public class CheepRepository : ICheepRepository
+public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
 {
-    private readonly ChirpDBContext _dbContext;
-    public CheepRepository(ChirpDBContext dbContext) 
-    { 
-        _dbContext = dbContext;
-    }
-
     public async Task<int> AddCheepAsync(CheepDTO cheepDto)
     {
-        var author = await _dbContext.Authors.FindAsync(cheepDto.AuthorId);
+        var author = await dbContext.Authors.FindAsync(cheepDto.AuthorId);
         if (author == null) throw new KeyNotFoundException("Author not found");
         
         var cheep = new Cheep
@@ -30,19 +24,19 @@ public class CheepRepository : ICheepRepository
             
         author.Cheeps.Add(cheep);
             
-        var queryResult = await _dbContext.Cheeps.AddAsync(cheep);
+        var queryResult = await dbContext.Cheeps.AddAsync(cheep);
 
-        await _dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
         return queryResult.Entity.CheepId;
     }
 
     public async Task<CheepDTO?> DeleteCheepAsync(int id)
     {
-        var cheep = await _dbContext.Cheeps.Include(c => c.Author).FirstOrDefaultAsync(c => c.CheepId == id);
+        var cheep = await dbContext.Cheeps.Include(c => c.Author).FirstOrDefaultAsync(c => c.CheepId == id);
         if (cheep == null) return null;
 
         cheep.Author.Cheeps.Remove(cheep);
-        _dbContext.Cheeps.Remove(cheep);
+        dbContext.Cheeps.Remove(cheep);
             
         CheepDTO deletedCheep = new()
         {
@@ -54,14 +48,14 @@ public class CheepRepository : ICheepRepository
             AuthorEmail = cheep.Author.Email
         };
             
-        await _dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
             
         return deletedCheep;
     }
 
     public async Task<PagedResult<CheepDTO>> GetAllCheepsAsync(int page, int pageSize)
     {
-        var query = _dbContext.Cheeps.Include(c => c.Author).Select(c => new CheepDTO
+        var query = dbContext.Cheeps.Include(c => c.Author).Select(c => new CheepDTO
         {
             Id = c.CheepId,
             Name = c.Author.Name,
@@ -87,7 +81,7 @@ public class CheepRepository : ICheepRepository
 
     public async Task<PagedResult<CheepDTO>> GetCheepsByAuthorNameAsync(string authorName, int page, int pageSize)
     {
-        var query = _dbContext.Cheeps
+        var query = dbContext.Cheeps
             .Include(c => c.Author)
             .Where(c => c.Author.Name == authorName)
             .Select(c => new CheepDTO
@@ -116,7 +110,7 @@ public class CheepRepository : ICheepRepository
 
     public async Task<CheepDTO> GetCheepByIdAsync(int id)
     {
-        return await _dbContext.Cheeps.Where(c => c.CheepId == id).Select(c => new CheepDTO
+        return await dbContext.Cheeps.Where(c => c.CheepId == id).Select(c => new CheepDTO
         {
             Id = c.CheepId,
             Name = c.Author.Name,
@@ -130,7 +124,7 @@ public class CheepRepository : ICheepRepository
 
     public async Task UpdateCheepAsync(CheepDTO cheepDto)
     {
-        var cheep = await _dbContext.Cheeps.FindAsync(cheepDto.Id);
+        var cheep = await dbContext.Cheeps.FindAsync(cheepDto.Id);
         if (cheep == null) return;
         
         cheep.Text = cheepDto.Message;
@@ -139,7 +133,7 @@ public class CheepRepository : ICheepRepository
         if (cheep.AuthorId != cheepDto.AuthorId)
         {
             cheep.Author.Cheeps.Remove(cheep);
-            var newAuthor = await _dbContext.Authors.FindAsync(cheepDto.AuthorId);
+            var newAuthor = await dbContext.Authors.FindAsync(cheepDto.AuthorId);
             if (newAuthor != null)
             {
                 newAuthor.Cheeps.Add(cheep);
@@ -147,7 +141,7 @@ public class CheepRepository : ICheepRepository
             }
         }
 
-        _dbContext.Cheeps.Update(cheep);
-        await _dbContext.SaveChangesAsync();
+        dbContext.Cheeps.Update(cheep);
+        await dbContext.SaveChangesAsync();
     }
 }
