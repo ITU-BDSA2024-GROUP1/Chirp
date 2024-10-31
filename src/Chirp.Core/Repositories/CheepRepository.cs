@@ -18,12 +18,8 @@ public class CheepRepository : ICheepRepository
     public async Task<int> AddCheepAsync(CheepDTO cheepDto)
     {
         var author = await _dbContext.Authors.FindAsync(cheepDto.AuthorId);
-        if (author == null)
-        {
-            throw new KeyNotFoundException("Author not found");
-        }
-
-
+        if (author == null) throw new KeyNotFoundException("Author not found");
+        
         var cheep = new Cheep
         {
             Text = cheepDto.Message,
@@ -81,7 +77,7 @@ public class CheepRepository : ICheepRepository
             .Take(pageSize)
             .ToListAsync();
 
-        return new PagedResult<CheepDTO>
+        return new()
         {
             Items = cheeps,
             CurrentPage = page,
@@ -110,7 +106,7 @@ public class CheepRepository : ICheepRepository
             .Take(pageSize)
             .ToListAsync();
 
-        return new PagedResult<CheepDTO>
+        return new()
         {
             Items = cheeps,
             CurrentPage = page,
@@ -135,24 +131,23 @@ public class CheepRepository : ICheepRepository
     public async Task UpdateCheepAsync(CheepDTO cheepDto)
     {
         var cheep = await _dbContext.Cheeps.FindAsync(cheepDto.Id);
-        if (cheep != null)
+        if (cheep == null) return;
+        
+        cheep.Text = cheepDto.Message;
+        cheep.TimeStamp = DateTime.Parse(cheepDto.TimeStamp);
+
+        if (cheep.AuthorId != cheepDto.AuthorId)
         {
-            cheep.Text = cheepDto.Message;
-            cheep.TimeStamp = DateTime.Parse(cheepDto.TimeStamp);
-
-            if (cheep.AuthorId != cheepDto.AuthorId)
+            cheep.Author.Cheeps.Remove(cheep);
+            var newAuthor = await _dbContext.Authors.FindAsync(cheepDto.AuthorId);
+            if (newAuthor != null)
             {
-                cheep.Author.Cheeps.Remove(cheep);
-                var newAuthor = await _dbContext.Authors.FindAsync(cheepDto.AuthorId);
-                if (newAuthor != null)
-                {
-                    newAuthor.Cheeps.Add(cheep);
-                    cheep.Author = newAuthor;
-                }
+                newAuthor.Cheeps.Add(cheep);
+                cheep.Author = newAuthor;
             }
-
-            _dbContext.Cheeps.Update(cheep);
-            await _dbContext.SaveChangesAsync();
         }
+
+        _dbContext.Cheeps.Update(cheep);
+        await _dbContext.SaveChangesAsync();
     }
 }
