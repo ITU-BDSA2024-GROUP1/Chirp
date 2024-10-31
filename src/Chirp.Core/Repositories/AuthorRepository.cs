@@ -84,12 +84,11 @@ public class AuthorRepository : IAuthorRepository
     public async Task UpdateAuthorAsync(AuthorDTO authorDto)
     {
         var author = await _dbContext.Authors.FindAsync(authorDto.Id);
-        if (author != null)
-        {
-            author.Name = authorDto.Name;
-            author.Email = authorDto.Email;
-            _dbContext.Authors.Update(author);
-            await _dbContext.SaveChangesAsync();
-        }
+        if (author == null) return;
+        
+        author.Name = authorDto.Name;
+        author.Email = authorDto.Email;
+        _dbContext.Authors.Update(author);
+        await _dbContext.SaveChangesAsync();
     }
 }
