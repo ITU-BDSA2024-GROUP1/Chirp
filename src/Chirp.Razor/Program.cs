@@ -7,15 +7,11 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        if (Environment.GetEnvironmentVariable("RUNNING_TESTS") == null)
-        {
-            Environment.SetEnvironmentVariable("RUNNING_TESTS", "false");
-        }
         var builder = WebApplication.CreateBuilder(args);
 
         // Load database connection via configuration
         string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        if (Environment.GetEnvironmentVariable("RUNNING_TESTS").Equals("true"))
+        if (IsTestEnvironment())
         {
             connectionString = builder.Configuration.GetConnectionString("TestingConnection");
         }
@@ -58,5 +54,26 @@ public class Program
         app.MapRazorPages();
 
         app.Run();
+    }
+
+    private static bool IsTestEnvironment()
+    {
+        string? environment = GetTestEnvironmentVariable();
+        if (environment == null)
+        {
+            SetTestEnvironmentVariable("false");
+            return false;
+        }
+
+        return environment switch
+        {
+            "true" => true,
+            "false" => false,
+            _ => throw new ArgumentException($"RUNNING_TESTS environment variable, was neither true nor false. (Actual: {environment})")
+        };
+        
+        const string testEnvVar = "RUNNING_TESTS";
+        string? GetTestEnvironmentVariable() => Environment.GetEnvironmentVariable(testEnvVar);
+        void SetTestEnvironmentVariable(string value) => Environment.SetEnvironmentVariable(testEnvVar, value);
     }
 }
