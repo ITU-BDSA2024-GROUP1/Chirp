@@ -5,67 +5,86 @@ using Chirp.Core.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Chirp.Core.Repositories
+namespace Chirp.Core.Repositories;
+
+public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
 {
-    public class CheepRepository : ICheepRepository
+    public async Task<int> AddCheepAsync(CheepDTO cheepDto)
     {
-        private readonly ChirpDBContext _dbContext;
-        public CheepRepository(ChirpDBContext dbContext) 
-        { 
-            _dbContext = dbContext;
-        }
-
-        public async Task<int> AddCheepAsync(CheepDTO cheepDto)
+        var author = await dbContext.Authors.FindAsync(cheepDto.AuthorId);
+        if (author == null) throw new KeyNotFoundException("Author not found");
+        
+        var cheep = new Cheep
         {
-            var author = await _dbContext.Authors.FindAsync(cheepDto.AuthorId);
-            if (author == null)
-            {
-                throw new KeyNotFoundException("Author not found");
-            }
-
-
-            var cheep = new Cheep
-            {
-                Text = cheepDto.Message,
-                TimeStamp = DateTime.Parse(cheepDto.TimeStamp),
-                AuthorId = cheepDto.AuthorId,
-                Author = author
-            };
+            Text = cheepDto.Message,
+            TimeStamp = DateTime.Parse(cheepDto.TimeStamp),
+            AuthorId = cheepDto.AuthorId,
+            Author = author
+        };
             
-                author.Cheeps.Add(cheep);
+        author.Cheeps.Add(cheep);
             
-            var queryResult = await _dbContext.Cheeps.AddAsync(cheep);
+        var queryResult = await dbContext.Cheeps.AddAsync(cheep);
 
-            await _dbContext.SaveChangesAsync();
-            return queryResult.Entity.CheepId;
-        }
+        await dbContext.SaveChangesAsync();
+        return queryResult.Entity.CheepId;
+    }
 
-        public async Task<CheepDTO?> DeleteCheepAsync(int id)
+    public async Task<CheepDTO?> DeleteCheepAsync(int id)
+    {
+        var cheep = await dbContext.Cheeps.Include(c => c.Author).FirstOrDefaultAsync(c => c.CheepId == id);
+        if (cheep == null) return null;
+
+        cheep.Author.Cheeps.Remove(cheep);
+        dbContext.Cheeps.Remove(cheep);
+            
+        CheepDTO deletedCheep = new()
         {
-            var cheep = await _dbContext.Cheeps.Include(c => c.Author).FirstOrDefaultAsync(c => c.CheepId == id);
-            if (cheep == null) return null;
+            Id = cheep.CheepId,
+            Name = cheep.Author.Name,
+            Message = cheep.Text,
+            TimeStamp = cheep.TimeStamp.ToString(),
+            AuthorId = cheep.AuthorId,
+            AuthorEmail = cheep.Author.Email
+        };
+            
+        await dbContext.SaveChangesAsync();
+            
+        return deletedCheep;
+    }
 
-            cheep.Author.Cheeps.Remove(cheep);
-            _dbContext.Cheeps.Remove(cheep);
-            
-            CheepDTO deletedCheep = new()
-            {
-                Id = cheep.CheepId,
-                Name = cheep.Author.Name,
-                Message = cheep.Text,
-                TimeStamp = cheep.TimeStamp.ToString(),
-                AuthorId = cheep.AuthorId,
-                AuthorEmail = cheep.Author.Email
-            };
-            
-            await _dbContext.SaveChangesAsync();
-            
-            return deletedCheep;
-        }
-
-        public async Task<PagedResult<CheepDTO>> GetAllCheepsAsync(int page, int pageSize)
+    public async Task<PagedResult<CheepDTO>> GetAllCheepsAsync(int page, int pageSize)
+    {
+        var query = dbContext.Cheeps.Include(c => c.Author).Select(c => new CheepDTO
         {
-            var query = _dbContext.Cheeps.Include(c => c.Author).Select(c => new CheepDTO
+            Id = c.CheepId,
+            Name = c.Author.Name,
+            Message = c.Text,
+            TimeStamp = c.TimeStamp.ToString(),
+            AuthorId = c.AuthorId,
+            AuthorEmail = c.Author.Email
+        });
+
+        var totalCheeps = await query.CountAsync();
+        var cheeps = await query.OrderByDescending(c => c.TimeStamp)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new()
+        {
+            Items = cheeps,
+            CurrentPage = page,
+            TotalPages = (int)Math.Ceiling(totalCheeps / (double)pageSize)
+        };
+    }
+
+    public async Task<PagedResult<CheepDTO>> GetCheepsByAuthorNameAsync(string authorName, int page, int pageSize)
+    {
+        var query = dbContext.Cheeps
+            .Include(c => c.Author)
+            .Where(c => c.Author.Name == authorName)
+            .Select(c => new CheepDTO
             {
                 Id = c.CheepId,
                 Name = c.Author.Name,
@@ -75,85 +94,54 @@ namespace Chirp.Core.Repositories
                 AuthorEmail = c.Author.Email
             });
 
-            var totalCheeps = await query.CountAsync();
-            var cheeps = await query.OrderByDescending(c => c.TimeStamp)
-                                    .Skip((page - 1) * pageSize)
-                                    .Take(pageSize)
-                                    .ToListAsync();
+        var totalCheeps = await query.CountAsync();
+        var cheeps = await query.OrderByDescending(c => c.TimeStamp)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
 
-            return new PagedResult<CheepDTO>
-            {
-                Items = cheeps,
-                CurrentPage = page,
-                TotalPages = (int)Math.Ceiling(totalCheeps / (double)pageSize)
-            };
-        }
-
-        public async Task<PagedResult<CheepDTO>> GetCheepsByAuthorNameAsync(string authorName, int page, int pageSize)
+        return new()
         {
-            var query = _dbContext.Cheeps
-                .Include(c => c.Author)
-                .Where(c => c.Author.Name == authorName)
-                .Select(c => new CheepDTO
-                {
-                    Id = c.CheepId,
-                    Name = c.Author.Name,
-                    Message = c.Text,
-                    TimeStamp = c.TimeStamp.ToString(),
-                    AuthorId = c.AuthorId,
-                    AuthorEmail = c.Author.Email
-                });
+            Items = cheeps,
+            CurrentPage = page,
+            TotalPages = (int)Math.Ceiling(totalCheeps / (double)pageSize)
+        };
+    }
 
-            var totalCheeps = await query.CountAsync();
-            var cheeps = await query.OrderByDescending(c => c.TimeStamp)
-                                    .Skip((page - 1) * pageSize)
-                                    .Take(pageSize)
-                                    .ToListAsync();
-
-            return new PagedResult<CheepDTO>
-            {
-                Items = cheeps,
-                CurrentPage = page,
-                TotalPages = (int)Math.Ceiling(totalCheeps / (double)pageSize)
-            };
-        }
-
-        public async Task<CheepDTO> GetCheepByIdAsync(int id)
+    public async Task<CheepDTO> GetCheepByIdAsync(int id)
+    {
+        return await dbContext.Cheeps.Where(c => c.CheepId == id).Select(c => new CheepDTO
         {
-            return await _dbContext.Cheeps.Where(c => c.CheepId == id).Select(c => new CheepDTO
-            {
-                Id = c.CheepId,
-                Name = c.Author.Name,
-                Message = c.Text,
-                TimeStamp = c.TimeStamp.ToString(),
-                AuthorId = c.AuthorId,
-                AuthorEmail = c.Author.Email
-            }).FirstOrDefaultAsync();
-        }
+            Id = c.CheepId,
+            Name = c.Author.Name,
+            Message = c.Text,
+            TimeStamp = c.TimeStamp.ToString(),
+            AuthorId = c.AuthorId,
+            AuthorEmail = c.Author.Email
+        }).FirstOrDefaultAsync();
+    }
 
 
-        public async Task UpdateCheepAsync(CheepDTO cheepDto)
+    public async Task UpdateCheepAsync(CheepDTO cheepDto)
+    {
+        var cheep = await dbContext.Cheeps.FindAsync(cheepDto.Id);
+        if (cheep == null) return;
+        
+        cheep.Text = cheepDto.Message;
+        cheep.TimeStamp = DateTime.Parse(cheepDto.TimeStamp);
+
+        if (cheep.AuthorId != cheepDto.AuthorId)
         {
-            var cheep = await _dbContext.Cheeps.FindAsync(cheepDto.Id);
-            if (cheep != null)
+            cheep.Author.Cheeps.Remove(cheep);
+            var newAuthor = await dbContext.Authors.FindAsync(cheepDto.AuthorId);
+            if (newAuthor != null)
             {
-                cheep.Text = cheepDto.Message;
-                cheep.TimeStamp = DateTime.Parse(cheepDto.TimeStamp);
-
-                if (cheep.AuthorId != cheepDto.AuthorId)
-                {
-                    cheep.Author.Cheeps.Remove(cheep);
-                    var newAuthor = await _dbContext.Authors.FindAsync(cheepDto.AuthorId);
-                    if (newAuthor != null)
-                    {
-                        newAuthor.Cheeps.Add(cheep);
-                        cheep.Author = newAuthor;
-                    }
-                }
-
-                _dbContext.Cheeps.Update(cheep);
-                await _dbContext.SaveChangesAsync();
+                newAuthor.Cheeps.Add(cheep);
+                cheep.Author = newAuthor;
             }
         }
+
+        dbContext.Cheeps.Update(cheep);
+        await dbContext.SaveChangesAsync();
     }
 }

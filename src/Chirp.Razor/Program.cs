@@ -1,24 +1,20 @@
+using Chirp.Core;
 using Chirp.Core.Data;
+using Chirp.Core.Repositories;
+using Chirp.Infrastructure.CheepService;
 
 using Microsoft.EntityFrameworkCore;
-using Chirp.Core.Repositories;
+
+namespace Chirp.Razor;
 
 public class Program
 {
     public static void Main(string[] args)
     {
-        if (Environment.GetEnvironmentVariable("RUNNING_TESTS") == null)
-        {
-            Environment.SetEnvironmentVariable("RUNNING_TESTS", "false");
-        }
         var builder = WebApplication.CreateBuilder(args);
 
         // Load database connection via configuration
-        string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        if (Environment.GetEnvironmentVariable("RUNNING_TESTS").Equals("true"))
-        {
-            connectionString = builder.Configuration.GetConnectionString("TestingConnection");
-        }
+        string? connectionString = GetConnectionString(builder);
         builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
 
         // Register the repositories
@@ -27,9 +23,7 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddRazorPages();
-
         builder.Services.AddScoped<ICheepService, CheepService>();
-
 
         var app = builder.Build();
 
@@ -58,5 +52,32 @@ public class Program
         app.MapRazorPages();
 
         app.Run();
+    }
+
+    private static string? GetConnectionString(WebApplicationBuilder builder)
+    {
+        string connectionString = IsTestEnvironment() ? "TestingConnection" : "DefaultConnection";
+        return builder.Configuration.GetConnectionString(connectionString);
+    }
+
+    private static bool IsTestEnvironment()
+    {
+        string? environment = GetTestEnvironmentVariable();
+        if (environment == null)
+        {
+            SetTestEnvironmentVariable("false");
+            return false;
+        }
+
+        return environment switch
+        {
+            "true" => true,
+            "false" => false,
+            _ => throw new ArgumentException($"RUNNING_TESTS environment variable, was neither true nor false. (Actual: {environment})")
+        };
+        
+        const string testEnvVar = "RUNNING_TESTS";
+        string? GetTestEnvironmentVariable() => Environment.GetEnvironmentVariable(testEnvVar);
+        void SetTestEnvironmentVariable(string value) => Environment.SetEnvironmentVariable(testEnvVar, value);
     }
 }
