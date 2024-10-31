@@ -3,30 +3,23 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Chirp.Razor.Pages;
 
-public class UserTimelineModel : PageModel
+public class UserTimelineModel(ICheepService service) : PageModel
 {
-    private readonly ICheepService _service;
     public List<CheepViewModel>? Cheeps { get; set; }
-
-    public UserTimelineModel(ICheepService service)
-    {
-        _service = service;
-    }
 
     public async Task<ActionResult> OnGetAsync([FromRoute] string author, [FromQuery] int page = 1)
     {
         if (string.IsNullOrEmpty(author))
         {
-            Cheeps = new List<CheepViewModel>();
+            Cheeps = [];
+            return Page();
         }
-        else
-        {
-            var pageSize = 32; // Define your page size
-            var cheepsResult = await _service.GetCheepsFromAuthor(author, page, pageSize);
-            Cheeps = cheepsResult.Items;
-            CurrentPage = cheepsResult.CurrentPage;
-            TotalPages = cheepsResult.TotalPages;
-        }
+
+        const int pageSize = 32; // Define your page size
+        var cheepsResult = await service.GetCheepsFromAuthor(author, page, pageSize);
+        Cheeps = cheepsResult.Items;
+        CurrentPage = cheepsResult.CurrentPage;
+        TotalPages = cheepsResult.TotalPages;
         return Page();
     }
 

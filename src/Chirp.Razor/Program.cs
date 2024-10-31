@@ -1,7 +1,9 @@
 using Chirp.Core.Data;
+using Chirp.Core.Repositories;
 
 using Microsoft.EntityFrameworkCore;
-using Chirp.Core.Repositories;
+
+namespace Chirp.Razor;
 
 public class Program
 {
@@ -10,11 +12,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Load database connection via configuration
-        string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        if (IsTestEnvironment())
-        {
-            connectionString = builder.Configuration.GetConnectionString("TestingConnection");
-        }
+        string? connectionString = GetConnectionString(builder);
         builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
 
         // Register the repositories
@@ -23,9 +21,7 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddRazorPages();
-
         builder.Services.AddScoped<ICheepService, CheepService>();
-
 
         var app = builder.Build();
 
@@ -54,6 +50,12 @@ public class Program
         app.MapRazorPages();
 
         app.Run();
+    }
+
+    private static string? GetConnectionString(WebApplicationBuilder builder)
+    {
+        string connectionString = IsTestEnvironment() ? "TestingConnection" : "DefaultConnection";
+        return builder.Configuration.GetConnectionString(connectionString);
     }
 
     private static bool IsTestEnvironment()
