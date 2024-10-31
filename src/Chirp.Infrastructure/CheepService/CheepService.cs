@@ -1,32 +1,15 @@
 using Chirp.Core.DataTransferObject;
-using Chirp.Core.Entities;
 using Chirp.Core.Models;
 using Chirp.Core.Repositories;
-using Chirp.Infrastructure;
 
-public record CheepViewModel(string Author, string Message, string Timestamp);
-public interface ICheepService
+namespace Chirp.Infrastructure.CheepService;
+
+public class CheepService(ICheepRepository cheepRepository, IAuthorRepository authorRepository) : ICheepService
 {
-    public Task<PagedResult<CheepViewModel>> GetCheeps(int page, int pageSize);
-    public Task<PagedResult<CheepViewModel>> GetCheepsFromAuthor(string author, int page, int pageSize);
-    public Task<CheepViewModel> GetCheepById(int id);
-    public Task<int> PostCheep(CheepViewModel cheep);
-}
-
-public class CheepService : ICheepService
-{
-    private readonly ICheepRepository _cheepRepository;
-    private readonly IAuthorRepository _authorRepository;
-    public CheepService(ICheepRepository cheepRepository, IAuthorRepository authorRepository)
-    {
-        _cheepRepository = cheepRepository;
-        _authorRepository = authorRepository;
-    }
-
     public async Task<PagedResult<CheepViewModel>> GetCheeps(int page, int pageSize)
     {
-        var cheepsResult = await _cheepRepository.GetAllCheepsAsync(page, pageSize);
-        return new PagedResult<CheepViewModel>
+        var cheepsResult = await cheepRepository.GetAllCheepsAsync(page, pageSize);
+        return new()
         {
             Items = cheepsResult.Items.Select(c => new CheepViewModel(c.Name, c.Message, c.TimeStamp)).ToList(),
             CurrentPage = cheepsResult.CurrentPage,
@@ -36,8 +19,8 @@ public class CheepService : ICheepService
 
     public async Task<PagedResult<CheepViewModel>> GetCheepsFromAuthor(string author, int page, int pageSize)
     {
-        var cheepsResult = await _cheepRepository.GetCheepsByAuthorNameAsync(author, page, pageSize);
-        return new PagedResult<CheepViewModel>
+        var cheepsResult = await cheepRepository.GetCheepsByAuthorNameAsync(author, page, pageSize);
+        return new()
         {
             Items = cheepsResult.Items.Select(c => new CheepViewModel(c.Name, c.Message, c.TimeStamp)).ToList(),
             CurrentPage = cheepsResult.CurrentPage,
@@ -47,26 +30,26 @@ public class CheepService : ICheepService
 
     public async Task<CheepViewModel> GetCheepById(int id)
     {
-        return CheepDTOToCheepViewModel(await _cheepRepository.GetCheepByIdAsync(id));
+        return CheepDTOToCheepViewModel(await cheepRepository.GetCheepByIdAsync(id));
     }
 
     public async Task<int> PostCheep(CheepViewModel cheepViewModel)
     {
         CheepDTO cheep = CheepViewModelToCheepDTO(cheepViewModel);
-        AuthorDTO author = await _authorRepository.GetAuthorByNameAsync(cheep.Name);
+        AuthorDTO author = await authorRepository.GetAuthorByNameAsync(cheep.Name);
         cheep.AuthorEmail = author.Email;
         cheep.AuthorId = author.Id;
-        return await _cheepRepository.AddCheepAsync(cheep);
+        return await cheepRepository.AddCheepAsync(cheep);
     }
 
     public static CheepViewModel CheepDTOToCheepViewModel(CheepDTO cheepDTO)
     {
-        return new CheepViewModel(cheepDTO.Name, cheepDTO.Message, cheepDTO.TimeStamp);
+        return new(cheepDTO.Name, cheepDTO.Message, cheepDTO.TimeStamp);
     }
 
     public static CheepDTO CheepViewModelToCheepDTO(CheepViewModel cheepViewModel)
     {
-        return new CheepDTO
+        return new()
         {
             Id = 0,
             Name = cheepViewModel.Author,

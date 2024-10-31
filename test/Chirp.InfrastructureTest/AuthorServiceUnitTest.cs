@@ -1,5 +1,5 @@
 ﻿using Chirp.Core.DataTransferObject;
-using Chirp.Infrastructure;
+using Chirp.Infrastructure.AuthorService;
 
 namespace Chirp.InfrastructureTest;
 
