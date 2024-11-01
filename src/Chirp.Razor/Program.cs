@@ -7,14 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
+namespace Chirp.Razor;
+
 public class Program
 {
     private static async Task Main(string[] args)
     {
-        if (Environment.GetEnvironmentVariable("RUNNING_TESTS") == null)
-        {
-            Environment.SetEnvironmentVariable("RUNNING_TESTS", "false");
-        }
         var builder = WebApplication.CreateBuilder(args);
 
         // Load database connection via configuration
@@ -86,7 +84,8 @@ public class Program
 
         app.Run();
     }
-    private static string GetConnectionString(WebApplicationBuilder builder)
+
+    private static string? GetConnectionString(WebApplicationBuilder builder)
     {
         string connectionString = IsTestEnvironment() ? "TestingConnection" : "DefaultConnection";
         return builder.Configuration.GetConnectionString(connectionString);
@@ -94,7 +93,7 @@ public class Program
 
     private static bool IsTestEnvironment()
     {
-        string environment = GetTestEnvironmentVariable();
+        string? environment = GetTestEnvironmentVariable();
         if (environment == null)
         {
             SetTestEnvironmentVariable("false");
@@ -109,7 +108,7 @@ public class Program
         };
 
         const string testEnvVar = "RUNNING_TESTS";
-        string GetTestEnvironmentVariable() => Environment.GetEnvironmentVariable(testEnvVar);
+        string? GetTestEnvironmentVariable() => Environment.GetEnvironmentVariable(testEnvVar);
         void SetTestEnvironmentVariable(string value) => Environment.SetEnvironmentVariable(testEnvVar, value);
     }
 }
