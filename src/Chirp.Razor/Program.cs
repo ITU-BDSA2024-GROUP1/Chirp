@@ -22,27 +22,6 @@ public class Program
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
         .AddEntityFrameworkStores<ChirpDBContext>();
 
-        builder.Services.AddSession(options =>
-        {
-            options.IdleTimeout = TimeSpan.FromMinutes(30); // Set timeout as needed
-            options.Cookie.HttpOnly = true;
-            options.Cookie.IsEssential = true; // Make the session cookie essential
-        });
-
-        builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = "GitHub";
-        })
-        .AddCookie()
-        .AddGitHub(o =>
-        {
-            o.ClientId = builder.Configuration["authentication:github:clientId"];
-            o.ClientSecret = builder.Configuration["authentication:github:clientSecret"];
-            o.CallbackPath = "/signin-github";
-        });
-
         // Register the repositories
         builder.Services.AddScoped<ICheepRepository, CheepRepository>();
         builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
@@ -74,8 +53,6 @@ public class Program
         app.UseStaticFiles();
 
         app.UseRouting();
-
-        app.UseSession();
 
         app.UseAuthentication();
         app.UseAuthorization();
