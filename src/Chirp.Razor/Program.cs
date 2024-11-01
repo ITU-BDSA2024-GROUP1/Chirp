@@ -4,93 +4,96 @@ using Chirp.Core.Repositories;
 using Chirp.Infrastructure.CheepService;
 
 using Microsoft.EntityFrameworkCore;
-using Chirp.Core.Repositories;
 using Microsoft.AspNetCore.Identity;
 
-
-if (Environment.GetEnvironmentVariable("RUNNING_TESTS") == null)
+public class Program
 {
-    Environment.SetEnvironmentVariable("RUNNING_TESTS", "false");
-}
-var builder = WebApplication.CreateBuilder(args);
-
-// Load database connection via configuration
-string? connectionString = GetConnectionString(builder);
-builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
-
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-.AddEntityFrameworkStores<ChirpDBContext>();
-
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set timeout as needed
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true; // Make the session cookie essential
-});
-// Register the repositories
-builder.Services.AddScoped<ICheepRepository, CheepRepository>();
-builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-
-// Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddScoped<ICheepService, CheepService>();
-
-var app = builder.Build();
-
-// Seed the database
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<ChirpDBContext>();
-    await context.Database.EnsureCreatedAsync();
-    DbInitializer.SeedDatabase(context);
-}
-        
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseSession();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapRazorPages();
-
-app.Run();
-
-private static string? GetConnectionString(WebApplicationBuilder builder)
-{
-    string connectionString = IsTestEnvironment() ? "TestingConnection" : "DefaultConnection";
-    return builder.Configuration.GetConnectionString(connectionString);
-}
-
-private static bool IsTestEnvironment()
-{
-    string? environment = GetTestEnvironmentVariable();
-    if (environment == null)
+    private static async Task Main(string[] args)
     {
-        SetTestEnvironmentVariable("false");
-        return false;
+        if (Environment.GetEnvironmentVariable("RUNNING_TESTS") == null)
+        {
+            Environment.SetEnvironmentVariable("RUNNING_TESTS", "false");
+        }
+        var builder = WebApplication.CreateBuilder(args);
+
+        // Load database connection via configuration
+        string connectionString = GetConnectionString(builder);
+        builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
+
+        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        .AddEntityFrameworkStores<ChirpDBContext>();
+
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(30); // Set timeout as needed
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true; // Make the session cookie essential
+        });
+        // Register the repositories
+        builder.Services.AddScoped<ICheepRepository, CheepRepository>();
+        builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+
+        // Add services to the container.
+        builder.Services.AddRazorPages();
+        builder.Services.AddScoped<ICheepService, CheepService>();
+
+        var app = builder.Build();
+
+        // Seed the database
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            var context = services.GetRequiredService<ChirpDBContext>();
+            await context.Database.EnsureCreatedAsync();
+            DbInitializer.SeedDatabase(context);
+        }
+
+        // Configure the HTTP request pipeline.
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseExceptionHandler("/Error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
+        }
+
+        app.UseHttpsRedirection();
+        app.UseStaticFiles();
+
+        app.UseRouting();
+
+        app.UseSession();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.MapRazorPages();
+
+        app.Run();
+    }
+    private static string GetConnectionString(WebApplicationBuilder builder)
+    {
+        string connectionString = IsTestEnvironment() ? "TestingConnection" : "DefaultConnection";
+        return builder.Configuration.GetConnectionString(connectionString);
     }
 
-    return environment switch
+    private static bool IsTestEnvironment()
     {
-        "true" => true,
-        "false" => false,
-        _ => throw new ArgumentException($"RUNNING_TESTS environment variable, was neither true nor false. (Actual: {environment})")
-    };
-    
-    const string testEnvVar = "RUNNING_TESTS";
-    string? GetTestEnvironmentVariable() => Environment.GetEnvironmentVariable(testEnvVar);
-    void SetTestEnvironmentVariable(string value) => Environment.SetEnvironmentVariable(testEnvVar, value);
+        string environment = GetTestEnvironmentVariable();
+        if (environment == null)
+        {
+            SetTestEnvironmentVariable("false");
+            return false;
+        }
+
+        return environment switch
+        {
+            "true" => true,
+            "false" => false,
+            _ => throw new ArgumentException($"RUNNING_TESTS environment variable, was neither true nor false. (Actual: {environment})")
+        };
+
+        const string testEnvVar = "RUNNING_TESTS";
+        string GetTestEnvironmentVariable() => Environment.GetEnvironmentVariable(testEnvVar);
+        void SetTestEnvironmentVariable(string value) => Environment.SetEnvironmentVariable(testEnvVar, value);
+    }
 }

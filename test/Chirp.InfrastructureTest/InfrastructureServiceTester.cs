@@ -34,7 +34,7 @@ public abstract class InfrastructureServiceTester
     
     private async Task<AuthorDTO[]> SetUpTestAuthorDB(IAuthorRepository authorRepository)
     {
-        await ClearDB("authors");
+        await ClearDB("AspNetUsers");
 
         AuthorDTO[] authors = new AuthorDTO[4];
         for (int i = 0; i < authors.Length; i++)
@@ -42,7 +42,7 @@ public abstract class InfrastructureServiceTester
             int id = i + 1;
             authors[i] = new()
             {
-                Id = id,
+                Id = id.ToString(),
                 Name = $"Test{id}",
                 Email = $"Test{id}@Tester.com"
             };
@@ -57,7 +57,7 @@ public abstract class InfrastructureServiceTester
     
     private protected async Task<CheepDTO[]> SetUpTestCheepDB(ICheepRepository cheepRepository, AuthorDTO[] authors, int n = 160)
     {
-        await ClearDB("cheeps");
+        await ClearDB("Cheeps");
 
         DateTime timeStamp = DateTime.Now;
         CheepDTO[] cheeps = new CheepDTO[n];

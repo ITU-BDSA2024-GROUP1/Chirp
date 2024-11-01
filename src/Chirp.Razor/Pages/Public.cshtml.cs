@@ -7,7 +7,7 @@ namespace Chirp.Razor.Pages;
 
 public class PublicModel(ICheepService service) : PageModel
 {
-    public List<CheepViewModel>? Cheeps { get; set; }
+    public List<CheepViewModel> Cheeps { get; set; }
 
     public async Task<ActionResult> OnGetAsync([FromQuery] int page = 1)
     {

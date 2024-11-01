@@ -30,7 +30,7 @@ public class CheepRepositoryUnitTest : CoreRepositoryTester
             Name = "Cheep Testerson",
             Message = "Test Cheep",
             TimeStamp = DateTime.Now.ToString(@"yyyy\-MM\-dd HH\:mm\:ss"),
-            AuthorId = _firstAuthor.Id,
+            AuthorId = _firstAuthor.Id.ToString(),
             AuthorEmail = _firstAuthor.Email
         };
         await _cheepRepository.AddCheepAsync(testCheep);

@@ -56,7 +56,7 @@ public class CheepService(ICheepRepository cheepRepository, IAuthorRepository au
             Message = cheepViewModel.Message,
             TimeStamp = cheepViewModel.Timestamp,
             AuthorEmail = "",
-            AuthorId = 0
+            AuthorId = "0"
         };
     }
 }
