@@ -1,13 +1,11 @@
+using Chirp.Core;
 using Chirp.Core.Data;
+using Chirp.Core.Repositories;
+using Chirp.Infrastructure.CheepService;
 
 using Microsoft.EntityFrameworkCore;
 using Chirp.Core.Repositories;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using System.Net.Http.Headers;
-using System.Text.Json;
-using System.Security.Claims;
 
 
 if (Environment.GetEnvironmentVariable("RUNNING_TESTS") == null)
@@ -17,11 +15,11 @@ if (Environment.GetEnvironmentVariable("RUNNING_TESTS") == null)
 var builder = WebApplication.CreateBuilder(args);
 
 // Load database connection via configuration
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-if (Environment.GetEnvironmentVariable("RUNNING_TESTS").Equals("true"))
-{
-    connectionString = builder.Configuration.GetConnectionString("TestingConnection");
-}
+string? connectionString = GetConnectionString(builder);
+builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
+
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+.AddEntityFrameworkStores<ChirpDBContext>();
 
 builder.Services.AddSession(options =>
 {
@@ -29,19 +27,12 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true; // Make the session cookie essential
 });
-
-builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
-
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-.AddEntityFrameworkStores<ChirpDBContext>();
-
 // Register the repositories
 builder.Services.AddScoped<ICheepRepository, CheepRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-
 builder.Services.AddScoped<ICheepService, CheepService>();
 
 var app = builder.Build();
@@ -76,3 +67,30 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.Run();
+
+private static string? GetConnectionString(WebApplicationBuilder builder)
+{
+    string connectionString = IsTestEnvironment() ? "TestingConnection" : "DefaultConnection";
+    return builder.Configuration.GetConnectionString(connectionString);
+}
+
+private static bool IsTestEnvironment()
+{
+    string? environment = GetTestEnvironmentVariable();
+    if (environment == null)
+    {
+        SetTestEnvironmentVariable("false");
+        return false;
+    }
+
+    return environment switch
+    {
+        "true" => true,
+        "false" => false,
+        _ => throw new ArgumentException($"RUNNING_TESTS environment variable, was neither true nor false. (Actual: {environment})")
+    };
+    
+    const string testEnvVar = "RUNNING_TESTS";
+    string? GetTestEnvironmentVariable() => Environment.GetEnvironmentVariable(testEnvVar);
+    void SetTestEnvironmentVariable(string value) => Environment.SetEnvironmentVariable(testEnvVar, value);
+}

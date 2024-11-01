@@ -1,14 +1,14 @@
 ﻿using Chirp.Core.DataTransferObject;
-using Chirp.Core.Entities;
 
-namespace Chirp.Core.Repositories
+namespace Chirp.Core.Repositories;
+
+public interface IAuthorRepository
 {
-    public interface IAuthorRepository
-    {
-        Task<IEnumerable<AuthorDTO>> GetAllAuthorsAsync();
-        Task<AuthorDTO> GetAuthorByIdAsync(string id);
-        Task<string> AddAuthorAsync(AuthorDTO authorDto);
-        Task UpdateAuthorAsync(AuthorDTO authorDto);
-        Task<AuthorDTO> DeleteAuthorAsync(string id);
-    }
+    Task<IEnumerable<AuthorDTO>> GetAllAuthorsAsync();
+    Task<AuthorDTO> GetAuthorByIdAsync(int id);
+    Task<AuthorDTO> GetAuthorByNameAsync(string name);
+    Task<AuthorDTO> GetAuthorByEmailAsync(string email);
+    Task<int> AddAuthorAsync(AuthorDTO authorDto);
+    Task UpdateAuthorAsync(AuthorDTO authorDto);
+    Task<AuthorDTO?> DeleteAuthorAsync(int id);
 }
