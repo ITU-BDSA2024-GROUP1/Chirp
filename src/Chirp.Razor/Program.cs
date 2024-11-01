@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Chirp.Core.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Security.Claims;
 
 
 if (Environment.GetEnvironmentVariable("RUNNING_TESTS") == null)
@@ -18,7 +22,6 @@ if (Environment.GetEnvironmentVariable("RUNNING_TESTS").Equals("true"))
 {
     connectionString = builder.Configuration.GetConnectionString("TestingConnection");
 }
-builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
 
 builder.Services.AddSession(options =>
 {
@@ -27,22 +30,10 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true; // Make the session cookie essential
 });
 
+builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
+
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
 .AddEntityFrameworkStores<ChirpDBContext>();
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = "GitHub";
-})
-.AddCookie()
-.AddGitHub(o =>
-{
-    o.ClientId = builder.Configuration["authentication:github:clientId"];
-    o.ClientSecret = builder.Configuration["authentication:github:clientSecret"];
-    o.CallbackPath = "/signin-github";
-});
 
 // Register the repositories
 builder.Services.AddScoped<ICheepRepository, CheepRepository>();
@@ -52,7 +43,6 @@ builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<ICheepService, CheepService>();
-
 
 var app = builder.Build();
 
