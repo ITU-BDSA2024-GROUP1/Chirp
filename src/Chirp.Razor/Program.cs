@@ -4,18 +4,23 @@ using Chirp.Core.Repositories;
 using Chirp.Infrastructure.CheepService;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Chirp.Razor;
 
 public class Program
 {
-    public static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
         // Load database connection via configuration
-        string? connectionString = GetConnectionString(builder);
+        string connectionString = GetConnectionString(builder);
         builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
+
+        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        .AddEntityFrameworkStores<ChirpDBContext>();
 
         // Register the repositories
         builder.Services.AddScoped<ICheepRepository, CheepRepository>();
@@ -32,10 +37,10 @@ public class Program
         {
             var services = scope.ServiceProvider;
             var context = services.GetRequiredService<ChirpDBContext>();
-            context.Database.EnsureCreatedAsync();
+            await context.Database.EnsureCreatedAsync();
             DbInitializer.SeedDatabase(context);
         }
-        
+
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
@@ -48,6 +53,9 @@ public class Program
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.MapRazorPages();
 
@@ -75,7 +83,7 @@ public class Program
             "false" => false,
             _ => throw new ArgumentException($"RUNNING_TESTS environment variable, was neither true nor false. (Actual: {environment})")
         };
-        
+
         const string testEnvVar = "RUNNING_TESTS";
         string? GetTestEnvironmentVariable() => Environment.GetEnvironmentVariable(testEnvVar);
         void SetTestEnvironmentVariable(string value) => Environment.SetEnvironmentVariable(testEnvVar, value);
