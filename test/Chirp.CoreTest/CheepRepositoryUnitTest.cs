@@ -40,6 +40,25 @@ public class CheepRepositoryUnitTest : CoreRepositoryTester
     }
 
     [Fact]
+    public async Task AddCheepExceedingLimit()
+    {
+        // Act
+        CheepDTO testCheep = new()
+        {
+            Id = -1,
+            Name = "Cheep Testerson",
+            Message = "Meeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeessage",
+            TimeStamp = DateTime.Now.ToString(@"yyyy\-MM\-dd HH\:mm\:ss"),
+            AuthorId = _firstAuthor.Id,
+            AuthorEmail = _firstAuthor.Email
+        };
+        var result = await _cheepRepository.AddCheepAsync(testCheep);
+
+        // Assert
+        Assert.Throws<Exception>(() => result);
+    }
+
+    [Fact]
     public async Task GetAllCheeps()
     {
         // Arrange

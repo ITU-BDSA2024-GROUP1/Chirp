@@ -12,5 +12,10 @@ namespace Chirp.Core.Data
         public ChirpDBContext(DbContextOptions<ChirpDBContext> dbContextOptions) : base(dbContextOptions)
         {
         }
+
+        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }*/
     }
 }
