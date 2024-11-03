@@ -118,14 +118,16 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
 
+                user.EmailConfirmed = true; // Confirm email by default if not using email confirmation
+                user.LockoutEnabled = false; // Ensure the user is not locked out by default
+
+                var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    await _userManager.SetUserNameAsync(user, Input.UserName);  // Setting the UserName
                     await _signInManager.SignInAsync(user, isPersistent: false);  // Directly sign in the user
                     return LocalRedirect(returnUrl);
                 }
