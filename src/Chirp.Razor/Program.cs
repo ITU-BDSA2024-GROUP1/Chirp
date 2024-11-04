@@ -5,6 +5,8 @@ using Chirp.Infrastructure.CheepService;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth;
 
 public class Program
 {
@@ -28,6 +30,20 @@ public class Program
             options.IdleTimeout = TimeSpan.FromMinutes(30); // Set timeout as needed
             options.Cookie.HttpOnly = true;
             options.Cookie.IsEssential = true; // Make the session cookie essential
+        });
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = "GitHub";
+        })
+        .AddCookie()
+        .AddGitHub(o =>
+        {
+            o.ClientId = builder.Configuration["auth_github_clientId"];
+            o.ClientSecret = builder.Configuration["auth_github_clientSecret"];
+            o.CallbackPath = "/signin-github";
         });
         // Register the repositories
         builder.Services.AddScoped<ICheepRepository, CheepRepository>();
@@ -61,10 +77,10 @@ public class Program
 
         app.UseRouting();
 
-        app.UseSession();
-
         app.UseAuthentication();
         app.UseAuthorization();
+
+        app.UseSession();
 
         app.MapRazorPages();
 
