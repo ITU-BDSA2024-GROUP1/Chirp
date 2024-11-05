@@ -62,7 +62,7 @@ public class AuthorServiceUnitTest : InfrastructureServiceTester
     {
         // Act
         AuthorViewModel expected = new(_knownAuthors[^1].Id + 1, "Test5", "Test5@Tester.com");
-        int authorId = await _authorService.CreateAuthor(expected);
+        string authorId = await _authorService.CreateAuthor(expected);
         
         AuthorViewModel actual = await _authorService.GetAuthorById(authorId);
 

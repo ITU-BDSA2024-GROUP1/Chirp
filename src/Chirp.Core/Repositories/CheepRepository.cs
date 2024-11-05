@@ -1,4 +1,6 @@
-﻿using Chirp.Core.Data;
+﻿using System.ComponentModel.DataAnnotations;
+
+using Chirp.Core.Data;
 using Chirp.Core.DataTransferObject;
 using Chirp.Core.Entities;
 using Chirp.Core.Models;
@@ -18,30 +20,37 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
         {
             Text = cheepDto.Message,
             TimeStamp = DateTime.Parse(cheepDto.TimeStamp),
-            AuthorId = cheepDto.AuthorId,
+            AuthorId = cheepDto.AuthorId.ToString(),
             Author = author
         };
-            
-        author.Cheeps.Add(cheep);
-            
+
+        // Validate the Cheep entity
+        var validationContext = new ValidationContext(cheep); 
+        var validationResults = new List<ValidationResult>(); 
+        
+        if (!Validator.TryValidateObject(cheep, validationContext, validationResults, true)) 
+        { 
+            var messages = string.Join("; ", validationResults.Select(r => r.ErrorMessage)); 
+            throw new ValidationException(messages); 
+        }
+
         var queryResult = await dbContext.Cheeps.AddAsync(cheep);
 
         await dbContext.SaveChangesAsync();
         return queryResult.Entity.CheepId;
     }
 
-    public async Task<CheepDTO?> DeleteCheepAsync(int id)
+    public async Task<CheepDTO> DeleteCheepAsync(int id)
     {
         var cheep = await dbContext.Cheeps.Include(c => c.Author).FirstOrDefaultAsync(c => c.CheepId == id);
         if (cheep == null) return null;
 
-        cheep.Author.Cheeps.Remove(cheep);
         dbContext.Cheeps.Remove(cheep);
             
         CheepDTO deletedCheep = new()
         {
             Id = cheep.CheepId,
-            Name = cheep.Author.Name,
+            Name = cheep.Author.UserName,
             Message = cheep.Text,
             TimeStamp = cheep.TimeStamp.ToString(),
             AuthorId = cheep.AuthorId,
@@ -58,7 +67,7 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
         var query = dbContext.Cheeps.Include(c => c.Author).Select(c => new CheepDTO
         {
             Id = c.CheepId,
-            Name = c.Author.Name,
+            Name = c.Author.UserName,
             Message = c.Text,
             TimeStamp = c.TimeStamp.ToString(),
             AuthorId = c.AuthorId,
@@ -83,11 +92,11 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
     {
         var query = dbContext.Cheeps
             .Include(c => c.Author)
-            .Where(c => c.Author.Name == authorName)
+            .Where(c => c.Author.UserName == authorName)
             .Select(c => new CheepDTO
             {
                 Id = c.CheepId,
-                Name = c.Author.Name,
+                Name = c.Author.UserName,
                 Message = c.Text,
                 TimeStamp = c.TimeStamp.ToString(),
                 AuthorId = c.AuthorId,
@@ -113,7 +122,7 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
         return await dbContext.Cheeps.Where(c => c.CheepId == id).Select(c => new CheepDTO
         {
             Id = c.CheepId,
-            Name = c.Author.Name,
+            Name = c.Author.UserName,
             Message = c.Text,
             TimeStamp = c.TimeStamp.ToString(),
             AuthorId = c.AuthorId,
@@ -130,13 +139,11 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
         cheep.Text = cheepDto.Message;
         cheep.TimeStamp = DateTime.Parse(cheepDto.TimeStamp);
 
-        if (cheep.AuthorId != cheepDto.AuthorId)
+        if (cheep.AuthorId != cheepDto.AuthorId.ToString())
         {
-            cheep.Author.Cheeps.Remove(cheep);
             var newAuthor = await dbContext.Authors.FindAsync(cheepDto.AuthorId);
             if (newAuthor != null)
             {
-                newAuthor.Cheeps.Add(cheep);
                 cheep.Author = newAuthor;
             }
         }

@@ -17,13 +17,13 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
         return new(authorResult.Id, authorResult.Name, authorResult.Email);
     }
 
-    public async Task<int> CreateAuthor(AuthorViewModel authorViewModel)
+    public async Task<string> CreateAuthor(AuthorViewModel authorViewModel)
     {
         AuthorDTO author = AuthorViewModelToAuthorDTO(authorViewModel);
         return await authorRepository.AddAuthorAsync(author);
     }
 
-    public async Task<AuthorViewModel> GetAuthorById(int id) { return AuthorDTOToAuthorViewModel(await authorRepository.GetAuthorByIdAsync(id)); }
+    public async Task<AuthorViewModel> GetAuthorById(string id) { return AuthorDTOToAuthorViewModel(await authorRepository.GetAuthorByIdAsync(id)); }
 
     public static AuthorViewModel AuthorDTOToAuthorViewModel(AuthorDTO authorDTO)
     {

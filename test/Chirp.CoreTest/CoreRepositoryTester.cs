@@ -14,7 +14,7 @@ public abstract class CoreRepositoryTester
 
     private protected CoreRepositoryTester()
     {
-        _connection = new("Data Source=memory");
+        _connection = new("Data Source=:memory:");
         _connection.OpenAsync();
         var builder = new DbContextOptionsBuilder<ChirpDBContext>().UseSqlite(_connection);
 
@@ -34,7 +34,7 @@ public abstract class CoreRepositoryTester
     {
         AuthorRepository authorRepository = new(_context);
         
-        await ClearDB("authors");
+        await ClearDB("AspNetUsers");
         Assert.Empty(_context.Authors);
         
         return authorRepository;
@@ -44,7 +44,7 @@ public abstract class CoreRepositoryTester
     {
         CheepRepository cheepRepository = new(_context);
         
-        await ClearDB("cheeps");
+        await ClearDB("Cheeps");
         Assert.Empty(_context.Cheeps);
         
         return cheepRepository;
@@ -58,7 +58,7 @@ public abstract class CoreRepositoryTester
             int id = i + 1;
             authors[i] = new()
             {
-                Id = id,
+                Id = id.ToString(),
                 Name = $"Test Testerson {id}",
                 Email = $"Test.Testerson{id}@Tester.com"
             };
@@ -84,7 +84,7 @@ public abstract class CoreRepositoryTester
                 Name = authors[authorIndex].Name,
                 Message = $"Test Message {i + 1}",
                 TimeStamp = timeStamp.ToString(@"yyyy\-MM\-dd HH\:mm\:ss"),
-                AuthorId = authors[authorIndex].Id,
+                AuthorId = authors[authorIndex].Id.ToString(),
                 AuthorEmail = authors[authorIndex].Email
             };
             cheeps[i].Id = await cheepRepository.AddCheepAsync(cheeps[i]);

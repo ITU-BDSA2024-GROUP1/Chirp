@@ -10,5 +10,5 @@ public interface ICheepRepository
     Task<CheepDTO> GetCheepByIdAsync(int id);
     Task<int> AddCheepAsync(CheepDTO cheepDto);
     Task UpdateCheepAsync(CheepDTO cheepDto);
-    Task<CheepDTO?> DeleteCheepAsync(int id);
+    Task<CheepDTO> DeleteCheepAsync(int id);
 }

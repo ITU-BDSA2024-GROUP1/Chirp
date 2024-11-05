@@ -15,7 +15,7 @@ public class AuthorRepositoryUnitTest : CoreRepositoryTester
         // Act
         AuthorDTO testAuthor = new()
         {
-            Id = 1,
+            Id = "1",
             Name = "Test Testerson",
             Email = "Test.Testerson@Tester.com"
         };
@@ -44,7 +44,7 @@ public class AuthorRepositoryUnitTest : CoreRepositoryTester
         // Act
         AuthorDTO specificAuthor = new()
         {
-            Id = -1,
+            Id = "-1",
             Name = "Specific Testerson",
             Email = "Specific.Testerson@Tester.com",
         };
@@ -61,7 +61,7 @@ public class AuthorRepositoryUnitTest : CoreRepositoryTester
         // Act
         AuthorDTO specificAuthor = new()
         {
-            Id = -1,
+            Id = "-1",
             Name = "Specific Testerson",
             Email = "Specific.Testerson@Tester.com",
         };
@@ -78,7 +78,7 @@ public class AuthorRepositoryUnitTest : CoreRepositoryTester
         // Act
         AuthorDTO specificAuthor = new()
         {
-            Id = -1,
+            Id = "-1",
             Name = "Specific Testerson",
             Email = "Specific.Testerson@Tester.com",
         };
@@ -93,7 +93,7 @@ public class AuthorRepositoryUnitTest : CoreRepositoryTester
     public async Task UpdateAuthor()
     {
         // Arrange
-        AuthorDTO testerson = new() { Id = -1, Name = "Test Testerson", Email = "Test.Testerson@Tester.com" };
+        AuthorDTO testerson = new() { Id = "-1", Name = "Test Testerson", Email = "Test.Testerson@Tester.com" };
         testerson.Id = await _authorRepository.AddAuthorAsync(testerson);
         
         // Act
@@ -115,7 +115,7 @@ public class AuthorRepositoryUnitTest : CoreRepositoryTester
     public async Task DeleteAuthor()
     {
         // Arrange
-        AuthorDTO testerson = new() { Id = -1, Name = "Test Testerson", Email = "Test.Testerson@Tester.com" };
+        AuthorDTO testerson = new() { Id = "-1", Name = "Test Testerson", Email = "Test.Testerson@Tester.com" };
         testerson.Id = await _authorRepository.AddAuthorAsync(testerson);
         
         // Act
