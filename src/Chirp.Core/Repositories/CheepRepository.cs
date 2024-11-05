@@ -25,13 +25,13 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
         };
 
         // Validate the Cheep entity
-        var validationContext = new ValidationContext(cheep); 
-        var validationResults = new List<ValidationResult>(); 
-        
-        if (!Validator.TryValidateObject(cheep, validationContext, validationResults, true)) 
-        { 
-            var messages = string.Join("; ", validationResults.Select(r => r.ErrorMessage)); 
-            throw new ValidationException(messages); 
+        var validationContext = new ValidationContext(cheep); // Provides contextual information about the Cheep object being validated
+        var validationResults = new List<ValidationResult>(); // Stores any validation errors that occur during the validation process
+
+        if (!Validator.TryValidateObject(cheep, validationContext, validationResults, true)) // Validates the Cheep object based on data annotations. Recursively validates all properties
+        {
+            var messages = string.Join("; ", validationResults.Select(r => r.ErrorMessage)); // Joins all error messages into a single string, separated by semicolons
+            throw new ValidationException(messages); // Throws a ValidationException with the concatenated error messages
         }
 
         var queryResult = await dbContext.Cheeps.AddAsync(cheep);
