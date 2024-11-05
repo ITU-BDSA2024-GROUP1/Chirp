@@ -8,6 +8,7 @@ namespace Chirp.Razor.Pages;
 public class UserTimelineModel(ICheepService service) : PageModel
 {
     public List<CheepViewModel> Cheeps { get; set; }
+    public string Text { get; set; }
 
     public async Task<ActionResult> OnGetAsync([FromRoute] string author, [FromQuery] int page = 1)
     {
