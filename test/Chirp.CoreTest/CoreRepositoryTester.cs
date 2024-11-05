@@ -14,7 +14,7 @@ public abstract class CoreRepositoryTester
 
     private protected CoreRepositoryTester()
     {
-        _connection = new("Data Source=memory");
+        _connection = new("Data Source=:memory:");
         _connection.OpenAsync();
         var builder = new DbContextOptionsBuilder<ChirpDBContext>().UseSqlite(_connection);
 

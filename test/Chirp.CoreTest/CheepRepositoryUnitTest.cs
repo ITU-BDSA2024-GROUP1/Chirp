@@ -1,6 +1,10 @@
-﻿using Chirp.Core.DataTransferObject;
+﻿using System.ComponentModel.DataAnnotations;
+
+using Chirp.Core.DataTransferObject;
 using Chirp.Core.Models;
 using Chirp.Core.Repositories;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.CoreTest;
 
@@ -37,6 +41,25 @@ public class CheepRepositoryUnitTest : CoreRepositoryTester
         
         // Assert
         Assert.NotEmpty(_context.Cheeps);
+    }
+
+    [Fact]
+    public async Task AddCheepExceedingLimit()
+    {
+        // Arrange
+        CheepDTO testCheep = new()
+        {
+            Id = -1,
+            Name = "Cheep Testerson",
+            Message = new string('e', 161),  // Exceeding the limit
+            TimeStamp = DateTime.Now.ToString(@"yyyy\-MM\-dd HH\:mm\:ss"),
+            AuthorId = _firstAuthor.Id,
+            AuthorEmail = _firstAuthor.Email
+        };
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<ValidationException>(async () => await _cheepRepository.AddCheepAsync(testCheep)); 
+        Assert.Contains("must be at most 160 characters long", exception.Message);
     }
 
     [Fact]
