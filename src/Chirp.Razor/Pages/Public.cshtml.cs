@@ -12,11 +12,11 @@ namespace Chirp.Razor.Pages;
 public class PublicModel(ICheepService service) : PageModel
 {
     public List<CheepViewModel> Cheeps { get; set; } = new List<CheepViewModel>();
-    
-    [Required]
-    [StringLength(maximumLength:160, ErrorMessage = "The cheep must at most be 160 characters long.", MinimumLength = 0)]
-    public string Text { get; set; }
 
+    [BindProperty]
+    [Required]
+    [StringLength(maximumLength: 160, ErrorMessage = "The cheep must at most be 160 characters long.", MinimumLength = 0)]
+    public string Text { get; set; }
 
     public async Task<ActionResult> OnGetAsync([FromQuery] int page = 1)
     {

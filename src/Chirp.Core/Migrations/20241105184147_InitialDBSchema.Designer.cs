@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chirp.Core.Migrations
 {
     [DbContext(typeof(ChirpDBContext))]
-    [Migration("20241030063238_InitialDBSchema")]
+    [Migration("20241105184147_InitialDBSchema")]
     partial class InitialDBSchema
     {
         /// <inheritdoc />
@@ -30,7 +30,7 @@ namespace Chirp.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Text")
-                        .HasMaxLength(250)
+                        .HasMaxLength(160)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("TimeStamp")
@@ -104,11 +104,6 @@ namespace Chirp.Core.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
@@ -159,10 +154,6 @@ namespace Chirp.Core.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator().HasValue("IdentityUser");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -246,13 +237,6 @@ namespace Chirp.Core.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("Chirp.Core.Entities.Author", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.HasDiscriminator().HasValue("Author");
                 });
 
             modelBuilder.Entity("Chirp.Core.Entities.Cheep", b =>
