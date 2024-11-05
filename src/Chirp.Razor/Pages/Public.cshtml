@@ -14,6 +14,13 @@
             <form method="post" asp-area="Identity" asp-page="/Account/Logout" style="display: inline;">
                 <button type="submit" class="btn btn-link p-0" style="padding: 0;">logout [@(User.Identity.Name)]</button>
             </form>
+            <div class="cheepbox">
+                <h3>What's on your mind @(User.Identity.Name)?</h3>
+                <form method="post">
+                    <input style="float: left" type="text" asp-for="Text">
+                    <input type="submit" value="Share">
+                </form>
+            </div>
         </div>
     }
     else
