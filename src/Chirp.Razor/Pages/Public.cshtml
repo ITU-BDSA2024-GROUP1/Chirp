@@ -35,15 +35,20 @@
             <form method="post">
                 <input id="cheepText" style="float: left" type="text" asp-for="Text">
                 <p id="charCount" style="float: left">160 characters remaining</p>
-                <input type="submit" value="Share">
+                <input id="btnShare" type="submit" value="Share" disabled>
             </form>
         </div>
         <script>
-        document.getElementById('cheepText').addEventListener('input', function() {
-        const maxLength = 160;
-        const remaining = maxLength - this.value.length;
-        document.getElementById('charCount').innerText = remaining + ' characters remaining';});
-    </script>
+			document.getElementById('cheepText').addEventListener('input', function() {
+				const maxLength = 160;
+				const remaining = maxLength - this.value.length;
+				document.getElementById('charCount').innerText = remaining + ' characters remaining';
+			
+				// https://stackoverflow.com/a/13831737
+				if (remaining == 160) document.getElementById("btnShare").disabled = true;
+				else document.getElementById("btnShare").disabled = false;
+			});
+		</script>
     }
     @if (Model.Cheeps.Any())
     {
