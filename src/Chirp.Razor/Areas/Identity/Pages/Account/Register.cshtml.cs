@@ -124,9 +124,6 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
-                user.EmailConfirmed = true; // Confirm email by default if not using email confirmation
-                user.LockoutEnabled = false; // Ensure the user is not locked out by default
-
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
