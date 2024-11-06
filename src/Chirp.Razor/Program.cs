@@ -5,7 +5,6 @@ using Chirp.Infrastructure.CheepService;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Chirp.Razor;
 
@@ -16,7 +15,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Load database connection via configuration
-        string connectionString = GetConnectionString(builder);
+        string? connectionString = GetConnectionString(builder);
         builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
 
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -67,24 +66,26 @@ public class Program
         string connectionString = IsTestEnvironment() ? "TestingConnection" : "DefaultConnection";
         return builder.Configuration.GetConnectionString(connectionString);
     }
-
+    
     private static bool IsTestEnvironment()
     {
-        string? environment = GetTestEnvironmentVariable();
-        if (environment == null)
-        {
-            SetTestEnvironmentVariable("false");
-            return false;
-        }
-
-        return environment switch
-        {
-            "true" => true,
-            "false" => false,
-            _ => throw new ArgumentException($"RUNNING_TESTS environment variable, was neither true nor false. (Actual: {environment})")
-        };
-
         const string testEnvVar = "RUNNING_TESTS";
+        
+        string? environment = GetTestEnvironmentVariable();
+        switch (environment)
+        {
+            case null:
+                SetTestEnvironmentVariable("false");
+                return false;
+            case "true":
+                return true;
+            case "false":
+                return false;
+            default:
+                throw new ArgumentException(
+                    $"{testEnvVar} environment variable, was neither true nor false. (Actual: {environment})");
+        }
+        
         string? GetTestEnvironmentVariable() => Environment.GetEnvironmentVariable(testEnvVar);
         void SetTestEnvironmentVariable(string value) => Environment.SetEnvironmentVariable(testEnvVar, value);
     }
