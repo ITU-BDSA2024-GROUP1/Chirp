@@ -1,4 +1,4 @@
-namespace Chirp.Core.DataTransferObject;
+﻿namespace Chirp.Core.DataTransferObject;
 
 public class AuthorDTO : IEquatable<AuthorDTO>
 {
@@ -8,6 +8,10 @@ public class AuthorDTO : IEquatable<AuthorDTO>
         
     public bool Equals(AuthorDTO that)
     {
-        return that != null && this.Id == that.Id && this.Name == that.Name && this.Email == that.Email;
+        return 
+            that != null && 
+            this.Id == that.Id && 
+            this.Name == that.Name && 
+            this.Email == that.Email;
     }
 }

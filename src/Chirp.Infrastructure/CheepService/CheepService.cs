@@ -47,7 +47,7 @@ public class CheepService(ICheepRepository cheepRepository, IAuthorRepository au
         return new(cheepDTO.Name, cheepDTO.Message, cheepDTO.TimeStamp);
     }
 
-    public static CheepDTO CheepViewModelToCheepDTO(CheepViewModel cheepViewModel)
+    private static CheepDTO CheepViewModelToCheepDTO(CheepViewModel cheepViewModel)
     {
         return new()
         {

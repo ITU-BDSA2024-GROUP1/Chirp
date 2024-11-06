@@ -27,7 +27,7 @@ namespace Chirp.Core.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Text")
-                        .HasMaxLength(250)
+                        .HasMaxLength(160)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("TimeStamp")
@@ -254,7 +254,7 @@ namespace Chirp.Core.Migrations
 
             modelBuilder.Entity("Chirp.Core.Entities.Cheep", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Author")
+                    b.HasOne("Chirp.Core.Entities.Author", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade);

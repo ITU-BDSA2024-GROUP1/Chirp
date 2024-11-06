@@ -14,7 +14,7 @@ public abstract class CoreRepositoryTester
 
     private protected CoreRepositoryTester()
     {
-        _connection = new("Data Source=memory");
+        _connection = new("Data Source=:memory:");
         _connection.OpenAsync();
         var builder = new DbContextOptionsBuilder<ChirpDBContext>().UseSqlite(_connection);
 
@@ -66,7 +66,6 @@ public abstract class CoreRepositoryTester
         }
         
         Assert.NotEmpty(_context.Authors);
-
         return authors;
     }
 
@@ -84,15 +83,15 @@ public abstract class CoreRepositoryTester
                 Name = authors[authorIndex].Name,
                 Message = $"Test Message {i + 1}",
                 TimeStamp = timeStamp.ToString(@"yyyy\-MM\-dd HH\:mm\:ss"),
-                AuthorId = authors[authorIndex].Id.ToString(),
+                AuthorId = authors[authorIndex].Id,
                 AuthorEmail = authors[authorIndex].Email
             };
             cheeps[i].Id = await cheepRepository.AddCheepAsync(cheeps[i]);
         }
-
-        Assert.NotEmpty(_context.Cheeps);
         
         Array.Reverse(cheeps);
+        
+        Assert.NotEmpty(_context.Cheeps);
         return cheeps;
     }
 }

@@ -125,6 +125,7 @@ div.page ul.cheeps {
   list-style: none;
   margin: 0;
   padding: 0;
+  word-wrap: anywhere;
 }
 
 div.page ul.cheeps li {

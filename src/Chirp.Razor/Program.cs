@@ -8,21 +8,20 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
 
+namespace Chirp.Razor;
+
 public class Program
 {
     private static async Task Main(string[] args)
     {
-        if (Environment.GetEnvironmentVariable("RUNNING_TESTS") == null)
-        {
-            Environment.SetEnvironmentVariable("RUNNING_TESTS", "false");
-        }
         var builder = WebApplication.CreateBuilder(args);
 
         // Load database connection via configuration
-        string connectionString = GetConnectionString(builder);
+        string? connectionString = GetConnectionString(builder);
         builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
 
         builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+            options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+/ ";
             options.SignIn.RequireConfirmedAccount = false;
             options.SignIn.RequireConfirmedEmail = false;
         })
@@ -50,6 +49,7 @@ public class Program
             o.Scope.Add("user:email");
             o.Scope.Add("read:user");
         });
+
         // Register the repositories
         builder.Services.AddScoped<ICheepRepository, CheepRepository>();
         builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
@@ -91,30 +91,10 @@ public class Program
 
         app.Run();
     }
-    private static string GetConnectionString(WebApplicationBuilder builder)
+
+    private static string? GetConnectionString(WebApplicationBuilder builder)
     {
-        string connectionString = IsTestEnvironment() ? "TestingConnection" : "DefaultConnection";
+        string connectionString = TestEnvironmentManager.IsTestEnvironment() ? "TestingConnection" : "DefaultConnection";
         return builder.Configuration.GetConnectionString(connectionString);
-    }
-
-    private static bool IsTestEnvironment()
-    {
-        string environment = GetTestEnvironmentVariable();
-        if (environment == null)
-        {
-            SetTestEnvironmentVariable("false");
-            return false;
-        }
-
-        return environment switch
-        {
-            "true" => true,
-            "false" => false,
-            _ => throw new ArgumentException($"RUNNING_TESTS environment variable, was neither true nor false. (Actual: {environment})")
-        };
-
-        const string testEnvVar = "RUNNING_TESTS";
-        string GetTestEnvironmentVariable() => Environment.GetEnvironmentVariable(testEnvVar);
-        void SetTestEnvironmentVariable(string value) => Environment.SetEnvironmentVariable(testEnvVar, value);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Chirp.Core.Data;
+﻿using System.ComponentModel.DataAnnotations;
+
+using Chirp.Core.Data;
 using Chirp.Core.DataTransferObject;
 using Chirp.Core.Entities;
 using Chirp.Core.Models;
@@ -18,10 +20,20 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
         {
             Text = cheepDto.Message,
             TimeStamp = DateTime.Parse(cheepDto.TimeStamp),
-            AuthorId = cheepDto.AuthorId.ToString(),
+            AuthorId = cheepDto.AuthorId,
             Author = author
         };
-            
+
+        // Validate the Cheep entity
+        var validationContext = new ValidationContext(cheep); // Provides contextual information about the Cheep object being validated
+        var validationResults = new List<ValidationResult>(); // Stores any validation errors that occur during the validation process
+
+        if (!Validator.TryValidateObject(cheep, validationContext, validationResults, true)) // Validates the Cheep object based on data annotations. Recursively validates all properties
+        {
+            var messages = string.Join("; ", validationResults.Select(r => r.ErrorMessage)); // Joins all error messages into a single string, separated by semicolons
+            throw new ValidationException(messages); // Throws a ValidationException with the concatenated error messages
+        }
+
         var queryResult = await dbContext.Cheeps.AddAsync(cheep);
 
         await dbContext.SaveChangesAsync();
@@ -127,7 +139,7 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
         cheep.Text = cheepDto.Message;
         cheep.TimeStamp = DateTime.Parse(cheepDto.TimeStamp);
 
-        if (cheep.AuthorId != cheepDto.AuthorId.ToString())
+        if (cheep.AuthorId != cheepDto.AuthorId)
         {
             var newAuthor = await dbContext.Authors.FindAsync(cheepDto.AuthorId);
             if (newAuthor != null)

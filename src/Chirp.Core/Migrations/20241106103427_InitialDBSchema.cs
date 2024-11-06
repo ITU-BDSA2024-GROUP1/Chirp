@@ -163,7 +163,7 @@ namespace Chirp.Core.Migrations
                 {
                     CheepId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Text = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true),
+                    Text = table.Column<string>(type: "TEXT", maxLength: 160, nullable: true),
                     TimeStamp = table.Column<DateTime>(type: "TEXT", nullable: false),
                     AuthorId = table.Column<string>(type: "TEXT", nullable: true)
                 },

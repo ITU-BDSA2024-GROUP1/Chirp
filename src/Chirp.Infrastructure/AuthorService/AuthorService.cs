@@ -25,12 +25,12 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
 
     public async Task<AuthorViewModel> GetAuthorById(string id) { return AuthorDTOToAuthorViewModel(await authorRepository.GetAuthorByIdAsync(id)); }
 
-    public static AuthorViewModel AuthorDTOToAuthorViewModel(AuthorDTO authorDTO)
+    private static AuthorViewModel AuthorDTOToAuthorViewModel(AuthorDTO authorDTO)
     {
         return new(authorDTO.Id, authorDTO.Name, authorDTO.Email);
     }
 
-    public static AuthorDTO AuthorViewModelToAuthorDTO(AuthorViewModel authorViewModel)
+    private static AuthorDTO AuthorViewModelToAuthorDTO(AuthorViewModel authorViewModel)
     {
         return new()
         {
