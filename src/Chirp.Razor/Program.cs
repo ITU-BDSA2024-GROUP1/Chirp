@@ -19,7 +19,10 @@ public class Program
         string connectionString = GetConnectionString(builder);
         builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+            options.SignIn.RequireConfirmedAccount = true;
+            options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzæøåABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ0123456789-._@+/ ";
+        })
         .AddEntityFrameworkStores<ChirpDBContext>();
 
         // Register the repositories
