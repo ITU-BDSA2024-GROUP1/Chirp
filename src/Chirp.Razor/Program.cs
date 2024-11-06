@@ -63,30 +63,7 @@ public class Program
 
     private static string? GetConnectionString(WebApplicationBuilder builder)
     {
-        string connectionString = IsTestEnvironment() ? "TestingConnection" : "DefaultConnection";
+        string connectionString = TestEnvironmentManager.IsTestEnvironment() ? "TestingConnection" : "DefaultConnection";
         return builder.Configuration.GetConnectionString(connectionString);
-    }
-    
-    private static bool IsTestEnvironment()
-    {
-        const string testEnvVar = "RUNNING_TESTS";
-        
-        string? environment = GetTestEnvironmentVariable();
-        switch (environment)
-        {
-            case null:
-                SetTestEnvironmentVariable("false");
-                return false;
-            case "true":
-                return true;
-            case "false":
-                return false;
-            default:
-                throw new ArgumentException(
-                    $"{testEnvVar} environment variable, was neither true nor false. (Actual: {environment})");
-        }
-        
-        string? GetTestEnvironmentVariable() => Environment.GetEnvironmentVariable(testEnvVar);
-        void SetTestEnvironmentVariable(string value) => Environment.SetEnvironmentVariable(testEnvVar, value);
     }
 }

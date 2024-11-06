@@ -6,7 +6,7 @@ public class IntegrationTest : IClassFixture<WebApplicationFactory<Program>>
 
     public IntegrationTest(WebApplicationFactory<Program> factory)
     {
-        Environment.SetEnvironmentVariable("RUNNING_TESTS", "true");
+        TestEnvironmentManager.SetIsTestEnvironment(true);
         _client = factory.CreateClient();  // Create a test HTTP client for Chirp.Razor
     }
 
