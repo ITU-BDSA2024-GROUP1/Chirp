@@ -4,8 +4,6 @@ using Chirp.Core.DataTransferObject;
 using Chirp.Core.Models;
 using Chirp.Core.Repositories;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace Chirp.CoreTest;
 
 public class CheepRepositoryUnitTest : CoreRepositoryTester
@@ -34,7 +32,7 @@ public class CheepRepositoryUnitTest : CoreRepositoryTester
             Name = "Cheep Testerson",
             Message = "Test Cheep",
             TimeStamp = DateTime.Now.ToString(@"yyyy\-MM\-dd HH\:mm\:ss"),
-            AuthorId = _firstAuthor.Id.ToString(),
+            AuthorId = _firstAuthor.Id,
             AuthorEmail = _firstAuthor.Email
         };
         await _cheepRepository.AddCheepAsync(testCheep);
@@ -51,7 +49,7 @@ public class CheepRepositoryUnitTest : CoreRepositoryTester
         {
             Id = -1,
             Name = "Cheep Testerson",
-            Message = new string('e', 161),  // Exceeding the limit
+            Message = new('e', 161),  // Exceeding the limit
             TimeStamp = DateTime.Now.ToString(@"yyyy\-MM\-dd HH\:mm\:ss"),
             AuthorId = _firstAuthor.Id,
             AuthorEmail = _firstAuthor.Email

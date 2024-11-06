@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net$(NETCoreAppMaximumVersion)</TargetFramework>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Configurations>Debug;Release;Test</Configurations>
     <UserSecretsId>7fac5a3e-b457-40f0-8c72-57166e5bc39f</UserSecretsId>

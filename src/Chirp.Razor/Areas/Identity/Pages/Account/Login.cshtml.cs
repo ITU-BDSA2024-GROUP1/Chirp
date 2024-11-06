@@ -114,6 +114,10 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var user = await _userManager.FindByEmailAsync(Input.Email);
+                if (user == null)
+                {
+                    user = await _userManager.FindByNameAsync(Input.Email);
+                }
 
                 if (user == null)
                 {

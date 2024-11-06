@@ -12,7 +12,7 @@ public class AuthorRepository(ChirpDBContext dbContext) : IAuthorRepository
     {
         var author = new Author
         {
-            Id = authorDto.Id.ToString(),
+            Id = authorDto.Id,
             UserName = authorDto.Name,
             Email = authorDto.Email
         };
