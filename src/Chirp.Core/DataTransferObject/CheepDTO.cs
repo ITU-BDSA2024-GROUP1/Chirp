@@ -9,5 +9,13 @@ public class CheepDTO : IEquatable<CheepDTO>
     public required string AuthorId { get; set; }
     public required string AuthorEmail { get; set; }
         
-    public bool Equals(CheepDTO that) => that != null && this.Id == that.Id;
+    public bool Equals(CheepDTO that)
+    {
+        return 
+            that != null && 
+            this.Id == that.Id && 
+            this.Name == that.Name && 
+            this.AuthorId == that.AuthorId && 
+            this.AuthorEmail == that.AuthorEmail;
+    }
 }
