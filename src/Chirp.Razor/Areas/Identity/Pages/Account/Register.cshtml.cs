@@ -83,7 +83,7 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [Display(Name = "User Name")]
+            [Display(Name = "Username")]
             public string UserName { get; set; }
 
             /// <summary>
