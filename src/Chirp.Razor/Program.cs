@@ -22,7 +22,10 @@ public class Program
         string connectionString = GetConnectionString(builder);
         builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+            options.SignIn.RequireConfirmedAccount = false;
+            options.SignIn.RequireConfirmedEmail = false;
+        })
         .AddEntityFrameworkStores<ChirpDBContext>();
 
         builder.Services.AddSession(options =>
@@ -32,18 +35,20 @@ public class Program
             options.Cookie.IsEssential = true; // Make the session cookie essential
         });
 
-        builder.Services.AddAuthentication(options =>
-        {
+        builder.Services.AddAuthentication()//options =>
+        /*{
             options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = "GitHub";
         })
-        .AddCookie()
+        .AddCookie()*/
         .AddGitHub(o =>
         {
             o.ClientId = builder.Configuration["auth_github_clientId"];
             o.ClientSecret = builder.Configuration["auth_github_clientSecret"];
             o.CallbackPath = "/signin-github";
+            o.Scope.Add("user:email");
+            o.Scope.Add("read:user");
         });
         // Register the repositories
         builder.Services.AddScoped<ICheepRepository, CheepRepository>();

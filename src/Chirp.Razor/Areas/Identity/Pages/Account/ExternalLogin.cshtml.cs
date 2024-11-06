@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Chirp.Core.Entities;
+
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +33,7 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _userManager = userManager;
             _userStore = userStore;
-            _emailStore = GetEmailStore();
+            _emailStore = (IUserEmailStore<IdentityUser>)GetEmailStore();
             _logger = logger;
         }
 
@@ -55,7 +57,7 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
         public IActionResult OnPost(string provider, string returnUrl = null)
         {
             // Request a redirect to the external login provider.
-            var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
+            var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl }); 
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return new ChallengeResult(provider, properties);
         }
@@ -69,7 +71,8 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
-            var info = await _signInManager.GetExternalLoginInfoAsync();
+            Task<ExternalLoginInfo?> idk = _signInManager.GetExternalLoginInfoAsync();
+            ExternalLoginInfo? info = idk.Result;
             if (info == null)
             {
                 ErrorMessage = "Error loading external login information.";
@@ -91,9 +94,10 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
             {
                 // If the user does not have an account, create one.
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                var username = info.Principal.FindFirstValue(ClaimTypes.Name);
                 if (email != null)
                 {
-                    var user = new IdentityUser { UserName = email, Email = email };
+                    var user = new Author { UserName = username, Email = email };
                     var resultCreate = await _userManager.CreateAsync(user);
                     if (resultCreate.Succeeded)
                     {
@@ -101,7 +105,7 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
                         if (resultCreate.Succeeded)
                         {
                             await _signInManager.SignInAsync(user, isPersistent: false);
-                            return LocalRedirect(returnUrl);
+                            return RedirectToPage("./PasswordForGithub");
                         }
                     }
                 }
