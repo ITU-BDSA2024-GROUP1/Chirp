@@ -40,7 +40,7 @@ public class PublicModel(ICheepService service) : PageModel
         }
 
         // Add the new cheep to Cheeps
-        var newCheep = new CheepViewModel(User.Identity.Name, Text, DateTime.Now.ToString("g"));
+        var newCheep = new CheepViewModel(User.Identity.Name, Text, DateTime.Now.ToString("G"));
         //Cheeps.Add(newCheep);
 
         // Optionally: Save the new message to a database or cache here
