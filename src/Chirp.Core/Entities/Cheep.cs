@@ -11,5 +11,5 @@ public class Cheep
     public required string Text { get; set; }
     public required DateTime TimeStamp { get; set; }
     public string AuthorId { get; set; } // Foreign Key
-    public required IdentityUser Author { get; set; }
+    public required Author Author { get; set; }
 }

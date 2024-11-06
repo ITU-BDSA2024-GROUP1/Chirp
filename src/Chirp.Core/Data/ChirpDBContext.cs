@@ -9,7 +9,7 @@ namespace Chirp.Core.Data;
 public class ChirpDBContext(DbContextOptions<ChirpDBContext> options) : IdentityDbContext<IdentityUser>(options)
 {
     public DbSet<Cheep> Cheeps { get; set; }
-    public DbSet<IdentityUser> Authors { get; set; }
+    public DbSet<Author> Authors { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
