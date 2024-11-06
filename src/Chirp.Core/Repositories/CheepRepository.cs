@@ -20,7 +20,7 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
         {
             Text = cheepDto.Message,
             TimeStamp = DateTime.Parse(cheepDto.TimeStamp),
-            AuthorId = cheepDto.AuthorId.ToString(),
+            AuthorId = cheepDto.AuthorId,
             Author = author
         };
 
@@ -139,7 +139,7 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
         cheep.Text = cheepDto.Message;
         cheep.TimeStamp = DateTime.Parse(cheepDto.TimeStamp);
 
-        if (cheep.AuthorId != cheepDto.AuthorId.ToString())
+        if (cheep.AuthorId != cheepDto.AuthorId)
         {
             var newAuthor = await dbContext.Authors.FindAsync(cheepDto.AuthorId);
             if (newAuthor != null)

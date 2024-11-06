@@ -1,6 +1,5 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace Chirp.Core.Entities;
-public class Author : IdentityUser
-{
-}
+
+public class Author : IdentityUser;

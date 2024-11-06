@@ -1,5 +1,4 @@
 ﻿using Chirp.Core.Entities;
-using System.Reflection.Emit;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -7,15 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chirp.Core.Data;
 
-public class ChirpDBContext : IdentityDbContext<IdentityUser>
+public class ChirpDBContext(DbContextOptions<ChirpDBContext> options) : IdentityDbContext<IdentityUser>(options)
 {
     public DbSet<Cheep> Cheeps { get; set; }
-    public DbSet<IdentityUser> Authors { get; set; }
-
-    public ChirpDBContext(DbContextOptions<ChirpDBContext> options)
-        : base(options)
-    {
-    }
+    public DbSet<Author> Authors { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
