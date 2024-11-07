@@ -43,8 +43,8 @@ public class Program
         .AddCookie()*/
         .AddGitHub(o =>
         {
-            o.ClientId = builder.Configuration["auth_github_clientId"] ?? "";
-            o.ClientSecret = builder.Configuration["auth_github_clientSecret"] ?? "";
+            o.ClientId = builder.Configuration["auth_github_clientId"];
+            o.ClientSecret = builder.Configuration["auth_github_clientSecret"];
             o.CallbackPath = "/signin-github";
             o.Scope.Add("user:email");
             o.Scope.Add("read:user");
