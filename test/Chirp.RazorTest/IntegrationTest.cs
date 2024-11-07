@@ -1,4 +1,7 @@
-﻿namespace Chirp.RazorTest;
+﻿using Chirp.Core;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Chirp.RazorTest;
 
 public class IntegrationTest : IClassFixture<WebApplicationFactory<Program>>
 {
