@@ -24,6 +24,7 @@ public class Program
             options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+/ ";
             options.SignIn.RequireConfirmedAccount = false;
             options.SignIn.RequireConfirmedEmail = false;
+            options.User.RequireUniqueEmail = true;
         })
         .AddEntityFrameworkStores<ChirpDBContext>();
 

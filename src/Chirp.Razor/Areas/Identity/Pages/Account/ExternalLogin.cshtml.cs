@@ -85,31 +85,52 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 return LocalRedirect(returnUrl);
             }
+
             if (result.IsLockedOut)
             {
                 return RedirectToPage("./Lockout");
             }
-            else
+
+            // Get email and username from the external provider
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var username = info.Principal.FindFirstValue(ClaimTypes.Name);
+
+            if (email != null && username != null)
             {
-                // If the user does not have an account, create one.
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                var username = info.Principal.FindFirstValue(ClaimTypes.Name);
-                if (email != null)
+                // Check if the email is already used
+                var existingUserByEmail = await _userManager.FindByEmailAsync(email);
+                if (existingUserByEmail != null)
                 {
-                    var user = new Author { UserName = username, Email = email };
-                    var resultCreate = await _userManager.CreateAsync(user);
-                    if (resultCreate.Succeeded)
-                    {
-                        resultCreate = await _userManager.AddLoginAsync(user, info);
-                        if (resultCreate.Succeeded)
-                        {
-                            await _signInManager.SignInAsync(user, isPersistent: false);
-                            return RedirectToPage("./PasswordForGithub");
-                        }
-                    }
+                    // Email is already in use
+                    ErrorMessage = "The email associated with this external login is already in use. Please log in using your existing account.";
+                    return RedirectToPage("./Login");
                 }
-                return RedirectToPage("./Login");
+
+                // Check if the username is already taken
+                var existingUserByUsername = await _userManager.FindByNameAsync(username);
+                if (existingUserByUsername != null)
+                {
+                    // Redirect to the page where the user can choose a new username and set a password
+                    return RedirectToPage("./FinishGithubLogin", new { email, existingGithubUsername = username });
+                }
+
+                // If the username is available, create a new user
+                var user = new Author { UserName = username, Email = email };
+                var createResult = await _userManager.CreateAsync(user);
+                if (createResult.Succeeded)
+                {
+                    await _userManager.AddLoginAsync(user, info);
+                    return RedirectToPage("./FinishGithubLogin");
+                }
+
+                // If user creation failed, show errors
+                foreach (var error in createResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
+
+            return Page();
         }
 
         private IUserEmailStore<IdentityUser> GetEmailStore()

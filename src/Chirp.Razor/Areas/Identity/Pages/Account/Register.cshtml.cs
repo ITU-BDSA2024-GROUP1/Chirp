@@ -26,17 +26,17 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<Author> _signInManager;
-        private readonly UserManager<Author> _userManager;
-        private readonly IUserStore<Author> _userStore;
-        private readonly IUserEmailStore<Author> _emailStore;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IUserStore<IdentityUser> _userStore;
+        private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
-            UserManager<Author> userManager,
-            IUserStore<Author> userStore,
-            SignInManager<Author> signInManager,
+            UserManager<IdentityUser> userManager,
+            IUserStore<IdentityUser> userStore,
+            SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
@@ -120,6 +120,13 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                var uniqueUsername = await CheckForUniqueUsername(Input.UserName);
+                if (!uniqueUsername)
+                {
+                    ModelState.AddModelError(string.Empty, "Username " + Input.UserName + " is already taken.");
+                    return Page();
+                }
+
                 var user = CreateUser();
                 await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -156,13 +163,19 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
             }
         }
 
-        private IUserEmailStore<Author> GetEmailStore()
+        private IUserEmailStore<IdentityUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<Author>)_userStore;
+            return (IUserEmailStore<IdentityUser>)_userStore;
+        }
+
+        private async Task<bool> CheckForUniqueUsername(string username)
+        {
+            var existingUser = await _userManager.FindByNameAsync(username);
+            return existingUser == null;
         }
     }
 }
