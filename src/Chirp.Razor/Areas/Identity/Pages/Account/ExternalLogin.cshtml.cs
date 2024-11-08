@@ -18,22 +18,22 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class ExternalLoginModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IUserStore<IdentityUser> _userStore;
-        private readonly IUserEmailStore<IdentityUser> _emailStore;
+        private readonly SignInManager<Author> _signInManager;
+        private readonly UserManager<Author> _userManager;
+        private readonly IUserStore<Author> _userStore;
+        private readonly IUserEmailStore<Author> _emailStore;
         private readonly ILogger<ExternalLoginModel> _logger;
 
         public ExternalLoginModel(
-            SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager,
-            IUserStore<IdentityUser> userStore,
+            SignInManager<Author> signInManager,
+            UserManager<Author> userManager,
+            IUserStore<Author> userStore,
             ILogger<ExternalLoginModel> logger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _userStore = userStore;
-            _emailStore = (IUserEmailStore<IdentityUser>)GetEmailStore();
+            _emailStore = GetEmailStore();
             _logger = logger;
         }
 
@@ -133,13 +133,13 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private IUserEmailStore<IdentityUser> GetEmailStore()
+        private IUserEmailStore<Author> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<IdentityUser>)_userStore;
+            return (IUserEmailStore<Author>)_userStore;
         }
     }
 }

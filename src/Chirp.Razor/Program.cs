@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using Chirp.Core.Entities;
 
 namespace Chirp.Razor;
 
@@ -20,7 +21,7 @@ public class Program
         string? connectionString = GetConnectionString(builder);
         builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+        builder.Services.AddDefaultIdentity<Author>(options => {
             options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+/ ";
             options.SignIn.RequireConfirmedAccount = false;
             options.SignIn.RequireConfirmedEmail = false;

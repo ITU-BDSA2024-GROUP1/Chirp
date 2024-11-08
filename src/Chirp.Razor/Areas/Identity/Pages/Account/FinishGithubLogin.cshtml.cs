@@ -14,12 +14,12 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class FinishGithubLoginModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<Author> _signInManager;
+        private readonly UserManager<Author> _userManager;
 
         public FinishGithubLoginModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+            UserManager<Author> userManager,
+            SignInManager<Author> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -88,7 +88,7 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
                 }
 
                 // Create a new user with the chosen username
-                var user = new IdentityUser { UserName = Input.UserName, Email = Email };
+                var user = new Author { UserName = Input.UserName, Email = Email };
                 var createResult = await _userManager.CreateAsync(user);
 
                 if (createResult.Succeeded)
