@@ -5,6 +5,8 @@
 using System;
 using System.Threading.Tasks;
 
+using Chirp.Core.Entities;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,10 +18,10 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
 {
     public class LogoutModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<Author> _signInManager;
         private readonly ILogger<LogoutModel> _logger;
 
-        public LogoutModel(SignInManager<IdentityUser> signInManager, ILogger<LogoutModel> logger)
+        public LogoutModel(SignInManager<Author> signInManager, ILogger<LogoutModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;
@@ -28,8 +30,6 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPost()
         {
             await _signInManager.SignOutAsync();
-            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);  // Clear the application cookie
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);    // Clear the external login cookie
 
             _logger.LogInformation("User logged out.");
             return LocalRedirect("~/"); // Always redirect to the homepage

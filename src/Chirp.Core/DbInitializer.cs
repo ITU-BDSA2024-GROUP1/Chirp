@@ -1,28 +1,44 @@
 using Chirp.Core.Data;
 using Chirp.Core.Entities;
 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+
 namespace Chirp.Core;
 
 public static class DbInitializer
 {
-    public static void SeedDatabase(ChirpDBContext chirpContext)
+    public static async void SeedDatabase(ChirpDBContext chirpContext)
     {
         if (chirpContext.Authors.Any() && chirpContext.Cheeps.Any()) return;
 
-        var a1 = new Author { Id = "1", UserName = "Roger Histand", Email = "Roger+Histand@hotmail.com" };
-        var a2 = new Author { Id = "2", UserName = "Luanna Muro", Email = "Luanna-Muro@ku.dk" };
-        var a3 = new Author { Id = "3", UserName = "Wendell Ballan", Email = "Wendell-Ballan@gmail.com" };
-        var a4 = new Author { Id = "4", UserName = "Nathan Sirmon", Email = "Nathan+Sirmon@dtu.dk" };
-        var a5 = new Author { Id = "5", UserName = "Quintin Sitts", Email = "Quintin+Sitts@itu.dk" };
-        var a6 = new Author { Id = "6", UserName = "Mellie Yost", Email = "Mellie+Yost@ku.dk" };
-        var a7 = new Author { Id = "7", UserName = "Malcolm Janski", Email = "Malcolm-Janski@gmail.com" };
-        var a8 = new Author { Id = "8", UserName = "Octavio Wagganer", Email = "Octavio.Wagganer@dtu.dk" };
-        var a9 = new Author { Id = "9", UserName = "Johnnie Calixto", Email = "Johnnie+Calixto@itu.dk" };
-        var a10 = new Author { Id = "10", UserName = "Jacqualine Gilcoine", Email = "Jacqualine.Gilcoine@gmail.com" };
-        var a11 = new Author { Id = "11", UserName = "Helge", Email = "ropf@itu.dk" };
-        var a12 = new Author { Id = "12", UserName = "Adrian", Email = "adho@itu.dk" };
+        chirpContext.Authors.RemoveRange(chirpContext.Authors);
+        await chirpContext.SaveChangesAsync();
+
+        var userManager = chirpContext.GetService<UserManager<Author>>();
+
+        var a1 = new Author { UserName = "Roger Histand", Email = "Roger+Histand@hotmail.com" };
+        var a2 = new Author { UserName = "Luanna Muro", Email = "Luanna-Muro@ku.dk" };
+        var a3 = new Author { UserName = "Wendell Ballan", Email = "Wendell-Ballan@gmail.com" };
+        var a4 = new Author { UserName = "Nathan Sirmon", Email = "Nathan+Sirmon@dtu.dk" };
+        var a5 = new Author { UserName = "Quintin Sitts", Email = "Quintin+Sitts@itu.dk" };
+        var a6 = new Author { UserName = "Mellie Yost", Email = "Mellie+Yost@ku.dk" };
+        var a7 = new Author { UserName = "Malcolm Janski", Email = "Malcolm-Janski@gmail.com" };
+        var a8 = new Author { UserName = "Octavio Wagganer", Email = "Octavio.Wagganer@dtu.dk" };
+        var a9 = new Author { UserName = "Johnnie Calixto", Email = "Johnnie+Calixto@itu.dk" };
+        var a10 = new Author { UserName = "Jacqualine Gilcoine", Email = "Jacqualine.Gilcoine@gmail.com" };
+        var a11 = new Author { UserName = "Helge", Email = "ropf@itu.dk" };
+        var a12 = new Author { UserName = "Adrian", Email = "adho@itu.dk" };
 
         var authors = new List<Author> { a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12 };
+
+        foreach (var author in authors)
+        {
+            await userManager.CreateAsync(author);
+        }
+
+        await userManager.AddPasswordAsync(a11, "LetM31n!");
+        await userManager.AddPasswordAsync(a12, "M32Want_Access");
 
         var c1 = new Cheep { CheepId = 1, AuthorId = a10.Id, Author = a10, Text = "They were married in Chicago, with old Smith, and was expected aboard every day; meantime, the two went past me.", TimeStamp = DateTime.Parse("2023-08-01 13:14:37") };
         var c2 = new Cheep { CheepId = 2, AuthorId = a10.Id, Author = a10, Text = "And then, as he listened to all that''s left o'' twenty-one people.", TimeStamp = DateTime.Parse("2023-08-01 13:15:21") };
@@ -696,7 +712,7 @@ public static class DbInitializer
         //a11.Cheeps = new List<Cheep>() { c656 };
         //a12.Cheeps = new List<Cheep>() { c657 };
 
-        chirpContext.Authors.AddRange(authors);
+        //chirpContext.Authors.AddRange(authors);
         chirpContext.Cheeps.AddRange(cheeps);
         chirpContext.SaveChanges();
     }

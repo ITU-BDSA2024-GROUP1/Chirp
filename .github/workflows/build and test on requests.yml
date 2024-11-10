@@ -12,6 +12,11 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      # Set the environment variables from GitHub secrets
+      auth_github_clientId: ${{ secrets.LOCALHOSTGITHUB_CLIENTID }}
+      auth_github_clientSecret: ${{ secrets.LOCALHOSTGITHUB_SECRET }}
+
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET

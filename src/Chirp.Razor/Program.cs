@@ -5,6 +5,9 @@ using Chirp.Infrastructure.CheepService;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Chirp.Core.Entities;
 
 namespace Chirp.Razor;
 
@@ -18,11 +21,36 @@ public class Program
         string? connectionString = GetConnectionString(builder);
         builder.Services.AddDbContext<ChirpDBContext>(options => options.UseSqlite(connectionString));
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => {
-            options.SignIn.RequireConfirmedAccount = true;
-            options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzæøåABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ0123456789-._@+/ ";
+        builder.Services.AddDefaultIdentity<Author>(options => {
+            options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+/ ";
+            options.SignIn.RequireConfirmedAccount = false;
+            options.SignIn.RequireConfirmedEmail = false;
+            options.User.RequireUniqueEmail = true;
         })
         .AddEntityFrameworkStores<ChirpDBContext>();
+
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(30); // Set timeout as needed
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true; // Make the session cookie essential
+        });
+
+        builder.Services.AddAuthentication()//options =>
+        /*{
+            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = "GitHub";
+        })
+        .AddCookie()*/
+        .AddGitHub(o =>
+        {
+            o.ClientId = builder.Configuration["auth_github_clientId"] ?? Environment.GetEnvironmentVariable("auth_github_clientId");
+            o.ClientSecret = builder.Configuration["auth_github_clientSecret"] ?? Environment.GetEnvironmentVariable("auth_github_clientSecret");
+            o.CallbackPath = "/signin-github";
+            o.Scope.Add("user:email");
+            o.Scope.Add("read:user");
+        });
 
         // Register the repositories
         builder.Services.AddScoped<ICheepRepository, CheepRepository>();
@@ -58,6 +86,8 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
+
+        app.UseSession();
 
         app.MapRazorPages();
 

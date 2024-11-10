@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Chirp.Core.Entities;
+
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,16 +18,16 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class ExternalLoginModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IUserStore<IdentityUser> _userStore;
-        private readonly IUserEmailStore<IdentityUser> _emailStore;
+        private readonly SignInManager<Author> _signInManager;
+        private readonly UserManager<Author> _userManager;
+        private readonly IUserStore<Author> _userStore;
+        private readonly IUserEmailStore<Author> _emailStore;
         private readonly ILogger<ExternalLoginModel> _logger;
 
         public ExternalLoginModel(
-            SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager,
-            IUserStore<IdentityUser> userStore,
+            SignInManager<Author> signInManager,
+            UserManager<Author> userManager,
+            IUserStore<Author> userStore,
             ILogger<ExternalLoginModel> logger)
         {
             _signInManager = signInManager;
@@ -83,39 +85,61 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 return LocalRedirect(returnUrl);
             }
+
             if (result.IsLockedOut)
             {
                 return RedirectToPage("./Lockout");
             }
-            else
+
+            // Get email and username from the external provider
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var username = info.Principal.FindFirstValue(ClaimTypes.Name);
+
+            if (email != null && username != null)
             {
-                // If the user does not have an account, create one.
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                if (email != null)
+                // Check if the email is already used
+                var existingUserByEmail = await _userManager.FindByEmailAsync(email);
+                if (existingUserByEmail != null)
                 {
-                    var user = new IdentityUser { UserName = email, Email = email };
-                    var resultCreate = await _userManager.CreateAsync(user);
-                    if (resultCreate.Succeeded)
-                    {
-                        resultCreate = await _userManager.AddLoginAsync(user, info);
-                        if (resultCreate.Succeeded)
-                        {
-                            await _signInManager.SignInAsync(user, isPersistent: false);
-                            return LocalRedirect(returnUrl);
-                        }
-                    }
+                    // Email is already in use
+                    ErrorMessage = "The email associated with this external login is already in use. Please log in using your existing account.";
+                    return RedirectToPage("./Login");
                 }
-                return RedirectToPage("./Login");
+
+                // Check if the username is already taken
+                var existingUserByUsername = await _userManager.FindByNameAsync(username);
+                if (existingUserByUsername != null)
+                {
+                    // Redirect to the page where the user can choose a new username and set a password
+                    return RedirectToPage("./FinishGithubLogin", new { email, existingGithubUsername = username });
+                }
+
+                // If the username is available, create a new user
+                var user = new Author { UserName = username, Email = email };
+                var createResult = await _userManager.CreateAsync(user);
+                if (createResult.Succeeded)
+                {
+                    await _userManager.AddLoginAsync(user, info);
+                    return RedirectToPage("./FinishGithubLogin");
+                }
+
+                // If user creation failed, show errors
+                foreach (var error in createResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
+
+            return Page();
         }
 
-        private IUserEmailStore<IdentityUser> GetEmailStore()
+        private IUserEmailStore<Author> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<IdentityUser>)_userStore;
+            return (IUserEmailStore<Author>)_userStore;
         }
     }
 }
