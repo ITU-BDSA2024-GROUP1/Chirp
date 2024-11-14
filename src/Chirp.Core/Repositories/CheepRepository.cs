@@ -35,6 +35,7 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
         }
 
         var queryResult = await dbContext.Cheeps.AddAsync(cheep);
+        author.Cheeps.Add(cheep);
 
         await dbContext.SaveChangesAsync();
         return queryResult.Entity.CheepId;
@@ -56,7 +57,9 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
             AuthorId = cheep.AuthorId,
             AuthorEmail = cheep.Author.Email
         };
-            
+
+        cheep.Author.Cheeps.Remove(cheep);
+
         await dbContext.SaveChangesAsync();
             
         return deletedCheep;
