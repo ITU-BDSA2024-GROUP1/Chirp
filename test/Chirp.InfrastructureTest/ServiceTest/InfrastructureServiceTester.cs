@@ -1,7 +1,8 @@
 ﻿using Chirp.Core.DataTransferObject;
 using Chirp.Core.Models;
+using Chirp.Infrastructure.Repositories;
 
-namespace Chirp.InfrastructureTest;
+namespace Chirp.InfrastructureTest.ServiceTest;
 
 public abstract class InfrastructureServiceTester
 {

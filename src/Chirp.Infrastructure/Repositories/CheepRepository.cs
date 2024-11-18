@@ -7,7 +7,7 @@ using Chirp.Core.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Chirp.Core.Repositories;
+namespace Chirp.Infrastructure.Repositories;
 
 public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
 {

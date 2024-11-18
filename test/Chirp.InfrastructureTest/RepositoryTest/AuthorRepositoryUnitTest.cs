@@ -1,7 +1,7 @@
 ﻿using Chirp.Core.DataTransferObject;
-using Chirp.Core.Repositories;
+using Chirp.Infrastructure.Repositories;
 
-namespace Chirp.CoreTest;
+namespace Chirp.InfrastructureTest.RepositoryTest;
 
 public class AuthorRepositoryUnitTest : CoreRepositoryTester
 {

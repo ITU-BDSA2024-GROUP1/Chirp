@@ -1,6 +1,6 @@
 ﻿using Chirp.Core.Models;
 
-namespace Chirp.Infrastructure.CheepService;
+namespace Chirp.Infrastructure.Services.CheepService;
 
 public interface ICheepService
 {

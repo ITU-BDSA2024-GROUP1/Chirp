@@ -1,7 +1,7 @@
 ﻿using Chirp.Core.DataTransferObject;
-using Chirp.Core.Repositories;
+using Chirp.Infrastructure.Repositories;
 
-namespace Chirp.Infrastructure.AuthorService;
+namespace Chirp.Infrastructure.Services.AuthorService;
 
 public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
 {

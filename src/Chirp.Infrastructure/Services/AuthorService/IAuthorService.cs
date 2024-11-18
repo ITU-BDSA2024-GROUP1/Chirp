@@ -1,4 +1,4 @@
-﻿namespace Chirp.Infrastructure.AuthorService;
+﻿namespace Chirp.Infrastructure.Services.AuthorService;
 
 public interface IAuthorService
 {

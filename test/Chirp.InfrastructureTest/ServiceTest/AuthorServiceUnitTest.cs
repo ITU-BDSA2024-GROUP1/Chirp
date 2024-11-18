@@ -1,7 +1,7 @@
 ﻿using Chirp.Core.DataTransferObject;
-using Chirp.Infrastructure.AuthorService;
+using Chirp.Infrastructure.Services.AuthorService;
 
-namespace Chirp.InfrastructureTest;
+namespace Chirp.InfrastructureTest.ServiceTest;
 
 public class AuthorServiceUnitTest : InfrastructureServiceTester
 {

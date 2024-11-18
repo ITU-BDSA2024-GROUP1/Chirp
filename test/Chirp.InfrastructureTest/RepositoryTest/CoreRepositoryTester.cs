@@ -1,11 +1,7 @@
-﻿using Chirp.Core.Data;
-using Chirp.Core.DataTransferObject;
-using Chirp.Core.Repositories;
+﻿using Chirp.Core.DataTransferObject;
+using Chirp.Infrastructure.Repositories;
 
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-
-namespace Chirp.CoreTest;
+namespace Chirp.InfrastructureTest.RepositoryTest;
 
 public abstract class CoreRepositoryTester
 {

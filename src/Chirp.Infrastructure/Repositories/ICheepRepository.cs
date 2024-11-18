@@ -1,7 +1,7 @@
 ﻿using Chirp.Core.DataTransferObject;
 using Chirp.Core.Models;
 
-namespace Chirp.Core.Repositories;
+namespace Chirp.Infrastructure.Repositories;
 
 public interface ICheepRepository
 {

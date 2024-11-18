@@ -1,8 +1,9 @@
 using Chirp.Core.DataTransferObject;
 using Chirp.Core.Models;
-using Chirp.Infrastructure.CheepService;
+using Chirp.Infrastructure.Repositories;
+using Chirp.Infrastructure.Services.CheepService;
 
-namespace Chirp.InfrastructureTest;
+namespace Chirp.InfrastructureTest.ServiceTest;
 
 public class CheepServiceUnitTest : InfrastructureServiceTester
 {

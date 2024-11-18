@@ -1,8 +1,8 @@
 using Chirp.Core.DataTransferObject;
 using Chirp.Core.Models;
-using Chirp.Core.Repositories;
+using Chirp.Infrastructure.Repositories;
 
-namespace Chirp.Infrastructure.CheepService;
+namespace Chirp.Infrastructure.Services.CheepService;
 
 public class CheepService(ICheepRepository cheepRepository, IAuthorRepository authorRepository) : ICheepService
 {

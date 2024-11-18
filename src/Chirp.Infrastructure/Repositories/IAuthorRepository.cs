@@ -1,6 +1,6 @@
 ﻿using Chirp.Core.DataTransferObject;
 
-namespace Chirp.Core.Repositories;
+namespace Chirp.Infrastructure.Repositories;
 
 public interface IAuthorRepository
 {
