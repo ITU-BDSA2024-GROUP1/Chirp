@@ -1,0 +1,16 @@
+﻿@model Chirp.Razor.Pages.Shared.CheepTimeline
+
+<ul id="messagelist" class="cheeps">
+    @foreach (var cheep in Model.Cheeps)
+    {
+        <li>
+            <p style="word-wrap:break-word;">
+                <strong>
+                    <a href="/@cheep.Author">@cheep.Author</a>
+                </strong>
+                @cheep.Message
+                <small>&mdash; @cheep.Timestamp</small>
+            </p>
+        </li>
+    }
+</ul>
