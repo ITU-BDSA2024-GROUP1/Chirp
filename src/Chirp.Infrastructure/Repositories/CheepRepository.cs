@@ -3,7 +3,7 @@
 using Chirp.Core.Data;
 using Chirp.Core.DataTransferObject;
 using Chirp.Core.Entities;
-using Chirp.Core.Models;
+using Chirp.Infrastructure.Models;
 
 using Microsoft.EntityFrameworkCore;
 

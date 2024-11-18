@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-using Chirp.Core.Models;
+using Chirp.Infrastructure.Models;
 using Chirp.Infrastructure.Services.CheepService;
 
 using Microsoft.AspNetCore.Mvc;

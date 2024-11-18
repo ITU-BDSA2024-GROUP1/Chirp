@@ -1,4 +1,4 @@
-﻿using Chirp.Core.Models;
+﻿using Chirp.Infrastructure.Models;
 
 namespace Chirp.Infrastructure.Services.CheepService;
 

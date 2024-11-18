@@ -1,4 +1,4 @@
-﻿namespace Chirp.Core.Models;
+﻿namespace Chirp.Infrastructure.Models;
 
 public class PagedResult<T>
 {

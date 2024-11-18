@@ -1,5 +1,5 @@
 ﻿using Chirp.Core.DataTransferObject;
-using Chirp.Core.Models;
+using Chirp.Infrastructure.Models;
 
 namespace Chirp.Infrastructure.Repositories;
 

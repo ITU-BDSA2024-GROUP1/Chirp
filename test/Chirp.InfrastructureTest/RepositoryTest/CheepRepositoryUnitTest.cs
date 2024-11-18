@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 using Chirp.Core.DataTransferObject;
-using Chirp.Core.Models;
+using Chirp.Infrastructure.Models;
 using Chirp.Infrastructure.Repositories;
 
 namespace Chirp.InfrastructureTest.RepositoryTest;
