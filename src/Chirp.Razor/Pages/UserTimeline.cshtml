@@ -3,12 +3,12 @@
 @{
     ViewData["Title"] = "Chirp!";
     Layout = "Shared/_Layout";
-    var routeName = HttpContext.GetRouteValue("author");
+    object? routeName = HttpContext.GetRouteValue("author");
 }
 
 <div>
     <h2> @routeName's Timeline </h2>
-    @if (User.Identity.IsAuthenticated)
+    @if (User.Identity is { IsAuthenticated: true })
 	{
 		<div class="cheepbox" style="min-height: 60px">
 			<h3>What's on your mind @(User.Identity.Name)?</h3>
@@ -25,8 +25,7 @@
 				document.getElementById('charCount').innerText = remaining + ' characters remaining';
 
 				// https://stackoverflow.com/a/13831737
-				if (remaining == 160) document.getElementById("btnShare").disabled = true;
-				else document.getElementById("btnShare").disabled = false;
+				document.getElementById("btnShare").disabled = remaining === 160;
 			});
 		</script>
 	}
@@ -66,7 +65,7 @@
                     </li>
                 }
 
-                @for (var i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
+                @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
                 {
                     <li style="margin: 0 5px;" class="@(Model.CurrentPage == i ? "active" : "")">
                         <a href="/@Model.RouteData.Values["author"]?page=@i" style="padding: 0.5em 1em; border: 1px solid #ddd; text-decoration: none;">@i</a>

@@ -9,12 +9,12 @@ namespace Chirp.Razor.Pages;
 
 public class PublicModel(ICheepService service) : PageModel
 {
-    public List<CheepViewModel> Cheeps { get; set; } = new List<CheepViewModel>();
+    public List<CheepViewModel> Cheeps { get; set; } = [];
 
     [BindProperty]
     [Required]
     [StringLength(maximumLength: 160, ErrorMessage = "The cheep must at most be 160 characters long.", MinimumLength = 0)]
-    public string Text { get; set; }
+    public string? Text { get; set; }
 
     public async Task<ActionResult> OnGetAsync([FromQuery] int page = 1)
     {
@@ -38,7 +38,7 @@ public class PublicModel(ICheepService service) : PageModel
         }
 
         // Add the new cheep to Cheeps
-        var newCheep = new CheepViewModel(User.Identity.Name, Text, DateTime.Now.ToString("G"));
+        var newCheep = new CheepViewModel(User.Identity?.Name, Text, DateTime.Now.ToString("G"));
         //Cheeps.Add(newCheep);
 
         // Optionally: Save the new message to a database or cache here
