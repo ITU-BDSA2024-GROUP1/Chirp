@@ -13,7 +13,7 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
 {
     public async Task<int> AddCheepAsync(CheepDTO cheepDto)
     {
-        var author = await dbContext.Authors.FindAsync(cheepDto.AuthorId);
+        var author = await dbContext.Authors.Include(a => a.Cheeps).FirstOrDefaultAsync(a => a.Id == cheepDto.AuthorId); ;
         if (author == null) throw new KeyNotFoundException("Author not found");
         
         var cheep = new Cheep
@@ -34,8 +34,9 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
             throw new ValidationException(messages); // Throws a ValidationException with the concatenated error messages
         }
 
-        var queryResult = await dbContext.Cheeps.AddAsync(cheep);
         author.Cheeps.Add(cheep);
+
+        var queryResult = await dbContext.Cheeps.AddAsync(cheep);
 
         await dbContext.SaveChangesAsync();
         return queryResult.Entity.CheepId;
@@ -45,6 +46,9 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
     {
         var cheep = await dbContext.Cheeps.Include(c => c.Author).FirstOrDefaultAsync(c => c.CheepId == id);
         if (cheep == null) return null;
+
+        var author = cheep.Author; 
+        author.Cheeps.Remove(cheep);
 
         dbContext.Cheeps.Remove(cheep);
             
@@ -57,8 +61,6 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
             AuthorId = cheep.AuthorId,
             AuthorEmail = cheep.Author.Email
         };
-
-        cheep.Author.Cheeps.Remove(cheep);
 
         await dbContext.SaveChangesAsync();
             
@@ -138,7 +140,8 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
     {
         var cheep = await dbContext.Cheeps.FindAsync(cheepDto.Id);
         if (cheep == null) return;
-        
+
+        var oldAuthor = cheep.Author;
         cheep.Text = cheepDto.Message;
         cheep.TimeStamp = DateTime.Parse(cheepDto.TimeStamp);
 
@@ -147,6 +150,8 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
             var newAuthor = await dbContext.Authors.FindAsync(cheepDto.AuthorId);
             if (newAuthor != null)
             {
+                oldAuthor.Cheeps.Remove(cheep);
+                newAuthor.Cheeps.Add(cheep);
                 cheep.Author = newAuthor;
             }
         }
