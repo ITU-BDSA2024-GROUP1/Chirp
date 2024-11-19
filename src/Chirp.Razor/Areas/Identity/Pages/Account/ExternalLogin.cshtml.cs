@@ -107,16 +107,20 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
                 }
 
                 // Check if the username is already used
-                var existingUserByUsername = await _userManager.FindByEmailAsync(username);
+                var existingUserByUsername = await _userManager.FindByNameAsync(username);
                 if (existingUserByUsername != null)
                 {
-                    // Email is already in use
-                    ErrorMessage = "The username associated with the github account is already in use.";
-                    return RedirectToPage("./Login");
+                    // Store information in TempData
+                    TempData["TemporaryEmail"] = email; 
+                    TempData["LoginProvider"] = info.LoginProvider; 
+                    TempData["ProviderKey"] = info.ProviderKey; 
+                    TempData["ReturnUrl"] = returnUrl;
+
+                    return RedirectToPage("./ExistingUsername");
                 }
 
                 // If the username is available, create a new user
-                var user = new Author { UserName = username, Email = email, LoginProvider = info.LoginProvider, ProviderKey = info.ProviderKey };
+                var user = new Author { UserName = username, Email = email };
                 var createResult = await _userManager.CreateAsync(user);
                 if (createResult.Succeeded)
                 {

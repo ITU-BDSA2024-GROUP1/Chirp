@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chirp.Core.Migrations
 {
     [DbContext(typeof(ChirpDBContext))]
-    [Migration("20241114183731_InitialDBSchema")]
+    [Migration("20241119075821_InitialDBSchema")]
     partial class InitialDBSchema
     {
         /// <inheritdoc />
@@ -256,12 +256,6 @@ namespace Chirp.Core.Migrations
             modelBuilder.Entity("Chirp.Core.Entities.Author", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("TEXT");
 
                     b.HasDiscriminator().HasValue("Author");
                 });

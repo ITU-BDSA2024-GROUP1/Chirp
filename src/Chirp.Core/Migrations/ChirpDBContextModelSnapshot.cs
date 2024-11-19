@@ -254,12 +254,6 @@ namespace Chirp.Core.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("TEXT");
-
                     b.HasDiscriminator().HasValue("Author");
                 });
 

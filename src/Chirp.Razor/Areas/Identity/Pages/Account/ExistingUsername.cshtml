@@ -1,0 +1,26 @@
+﻿@page
+@model ExistingUsernameModel
+@{
+    ViewData["Title"] = "Existing Username";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <form method="post">
+        <h2>Set user information.</h2>
+        <p>Your current github username is already in use on this site, so choose another username.</p>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <div class="form-floating mb-3">
+            <input asp-for="Input.UserName" class="form-control" aria-required="true" placeholder="username" />
+            <label asp-for="Input.UserName">Username</label>
+            <span asp-validation-for="Input.UserName" class="text-danger"></span>
+        </div>
+        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
