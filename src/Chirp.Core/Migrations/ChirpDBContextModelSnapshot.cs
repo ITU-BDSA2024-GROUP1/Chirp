@@ -26,6 +26,9 @@ namespace Chirp.Core.Migrations
                     b.Property<string>("AuthorId")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("AuthorId1")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Text")
                         .HasMaxLength(160)
                         .HasColumnType("TEXT");
@@ -36,6 +39,8 @@ namespace Chirp.Core.Migrations
                     b.HasKey("CheepId");
 
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("AuthorId1");
 
                     b.ToTable("Cheeps");
                 });
@@ -259,6 +264,10 @@ namespace Chirp.Core.Migrations
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("Chirp.Core.Entities.Author", null)
+                        .WithMany("Cheeps")
+                        .HasForeignKey("AuthorId1");
+
                     b.Navigation("Author");
                 });
 
@@ -311,6 +320,11 @@ namespace Chirp.Core.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Chirp.Core.Entities.Author", b =>
+                {
+                    b.Navigation("Cheeps");
                 });
 #pragma warning restore 612, 618
         }

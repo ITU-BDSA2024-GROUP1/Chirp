@@ -102,16 +102,21 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
                 if (existingUserByEmail != null)
                 {
                     // Email is already in use
-                    ErrorMessage = "The email associated with this external login is already in use. Please log in using your existing account.";
+                    ErrorMessage = "The email associated with the github account is already in use. Please log in using your existing account.";
                     return RedirectToPage("./Login");
                 }
 
-                // Check if the username is already taken
+                // Check if the username is already used
                 var existingUserByUsername = await _userManager.FindByNameAsync(username);
                 if (existingUserByUsername != null)
                 {
-                    // Redirect to the page where the user can choose a new username and set a password
-                    return RedirectToPage("./FinishGithubLogin", new { email, existingGithubUsername = username });
+                    // Store information in TempData
+                    TempData["TemporaryEmail"] = email; 
+                    TempData["LoginProvider"] = info.LoginProvider; 
+                    TempData["ProviderKey"] = info.ProviderKey; 
+                    TempData["ReturnUrl"] = returnUrl;
+
+                    return RedirectToPage("./ExistingUsername");
                 }
 
                 // If the username is available, create a new user
@@ -119,8 +124,12 @@ namespace Chirp.Razor.Areas.Identity.Pages.Account
                 var createResult = await _userManager.CreateAsync(user);
                 if (createResult.Succeeded)
                 {
-                    await _userManager.AddLoginAsync(user, info);
-                    return RedirectToPage("./FinishGithubLogin");
+                    var addLogin = await _userManager.AddLoginAsync(user, info);
+                    if (addLogin.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect(returnUrl);
+                    }
                 }
 
                 // If user creation failed, show errors
