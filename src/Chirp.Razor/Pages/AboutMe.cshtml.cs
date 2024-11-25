@@ -67,7 +67,8 @@ namespace Chirp.Razor.Pages
                 githubUser = false;
             }
 
-            var cheepsResult = await _cheepService.GetCheepsFromAuthor(user.UserName, 1, int.MaxValue);
+            var cheepCount = await _cheepService.GetCheepCount(user.UserName);
+            var cheepsResult = await _cheepService.GetCheepsFromAuthor(user.UserName, 1, cheepCount);
             if (cheepsResult.Items != null)
             {
                 Cheeps.AddRange(cheepsResult.Items);

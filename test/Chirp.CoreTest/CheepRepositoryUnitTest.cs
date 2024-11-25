@@ -136,4 +136,19 @@ public class CheepRepositoryUnitTest : CoreRepositoryTester
         // Assert
         Assert.Null(await _cheepRepository.GetCheepByIdAsync(testCheep.Id));
     }
+
+    [Fact]
+    public async Task GetCheepCountByAuthor()
+    {
+        // Arrange
+        CheepDTO[] testCheeps = PopulateCheepRepository();
+        string authorName = _firstAuthor.Name;
+
+        // Act
+        int actualCount = await _cheepRepository.GetCheepCountByAuthor(authorName);
+
+        // Assert
+        int expectedCount = testCheeps.Count(c => c.Name == authorName);
+        Assert.Equal(expectedCount, actualCount);
+    }
 }
