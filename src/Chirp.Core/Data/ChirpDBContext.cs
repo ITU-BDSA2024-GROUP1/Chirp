@@ -10,7 +10,7 @@ public class ChirpDBContext(DbContextOptions<ChirpDBContext> options) : Identity
 {
     public DbSet<Cheep> Cheeps { get; set; }
     public DbSet<Author> Authors { get; set; }
-
+    public DbSet<Follow> Follows { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -21,6 +21,17 @@ public class ChirpDBContext(DbContextOptions<ChirpDBContext> options) : Identity
                 .HasForeignKey(c => c.AuthorId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<Follow>()
+            .HasOne(c => c.Follower)
+            .WithMany()
+            .HasForeignKey(c => c.FollowerId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Follow>()
+            .HasOne(c => c.Followed)
+            .WithMany()
+            .HasForeignKey(c => c.FollowedId)
+            .OnDelete(DeleteBehavior.Cascade);
         //modelBuilder.Entity<Cheep>().Property(m => m.Text).IsRequired().HasMaxLength(160);
     }
 }
