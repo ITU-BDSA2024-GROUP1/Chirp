@@ -39,8 +39,10 @@
                         <strong>
                             <a href="/@cheep.Author">@cheep.Author</a>
                         </strong>
-						<input id="btnFollow" type="submit" value="Follow" formmethod="post"/>
+						<input id="btnFollow" type="submit" value="Follow" formmethod="post" asp-page-handler="ChangeFollowStatusAsync"/>
+						<br />
 						@cheep.Message
+						<br />
                         <small>&mdash; @cheep.Timestamp</small>
                     </p>
                 </li>

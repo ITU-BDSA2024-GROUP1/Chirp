@@ -50,6 +50,10 @@ public class PublicModel(ICheepService service) : PageModel
         return RedirectToPage();
     }
 
+    public async Task ChangeFollowStatusAsync()
+    {
+
+    }
 
     public int CurrentPage { get; set; }
     public int TotalPages { get; set; }
