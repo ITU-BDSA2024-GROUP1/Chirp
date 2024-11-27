@@ -47,6 +47,16 @@ public class End2EndTest : PlaywrightPageTester
         string cheep = $"Cheeping with playwright! Edition: {id}";
         
         await PostCheep(cheep);
-        await AssertCheepPosted($"{DefaultUsername} {cheep}");
+        await AssertCheepPostedOnHomepage(DefaultUsername, cheep);
+    }
+
+    [Test]
+    public async Task CheepsAppearOnOwnTimeline()
+    {
+        await Login(DefaultUsername, DefaultPassword);
+        
+        const string cheep = "Cheeping for my homies with playwright!";
+        await PostCheep(cheep);
+        await AssertCheepPostedOnAuthorPage(DefaultUsername, cheep);
     }
 }

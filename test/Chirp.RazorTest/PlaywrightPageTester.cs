@@ -56,6 +56,7 @@ public abstract class PlaywrightPageTester : PageTest
     
     // Atomic Assertions
     private async Task AssertContainsText(string locatorName, string text) => await Expect(GetLocator(locatorName)).ToContainTextAsync(text);
+    private async Task AssertCheepPosted(string authorName, string cheep) => await AssertContainsText("#messagelist", $"{authorName} {cheep}");
     
     // Composite Assertions
     private protected async Task AssertNotLoggedIn()
@@ -72,9 +73,18 @@ public abstract class PlaywrightPageTester : PageTest
         await AssertContainsText("h3", $"What's on your mind {username}?");
         await AssertContainsText("body", "my timeline");
     }
-    private protected async Task AssertCheepPosted(string cheep)
+    private protected async Task AssertCheepPostedOnHomepage(string authorName, string cheep)
     {
         await GotoHomePage();
-        await AssertContainsText("#messagelist", cheep);
+        await AssertCheepPosted(authorName, cheep);
+    }
+    private protected async Task AssertCheepPostedOnAuthorPage(string authorName, string cheep)
+    {
+        await GotoHomePage();
+        await AssertLoggedInAs(authorName);
+        
+        await ClickLink("my timeline");
+        await AssertContainsText("h2", $"{authorName}'s Timeline");
+        await AssertCheepPosted(authorName, cheep);
     }
 }
