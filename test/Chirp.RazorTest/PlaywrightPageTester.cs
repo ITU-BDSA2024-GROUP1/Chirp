@@ -10,17 +10,18 @@ public abstract class PlaywrightPageTester : PageTest
 
     // Locators
     private ILocator GetLocator(string elementName) => Page.Locator(elementName);
+    private ILocator GetByRole(AriaRole role) => Page.GetByRole(role);
     private ILocator GetByRole(AriaRole role, string elementName, bool exact) => Page.GetByRole(role, new() { Name = elementName, Exact = exact });
     private ILocator GetByLabel(string labelName, bool exact) => Page.GetByLabel(labelName, new() { Exact = exact });
     
     // Atomic Actions
     private async Task GotoHomePage() => await Page.GotoAsync(HomepageUrl);
-    private async Task ClickLink(string linkName, bool exact = false) => await GetByRole(AriaRole.Link, linkName, exact).ClickAsync();
-    private async Task ClickButton(string buttonName, bool exact = false) => await GetByRole(AriaRole.Button, buttonName, exact).ClickAsync();
+    private protected async Task ClickLink(string linkName, bool exact = false) => await GetByRole(AriaRole.Link, linkName, exact).ClickAsync();
+    private protected async Task ClickButton(string buttonName, bool exact = false) => await GetByRole(AriaRole.Button, buttonName, exact).ClickAsync();
     private async Task FillInputField(string labelName, string fillText, bool exact = false) => await GetByLabel(labelName, exact).ClickAndFill(fillText);
     
     // Composite Actions
-    private protected async Task Register(string email, string username, string password)
+    private protected async Task Register(string email, string username, string password, string? confirmationPassword = null)
     {
         await GotoHomePage();
         await ClickLink("register");
@@ -28,7 +29,7 @@ public abstract class PlaywrightPageTester : PageTest
         await FillInputField("Email", email);
         await FillInputField("Username", username);
         await FillInputField("Password", password, true);
-        await FillInputField("Confirm Password", password);
+        await FillInputField("Confirm Password", confirmationPassword ?? password);
         
         await ClickButton("Register");
     }
@@ -42,11 +43,6 @@ public abstract class PlaywrightPageTester : PageTest
         
         await ClickButton("Log in", true);
     }
-    private protected async Task Logout()
-    {
-        await GotoHomePage();
-        await ClickButton("logout");
-    }
     private protected async Task PostCheep(string cheep)
     {
         await GotoHomePage();
@@ -55,8 +51,9 @@ public abstract class PlaywrightPageTester : PageTest
     }
     
     // Atomic Assertions
-    private async Task AssertContainsText(string locatorName, string text) => await Expect(GetLocator(locatorName)).ToContainTextAsync(text);
-    private async Task AssertCheepPosted(string authorName, string cheep) => await AssertContainsText("#messagelist", $"{authorName} {cheep}");
+    private async Task AssertContainsText(ILocator locator, string text) => await Expect(locator).ToContainTextAsync(text);
+    private protected async Task AssertContainsText(string locatorName, string text) => await AssertContainsText(GetLocator(locatorName), text);
+    private protected async Task AssertContainsText(AriaRole role, string text) => await AssertContainsText(GetByRole(role), text);
     
     // Composite Assertions
     private protected async Task AssertNotLoggedIn()
@@ -72,19 +69,5 @@ public abstract class PlaywrightPageTester : PageTest
         await AssertContainsText("button", $"logout [{username}]");
         await AssertContainsText("h3", $"What's on your mind {username}?");
         await AssertContainsText("body", "my timeline");
-    }
-    private protected async Task AssertCheepPostedOnHomepage(string authorName, string cheep)
-    {
-        await GotoHomePage();
-        await AssertCheepPosted(authorName, cheep);
-    }
-    private protected async Task AssertCheepPostedOnAuthorPage(string authorName, string cheep)
-    {
-        await GotoHomePage();
-        await AssertLoggedInAs(authorName);
-        
-        await ClickLink("my timeline");
-        await AssertContainsText("h2", $"{authorName}'s Timeline");
-        await AssertCheepPosted(authorName, cheep);
     }
 }
