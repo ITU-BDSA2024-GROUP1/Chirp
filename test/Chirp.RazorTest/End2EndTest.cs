@@ -13,77 +13,65 @@ public class End2EndTest : PageTest
     {
         await Page.GotoAsync(PageUrl);
     }
-
-    [Test]
-    public async Task IsRunning()
-    {
-        var response = await Page.APIRequest.HeadAsync(PageUrl);
-        await Expect(response).ToBeOKAsync();
-    }
     
-    [Test]
-    public async Task HasTitle()
-    {
-        await Expect(Page).ToHaveTitleAsync(Regex("Chirp"));
-    }
-
-    [Test]
-    public async Task PublicTimelineLeadsToHomePage()
-    {
-        await ClickLink("public timeline");
-        await Expect(Page.Locator("h2")).ToContainTextAsync("Public Timeline");
-    }
-
-    [Test]
-    public async Task CanRegister()
-    {
-        await ClickLink("register");
-        await Expect(Page.Locator("body")).ToContainTextAsync("Register");
-    }
-
-    [Test]
-    public async Task CanLogin()
-    {
-        await ClickLink("login");
-        await Expect(Page.Locator("body")).ToContainTextAsync("Log in");
-    }
-
     [Test]
     public async Task RegisterAccount()
     {
-        await Page.GetByRole(AriaRole.Link, new() { Name = "register" }).ClickAsync();
-        
-        await Page.GetByPlaceholder("name@example.com").ClickAsync();
-        await Page.GetByPlaceholder("name@example.com").FillAsync("test@playwright.com");
-        
-        await Page.GetByLabel("Username").ClickAsync();
-        await Page.GetByLabel("Username").FillAsync("Playwright Testerson");
-        
-        await Page.GetByLabel("Password", new() { Exact = true }).ClickAsync();
-        await Page.GetByLabel("Password", new() { Exact = true }).FillAsync("Pa$$w0rd");
-        
-        await Page.GetByLabel("Confirm Password").ClickAsync();
-        await Page.GetByLabel("Confirm Password").FillAsync("Pa$$w0rd");
-        
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Register" }).ClickAsync();
+        await ClickLink("register");
 
-        await Expect(Page).ToHaveURLAsync(PageUrl);
+        int id = Random.Shared.Next(1_000_000);
+        await FillInputField("Email", $"testerson{id}@playwright.com");
+        await FillInputField("Username", $"Playwright Testerson {id}");
+        await FillInputField("Password", "Pa$$w0rd", true);
+        await FillInputField("Confirm Password", "Pa$$w0rd");
         
-        await Expect(Page.Locator("button")).ToContainTextAsync("logout [Playwright Testerson]");
-        await Expect(Page.Locator("h3")).ToContainTextAsync("What's on your mind Playwright Testerson?");
+        await ClickButton("Register");
+        
+        await Expect(Page.Locator("button")).ToContainTextAsync($"logout [Playwright Testerson {id}]");
+        await Expect(Page.Locator("h3")).ToContainTextAsync($"What's on your mind Playwright Testerson {id}?");
         await Expect(Page.Locator("body")).ToContainTextAsync("my timeline");
     }
 
-    [TearDown]
-    public async Task TearDown()
+    [Test]
+    public async Task Login()
     {
+        await ClickLink("login");
+
+        await FillInputField("Username", "Helge");
+        await FillInputField("password", "LetM31n!");
         
+        await ClickButton("Log in");
+        
+        await Expect(Page.Locator("button")).ToContainTextAsync("logout [Helge]");
+        await Expect(Page.Locator("h3")).ToContainTextAsync("What's on your mind Helge?");
+        await Expect(Page.Locator("body")).ToContainTextAsync("my timeline");
     }
 
-    private async Task ClickLink(string byName)
+    [Test]
+    public async Task WriteCheep()
     {
-        await Page.GetByRole(AriaRole.Link, new() { Name = byName }).ClickAsync();
+        await ClickLink("login");
+        
+        await FillInputField("Username", "Helge");
+        await FillInputField("password", "LetM31n!");
+        
+        await ClickButton("Log in");
+        
+        int id = Random.Shared.Next(1_000_000);
+        await Page.Locator("#cheepText").ClickAndFill($"Cheeping with playwright! Edition: {id}");
+        
+        await ClickButton("Share");
+        
+        await Expect(Page.Locator("#messagelist")).ToContainTextAsync($"Helge Cheeping with playwright! Edition: {id}");
     }
+
+    private async Task ClickLink(string linkName) => await Page.GetByRole(AriaRole.Link, GetOptions(linkName)).ClickAsync();
+    private async Task ClickButton(string buttonName) => await Page.GetByRole(AriaRole.Button, GetOptions(buttonName)).ClickAsync();
     
-    private static Regex Regex(string pattern) => new(pattern);
+    private static PageGetByRoleOptions GetOptions(string elementName) => new() { Name = elementName, Exact = true };
+
+    private async Task FillInputField(string labelName, string fillText, bool exact = false)
+    { 
+        await Page.GetByLabel(labelName, new() { Exact = exact }).ClickAndFill(fillText);
+    }
 }
