@@ -40,7 +40,7 @@ public class End2EndTest : PageTest
         await FillInputField("Username", "Helge");
         await FillInputField("password", "LetM31n!");
         
-        await ClickButton("Log in");
+        await ClickButton("Log in", true);
         
         await Expect(Page.Locator("button")).ToContainTextAsync("logout [Helge]");
         await Expect(Page.Locator("h3")).ToContainTextAsync("What's on your mind Helge?");
@@ -55,7 +55,7 @@ public class End2EndTest : PageTest
         await FillInputField("Username", "Helge");
         await FillInputField("password", "LetM31n!");
         
-        await ClickButton("Log in");
+        await ClickButton("Log in", true);
         
         int id = Random.Shared.Next(1_000_000);
         await Page.Locator("#cheepText").ClickAndFill($"Cheeping with playwright! Edition: {id}");
@@ -65,13 +65,7 @@ public class End2EndTest : PageTest
         await Expect(Page.Locator("#messagelist")).ToContainTextAsync($"Helge Cheeping with playwright! Edition: {id}");
     }
 
-    private async Task ClickLink(string linkName) => await Page.GetByRole(AriaRole.Link, GetOptions(linkName)).ClickAsync();
-    private async Task ClickButton(string buttonName) => await Page.GetByRole(AriaRole.Button, GetOptions(buttonName)).ClickAsync();
-    
-    private static PageGetByRoleOptions GetOptions(string elementName) => new() { Name = elementName, Exact = true };
-
-    private async Task FillInputField(string labelName, string fillText, bool exact = false)
-    { 
-        await Page.GetByLabel(labelName, new() { Exact = exact }).ClickAndFill(fillText);
-    }
+    private async Task ClickLink(string linkName, bool exact = false) => await Page.GetByRole(AriaRole.Link, new() { Name = linkName, Exact = exact }).ClickAsync();
+    private async Task ClickButton(string buttonName, bool exact = false) => await Page.GetByRole(AriaRole.Button, new() { Name = buttonName, Exact = exact }).ClickAsync();
+    private async Task FillInputField(string labelName, string fillText, bool exact = false) => await Page.GetByLabel(labelName, new() { Exact = exact }).ClickAndFill(fillText);
 }
