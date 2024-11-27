@@ -16,10 +16,10 @@ public class ChirpDBContext(DbContextOptions<ChirpDBContext> options) : Identity
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Cheep>()
-                .HasOne(c => c.Author)
-                .WithMany() // Assuming IdentityUser does not have a Cheeps navigation property
-                .HasForeignKey(c => c.AuthorId)
-                .OnDelete(DeleteBehavior.Cascade);
+            .HasOne(c => c.Author)
+            .WithMany() // Assuming IdentityUser does not have a Cheeps navigation property
+            .HasForeignKey(c => c.AuthorId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Follow>()
             .HasOne(c => c.Follower)
