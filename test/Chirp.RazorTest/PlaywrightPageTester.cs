@@ -42,6 +42,11 @@ public abstract class PlaywrightPageTester : PageTest
         
         await ClickButton("Log in", true);
     }
+    private protected async Task Logout()
+    {
+        await GotoHomePage();
+        await ClickButton("logout");
+    }
     private protected async Task PostCheep(string cheep)
     {
         await GotoHomePage();
@@ -53,6 +58,13 @@ public abstract class PlaywrightPageTester : PageTest
     private async Task AssertContainsText(string locatorName, string text) => await Expect(GetLocator(locatorName)).ToContainTextAsync(text);
     
     // Composite Assertions
+    private protected async Task AssertNotLoggedIn()
+    {
+        await GotoHomePage();
+        await AssertContainsText("body", "public timeline");
+        await AssertContainsText("body", "register");
+        await AssertContainsText("body", "login");
+    }
     private protected async Task AssertLoggedInAs(string username)
     {
         await GotoHomePage();

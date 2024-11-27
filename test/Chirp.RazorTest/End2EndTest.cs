@@ -2,8 +2,16 @@ namespace Chirp.RazorTest;
 
 public class End2EndTest : PlaywrightPageTester
 {
+    private const string DefaultUsername = "Helge", DefaultPassword = "LetM31n!";
+    
     [Test]
-    public async Task RegisterAccount()
+    public async Task AnonymousUserNotLoggedIn()
+    {
+        await AssertNotLoggedIn();
+    }
+    
+    [Test]
+    public async Task CanRegisterAccount()
     {
         int id = Random.Shared.Next(1_000_000);
         string email = $"testerson{id}@playwright.com";
@@ -14,24 +22,31 @@ public class End2EndTest : PlaywrightPageTester
     }
 
     [Test]
-    public async Task Login()
+    public async Task CanLogin()
     {
-        const string username = "Helge";
-        
-        await Login(username, "LetM31n!");
-        await AssertLoggedInAs(username);
+        await Login(DefaultUsername, DefaultPassword);
+        await AssertLoggedInAs(DefaultUsername);
     }
 
     [Test]
-    public async Task WriteCheep()
+    public async Task CanLogout()
     {
-        const string username = "Helge";
-        await Login(username, "LetM31n!");
+        await Login(DefaultUsername, DefaultPassword);
+        await AssertLoggedInAs(DefaultUsername);
+        
+        await Logout();
+        await AssertNotLoggedIn();
+    }
+    
+    [Test]
+    public async Task CanCheep()
+    {
+        await Login(DefaultUsername, DefaultPassword);
         
         int id = Random.Shared.Next(1_000_000);
         string cheep = $"Cheeping with playwright! Edition: {id}";
         
         await PostCheep(cheep);
-        await AssertCheepPosted($"{username} {cheep}");
+        await AssertCheepPosted($"{DefaultUsername} {cheep}");
     }
 }
