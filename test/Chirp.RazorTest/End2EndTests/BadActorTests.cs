@@ -1,4 +1,6 @@
-﻿namespace Chirp.RazorTest.End2EndTests;
+﻿using Microsoft.Playwright;
+
+namespace Chirp.RazorTest.End2EndTests;
 
 public class BadActorTests : PlaywrightPageTester
 {
@@ -12,4 +14,21 @@ public class BadActorTests : PlaywrightPageTester
         await PostCheep(cheepXSSAttack);
         await AssertCheepPosted(DefaultUsername, cheepXSSAttack);
     }
+
+    [Test]
+    public async Task SQLInjectionAttack()
+    {
+        const string username = "Robert'); DROP Table AspNetUsers;--";
+        const string email = "bobby@tables.sql";
+        const string password = "Pa$$w0rd";
+        
+        await Register(username, email, password);
+
+        throw new NotImplementedException();
+        
+        // This kinda should work, and it does if you manually do the test case, but for some reason, it doesn't work :(
+        await AssertContainsText(AriaRole.Listitem, $"Username '{username}' is invalid, can only contain letters or digits.");
+        
+        // P.S. You can probably come up with a better test case than this, so please do :D
+    } 
 }
