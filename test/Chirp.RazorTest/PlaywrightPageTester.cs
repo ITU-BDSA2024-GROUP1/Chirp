@@ -7,6 +7,10 @@ namespace Chirp.RazorTest;
 public abstract class PlaywrightPageTester : PageTest
 {
     private const string HomepageUrl = "http://localhost:5273/";
+    private protected const string
+        DefaultEmail = "ropf@itu.dk",
+        DefaultUsername = "Helge",
+        DefaultPassword = "LetM31n!";
 
     // Locators
     private ILocator GetLocator(string elementName) => Page.Locator(elementName);
@@ -69,5 +73,9 @@ public abstract class PlaywrightPageTester : PageTest
         await AssertContainsText("button", $"logout [{username}]");
         await AssertContainsText("h3", $"What's on your mind {username}?");
         await AssertContainsText("body", "my timeline");
+    }
+    private protected async Task AssertCheepPosted(string username, string cheep)
+    {
+        await AssertContainsText("#messagelist", $"{username} {cheep}");
     }
 }
