@@ -36,6 +36,14 @@ public class BadInteractionsTest : PlaywrightPageTester
     }
 
     [Test]
+    public async Task BadUsername()
+    {
+        const string badUsername = "\u00af\\_(ツ)_/\u00af"; // ¯\_(ツ)_/¯ <-- This emoji
+        await Register("name@example.com", badUsername, "Pa$$w0rd");
+        await AssertContainsText(AriaRole.Listitem, $"Username '{badUsername}' is invalid, can only contain letters or digits.");
+    }
+
+    [Test]
     public async Task EmailTaken()
     {
         await Register(DefaultEmail, "Testerson", "Pa$$w0rd");
