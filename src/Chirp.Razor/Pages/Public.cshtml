@@ -7,7 +7,7 @@
 
 <div>
     <h2> Public Timeline </h2>
-    @if (User.Identity.IsAuthenticated)
+    @if (User.Identity!.IsAuthenticated)
     {
         <div class="cheepbox" style="min-height: 60px">
             <h3>What's on your mind @(User.Identity.Name)?</h3>
@@ -39,7 +39,14 @@
                         <strong>
                             <a href="/@cheep.Author">@cheep.Author</a>
                         </strong>
-						<input id="btnFollow" type="submit" value="Follow" formmethod="post" asp-page-handler="ChangeFollowStatusAsync"/>
+						@if (User.Identity.IsAuthenticated && !User.Identity.Name!.Equals(cheep.Author))
+						{
+							@if (await Model.AFollowsBAsync(User.Identity.Name, cheep.Author)) Model.FollowOrUnfollow = "Unfollow"; else Model.FollowOrUnfollow = "Follow";
+							<form method="post">
+								<input type="hidden" name="cheepAuthor" value="@cheep.Author" />
+								<button type="submit" asp-page-handler="ChangeFollowStatus">@Model.FollowOrUnfollow</button>
+							</form>
+						}
 						<br />
 						@cheep.Message
 						<br />

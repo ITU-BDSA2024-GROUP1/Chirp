@@ -10,9 +10,9 @@ namespace Chirp.Core.Repositories;
 
 public interface IFollowRepository
 {
-    Task<List<FollowDTO>> GetFollowersById (string id);
-    Task<List<FollowDTO>> GetFollowingById (string id);
-    Task<FollowDTO> GetFollow (string followerId, string followedId);
+    Task<List<FollowDTO>> GetFollowersByName (string namne);
+    Task<List<FollowDTO>> GetFollowingByName (string name);
+    Task<FollowDTO> GetFollow (string followerName, string followedName);
     Task AddFollow (FollowDTO entity);
     Task RemoveFollow (FollowDTO entity);
 }

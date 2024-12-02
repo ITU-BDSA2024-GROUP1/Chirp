@@ -14,51 +14,54 @@ using Microsoft.EntityFrameworkCore;
 namespace Chirp.Core.Repositories;
 public class FollowRepository(ChirpDBContext dbContext) : IFollowRepository
 {
-    public async Task<List<FollowDTO>> GetFollowersById(string id)
+    public async Task<List<FollowDTO>> GetFollowersByName(string name)
     {
-        var query = dbContext.Follows.Where(a => a.FollowerId == id).Select(f => new FollowDTO
+        var query = dbContext.Follows.Where(a => a.Follower.UserName == name).Select(f => new FollowDTO
         {
-            FollowerId = f.FollowerId,
-            FollowedId = f.FollowerId
+            FollowerName = f.Follower.UserName,
+            FollowedName = f.Followed.UserName
         });
         if (query == null) return null;
 
         return await query.ToListAsync();
     }
 
-    public async Task<List<FollowDTO>> GetFollowingById(string id)
+    public async Task<List<FollowDTO>> GetFollowingByName(string name)
     {
-        var query = dbContext.Follows.Where(a => a.FollowedId == id).Select(f => new FollowDTO
+        var query = dbContext.Follows.Where(a => a.Followed.UserName == name).Select(f => new FollowDTO
         {
-            FollowerId = f.FollowerId,
-            FollowedId = f.FollowerId
+            FollowerName = f.FollowerId,
+            FollowedName = f.FollowerId
         });
         if (query == null) return null;
 
         return await query.ToListAsync();
     }
 
-    public async Task<FollowDTO> GetFollow(string followerId, string followedId) 
+    public async Task<FollowDTO> GetFollow(string followerName, string followedName) 
     {
-        var follow = await dbContext.Follows.Where(a => a.FollowerId == followerId && a.FollowedId == followedId).FirstOrDefaultAsync();
-        if (follow != null) return null;
-        var followDTO = new FollowDTO { FollowedId = follow.FollowedId, FollowerId = follow.FollowerId };
+        var followDTO = await dbContext.Follows.Where(a => a.Follower.UserName == followerName && a.Followed.UserName == followedName).Select(f => new FollowDTO
+        {
+            FollowerName = f.Follower.UserName,
+            FollowedName = f.Followed.UserName
+        }).FirstOrDefaultAsync();
+        if (followDTO == null) return null;
         return followDTO;
     }
 
     public async Task AddFollow(FollowDTO entity) 
     {
-        var follower = await dbContext.Authors.Where(a => a.Id == entity.FollowerId).FirstOrDefaultAsync();
-        var followed = await dbContext.Authors.Where(a => a.Id == entity.FollowedId).FirstOrDefaultAsync();
+        var follower = await dbContext.Authors.Where(a => a.UserName == entity.FollowerName).FirstOrDefaultAsync();
+        var followed = await dbContext.Authors.Where(a => a.UserName == entity.FollowedName).FirstOrDefaultAsync();
         if (follower == null) throw new KeyNotFoundException("Follower not found");
         if (follower == null) throw new KeyNotFoundException("Followed not found");
 
         var follow = new Follow
         {
-            Follower = followed,
-            FollowerId = entity.FollowerId,
+            Follower = follower,
+            FollowerId = follower.Id,
             Followed = followed,
-            FollowedId = entity.FollowedId
+            FollowedId = followed.Id
 
         };
 
@@ -78,17 +81,17 @@ public class FollowRepository(ChirpDBContext dbContext) : IFollowRepository
 
     public async Task RemoveFollow(FollowDTO entity)
     {
-        var follower = await dbContext.Authors.Where(a => a.Id == entity.FollowerId).FirstOrDefaultAsync();
-        var followed = await dbContext.Authors.Where(a => a.Id == entity.FollowedId).FirstOrDefaultAsync();
-        if (follower != null) throw new KeyNotFoundException("Follower not found");
-        if (follower != null) throw new KeyNotFoundException("Followed not found");
+        var follower = await dbContext.Authors.Where(a => a.UserName == entity.FollowerName).FirstOrDefaultAsync();
+        var followed = await dbContext.Authors.Where(a => a.UserName == entity.FollowedName).FirstOrDefaultAsync();
+        if (follower == null) throw new KeyNotFoundException("Follower not found");
+        if (follower == null) throw new KeyNotFoundException("Followed not found");
 
         var follow = new Follow
         {
-            Follower = followed,
-            FollowerId = entity.FollowerId,
+            Follower = follower,
+            FollowerId = follower.Id,
             Followed = followed,
-            FollowedId = entity.FollowedId
+            FollowedId = followed.Id
 
         };
 

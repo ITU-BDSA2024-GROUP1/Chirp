@@ -9,9 +9,9 @@ using Chirp.Core.DataTransferObject;
 namespace Chirp.Infrastructure.FollowService;
 public interface IFollowService
 {
-    public Task<List<FollowViewModel>> GetFollowersById(string id);
-    public Task<List<FollowViewModel>> GetFollowingById(string id);
-    public Task<FollowViewModel> GetFollow(string followerId, string followedId);
+    public Task<List<FollowViewModel>> GetFollowersByName(string name);
+    public Task<List<FollowViewModel>> GetFollowingByName(string name);
+    public Task<FollowViewModel> GetFollow(string followerName, string followedName);
     public Task AddFollow(FollowViewModel entity);
     public Task RemoveFollow(FollowViewModel entity);
 }

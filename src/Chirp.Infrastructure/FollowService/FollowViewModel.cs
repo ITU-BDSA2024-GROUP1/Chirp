@@ -1,2 +1,2 @@
 ﻿namespace Chirp.Infrastructure.FollowService;
-public record FollowViewModel (string followerId, string followedId);
+public record FollowViewModel (string followerName, string followedName);

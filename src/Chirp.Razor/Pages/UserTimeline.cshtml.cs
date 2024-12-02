@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+using Chirp.Core.Entities;
 using Chirp.Infrastructure.CheepService;
+using Chirp.Infrastructure.FollowService;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Chirp.Razor.Pages;
 
-public class UserTimelineModel(ICheepService service) : PageModel
+public class UserTimelineModel(ICheepService service, IFollowService followService) : PageModel
 {
     public List<CheepViewModel> Cheeps { get; set; } = new List<CheepViewModel>();
 
@@ -54,6 +56,24 @@ public class UserTimelineModel(ICheepService service) : PageModel
 
         // Redirect to avoid form re-submission
         return RedirectToPage();
+    }
+    public IActionResult OnPostChangeFollowStatus()
+    {
+        var cheepAuthor = Request.Form["cheepAuthor"];
+        if (AFollowsBAsync(User.Identity.Name, cheepAuthor).Result)
+        {
+            followService.RemoveFollow(new FollowViewModel(User.Identity!.Name, cheepAuthor));
+            return RedirectToPage();
+        }
+        followService.AddFollow(new FollowViewModel(User.Identity!.Name, cheepAuthor));
+        return RedirectToPage();
+    }
+
+    public async Task<bool> AFollowsBAsync(string A, string B)
+    {
+        FollowViewModel FVM = await followService.GetFollow(A, B);
+        if (FVM != null) return true;
+        return false;
     }
 
     public int CurrentPage { get; set; }
