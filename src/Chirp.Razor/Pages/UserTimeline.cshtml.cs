@@ -6,12 +6,14 @@ using Chirp.Infrastructure.FollowService;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Chirp.Razor.Pages;
 
 public class UserTimelineModel(ICheepService service, IFollowService followService) : PageModel
 {
     public List<CheepViewModel> Cheeps { get; set; } = new List<CheepViewModel>();
+    public string FollowOrUnfollow { get; set; } = "Follow";
 
     [BindProperty]
     [Required]
@@ -60,7 +62,8 @@ public class UserTimelineModel(ICheepService service, IFollowService followServi
     public IActionResult OnPostChangeFollowStatus()
     {
         var cheepAuthor = Request.Form["cheepAuthor"];
-        if (AFollowsBAsync(User.Identity.Name, cheepAuthor).Result)
+        if (!User.Identity!.IsAuthenticated || cheepAuthor.IsNullOrEmpty()) return RedirectToPage();
+        if (AFollowsBAsync(User.Identity.Name!, cheepAuthor!).Result)
         {
             followService.RemoveFollow(new FollowViewModel(User.Identity!.Name, cheepAuthor));
             return RedirectToPage();

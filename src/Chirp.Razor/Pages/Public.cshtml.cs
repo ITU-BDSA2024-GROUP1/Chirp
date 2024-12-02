@@ -7,13 +7,13 @@ using Chirp.Infrastructure.CheepService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Chirp.Infrastructure.FollowService;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Chirp.Razor.Pages;
 
 public class PublicModel(ICheepService cheepService, IFollowService followService) : PageModel
 {
     public List<CheepViewModel> Cheeps { get; set; } = new List<CheepViewModel>();
-    public List<string> Follows { get; set; } = new List<string>();
     public string FollowOrUnfollow { get; set; } = "Follow";
 
     [BindProperty]
@@ -33,11 +33,6 @@ public class PublicModel(ICheepService cheepService, IFollowService followServic
         CurrentPage = cheepsResult.CurrentPage;
         TotalPages = cheepsResult.TotalPages;
 
-        if (!User.Identity!.IsAuthenticated) return Page();
-        var followResult = await followService.GetFollowersByName(User.Identity.Name);
-        if (followResult.Count == 0) return Page();
-        Follows = new List<string>();
-        foreach (var item in followResult) Follows.Add(item.followedName);
         return Page();
     }
     public async Task<IActionResult> OnPostAsync()
@@ -62,7 +57,8 @@ public class PublicModel(ICheepService cheepService, IFollowService followServic
     public IActionResult OnPostChangeFollowStatus()
     {
         var cheepAuthor = Request.Form["cheepAuthor"];
-        if (AFollowsBAsync(User.Identity.Name, cheepAuthor).Result)
+        if (!User.Identity!.IsAuthenticated || cheepAuthor.IsNullOrEmpty()) return RedirectToPage();
+        if (AFollowsBAsync(User.Identity.Name!, cheepAuthor!).Result)
         {
             followService.RemoveFollow(new FollowViewModel(User.Identity!.Name, cheepAuthor));
             return RedirectToPage();
