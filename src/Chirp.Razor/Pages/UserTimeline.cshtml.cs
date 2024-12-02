@@ -30,7 +30,11 @@ public class UserTimelineModel(ICheepService service, IFollowService followServi
         }
 
         const int pageSize = 32; // Define your page size
-        var cheepsResult = await service.GetCheepsFromAuthor(author, page, pageSize);
+        List<FollowViewModel> Follows = await followService.GetFollowersByName(author);
+        List<string> authors = new List<string>();
+        foreach (FollowViewModel f in Follows) authors.Add(f.followedName);
+        authors.Add(author);
+        var cheepsResult = await service.GetCheepsFromAuthor(authors, page, pageSize);
         if (cheepsResult.Items != null)
         {
             Cheeps.AddRange(cheepsResult.Items);

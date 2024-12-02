@@ -15,7 +15,7 @@ public class FollowService(IFollowRepository followRepository) : IFollowService
         List<FollowDTO> follows = await followRepository.GetFollowersByName(name);
         if (follows == null) return null;
         List<FollowViewModel> result = new List<FollowViewModel>();
-        foreach (FollowDTO follow in follows) result.Add(new FollowViewModel(follow.FollowerName, follow.FollowerName));
+        foreach (FollowDTO follow in follows) result.Add(new FollowViewModel(follow.FollowerName, follow.FollowedName));
         return result;
     }
     async public Task<List<FollowViewModel>> GetFollowingByName(string name)

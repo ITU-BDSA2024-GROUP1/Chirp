@@ -122,6 +122,35 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
         };
     }
 
+    public async Task<PagedResult<CheepDTO>> GetCheepsByAuthorNameAsync(List<string> authorNames, int page, int pageSize)
+    {
+        var query = dbContext.Cheeps
+            .Include(c => c.Author)
+            .Where(c => authorNames.Contains(c.Author.UserName))
+            .Select(c => new CheepDTO
+            {
+                Id = c.CheepId,
+                Name = c.Author.UserName,
+                Message = c.Text,
+                TimeStamp = c.TimeStamp.ToString(),
+                AuthorId = c.AuthorId,
+                AuthorEmail = c.Author.Email
+            });
+
+        var totalCheeps = await query.CountAsync();
+        var cheeps = await query.OrderByDescending(c => c.TimeStamp)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new()
+        {
+            Items = cheeps,
+            CurrentPage = page,
+            TotalPages = (int)Math.Ceiling(totalCheeps / (double)pageSize)
+        };
+    }
+
     public async Task<CheepDTO> GetCheepByIdAsync(int id)
     {
         return await dbContext.Cheeps.Where(c => c.CheepId == id).Select(c => new CheepDTO
