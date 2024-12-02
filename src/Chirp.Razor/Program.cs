@@ -1,10 +1,14 @@
 using Chirp.Core;
 using Chirp.Core.Data;
+using Chirp.Core.Repositories;
+using Chirp.Infrastructure.CheepService;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Chirp.Core.Entities;
-using Chirp.Infrastructure.Repositories;
-using Chirp.Infrastructure.Services.CheepService;
+using Chirp.Infrastructure.FollowService;
 
 namespace Chirp.Razor;
 
@@ -52,10 +56,12 @@ public class Program
         // Register the repositories
         builder.Services.AddScoped<ICheepRepository, CheepRepository>();
         builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+        builder.Services.AddScoped<IFollowRepository, FollowRepository>();
 
         // Add services to the container.
         builder.Services.AddRazorPages();
         builder.Services.AddScoped<ICheepService, CheepService>();
+        builder.Services.AddScoped<IFollowService, FollowService>();
 
         var app = builder.Build();
 

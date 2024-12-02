@@ -28,6 +28,17 @@ public class CheepService(ICheepRepository cheepRepository, IAuthorRepository au
         };
     }
 
+    public async Task<PagedResult<CheepViewModel>> GetCheepsFromAuthor(List<string> authors, int page, int pageSize)
+    {
+        var cheepsResult = await cheepRepository.GetCheepsByAuthorNameAsync(authors, page, pageSize);
+        return new()
+        {
+            Items = cheepsResult.Items.Select(c => new CheepViewModel(c.Name, c.Message, c.TimeStamp)).ToList(),
+            CurrentPage = cheepsResult.CurrentPage,
+            TotalPages = cheepsResult.TotalPages
+        };
+    }
+
     public async Task<CheepViewModel> GetCheepById(int id)
     {
         return CheepDTOToCheepViewModel(await cheepRepository.GetCheepByIdAsync(id));
