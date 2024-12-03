@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 using Chirp.Core.Data;
 using Chirp.Core.DataTransferObject;
@@ -11,41 +6,46 @@ using Chirp.Core.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Chirp.Core.Repositories;
+namespace Chirp.Infrastructure.Repositories;
+
 public class FollowRepository(ChirpDBContext dbContext) : IFollowRepository
 {
     public async Task<List<FollowDTO>> GetFollowersByName(string name)
     {
-        var query = dbContext.Follows.Where(a => a.Follower.UserName == name).Select(f => new FollowDTO
+        var query = dbContext.Follows
+            .Where(a => a.Follower.UserName == name)
+            .Select(f => new FollowDTO
         {
             FollowerName = f.Follower.UserName,
             FollowedName = f.Followed.UserName
         });
-        if (query == null) return null;
 
         return await query.ToListAsync();
     }
 
     public async Task<List<FollowDTO>> GetFollowingByName(string name)
     {
-        var query = dbContext.Follows.Where(a => a.Followed.UserName == name).Select(f => new FollowDTO
+        var query = dbContext.Follows
+            .Where(a => a.Followed.UserName == name)
+            .Select(f => new FollowDTO
         {
             FollowerName = f.FollowerId,
             FollowedName = f.FollowerId
         });
-        if (query == null) return null;
 
         return await query.ToListAsync();
     }
 
     public async Task<FollowDTO> GetFollow(string followerName, string followedName) 
     {
-        var followDTO = await dbContext.Follows.Where(a => a.Follower.UserName == followerName && a.Followed.UserName == followedName).Select(f => new FollowDTO
+        var followDTO = await dbContext.Follows
+            .Where(a => a.Follower.UserName == followerName && a.Followed.UserName == followedName)
+            .Select(f => new FollowDTO
         {
             FollowerName = f.Follower.UserName,
             FollowedName = f.Followed.UserName
         }).FirstOrDefaultAsync();
-        if (followDTO == null) return null;
+        
         return followDTO;
     }
 
@@ -74,8 +74,7 @@ public class FollowRepository(ChirpDBContext dbContext) : IFollowRepository
             throw new ValidationException(messages);
         }
 
-        var queryResult = await dbContext.Follows.AddAsync(follow);
-
+        await dbContext.Follows.AddAsync(follow);
         await dbContext.SaveChangesAsync();
     }
 
@@ -104,8 +103,7 @@ public class FollowRepository(ChirpDBContext dbContext) : IFollowRepository
             throw new ValidationException(messages);
         }
 
-        var queryResult = dbContext.Follows.Remove(follow);
-
+        dbContext.Follows.Remove(follow);
         await dbContext.SaveChangesAsync();
     }
 }

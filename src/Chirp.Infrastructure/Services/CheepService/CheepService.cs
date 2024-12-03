@@ -11,7 +11,7 @@ public class CheepService(ICheepRepository cheepRepository, IAuthorRepository au
         var cheepsResult = await cheepRepository.GetAllCheepsAsync(page, pageSize);
         return new()
         {
-            Items = cheepsResult.Items.Select(c => new CheepViewModel(c.Name, c.Message, c.TimeStamp)).ToList(),
+            Items = cheepsResult.Items.Select(CheepDTOToCheepViewModel).ToList(),
             CurrentPage = cheepsResult.CurrentPage,
             TotalPages = cheepsResult.TotalPages
         };
@@ -22,7 +22,7 @@ public class CheepService(ICheepRepository cheepRepository, IAuthorRepository au
         var cheepsResult = await cheepRepository.GetCheepsByAuthorNameAsync(author, page, pageSize);
         return new()
         {
-            Items = cheepsResult.Items.Select(c => new CheepViewModel(c.Name, c.Message, c.TimeStamp)).ToList(),
+            Items = cheepsResult.Items.Select(CheepDTOToCheepViewModel).ToList(),
             CurrentPage = cheepsResult.CurrentPage,
             TotalPages = cheepsResult.TotalPages
         };
@@ -33,7 +33,7 @@ public class CheepService(ICheepRepository cheepRepository, IAuthorRepository au
         var cheepsResult = await cheepRepository.GetCheepsByAuthorNameAsync(authors, page, pageSize);
         return new()
         {
-            Items = cheepsResult.Items.Select(c => new CheepViewModel(c.Name, c.Message, c.TimeStamp)).ToList(),
+            Items = cheepsResult.Items.Select(CheepDTOToCheepViewModel).ToList(),
             CurrentPage = cheepsResult.CurrentPage,
             TotalPages = cheepsResult.TotalPages
         };
@@ -50,6 +50,7 @@ public class CheepService(ICheepRepository cheepRepository, IAuthorRepository au
         AuthorDTO author = await authorRepository.GetAuthorByNameAsync(cheep.Name);
         cheep.AuthorEmail = author.Email;
         cheep.AuthorId = author.Id;
+        
         return await cheepRepository.AddCheepAsync(cheep);
     }
 

@@ -8,13 +8,13 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
     public async Task<AuthorViewModel> GetAuthorByName(string author)
     {
         var authorResult = await authorRepository.GetAuthorByNameAsync(author);
-        return new(authorResult.Id, authorResult.Name, authorResult.Email);
+        return AuthorDTOToAuthorViewModel(authorResult);
     }
 
     public async Task<AuthorViewModel> GetAuthorByEmail(string email)
     {
         var authorResult = await authorRepository.GetAuthorByEmailAsync(email);
-        return new(authorResult.Id, authorResult.Name, authorResult.Email);
+        return AuthorDTOToAuthorViewModel(authorResult);
     }
 
     public async Task<string> CreateAuthor(AuthorViewModel authorViewModel)
@@ -23,7 +23,10 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
         return await authorRepository.AddAuthorAsync(author);
     }
 
-    public async Task<AuthorViewModel> GetAuthorById(string id) { return AuthorDTOToAuthorViewModel(await authorRepository.GetAuthorByIdAsync(id)); }
+    public async Task<AuthorViewModel> GetAuthorById(string id)
+    {
+        return AuthorDTOToAuthorViewModel(await authorRepository.GetAuthorByIdAsync(id));
+    }
 
     private static AuthorViewModel AuthorDTOToAuthorViewModel(AuthorDTO authorDTO)
     {

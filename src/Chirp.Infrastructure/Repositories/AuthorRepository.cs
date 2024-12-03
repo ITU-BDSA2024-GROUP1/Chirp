@@ -39,7 +39,8 @@ public class AuthorRepository(ChirpDBContext dbContext) : IAuthorRepository
 
     public async Task<IEnumerable<AuthorDTO>> GetAllAuthorsAsync()
     {
-        return await dbContext.Authors.Select(a => new AuthorDTO
+        return await dbContext.Authors
+            .Select(a => new AuthorDTO
         {
             Id = a.Id,
             Name = a.UserName,
@@ -49,7 +50,9 @@ public class AuthorRepository(ChirpDBContext dbContext) : IAuthorRepository
 
     public async Task<AuthorDTO> GetAuthorByIdAsync(string id)
     {
-        return await dbContext.Authors.Where(a => a.Id == id).Select(a => new AuthorDTO
+        return await dbContext.Authors
+            .Where(a => a.Id == id)
+            .Select(a => new AuthorDTO
         {
             Id = a.Id,
             Name = a.UserName,
@@ -59,7 +62,9 @@ public class AuthorRepository(ChirpDBContext dbContext) : IAuthorRepository
         
     public async Task<AuthorDTO> GetAuthorByNameAsync(string name)
     {
-        return await dbContext.Authors.Where(a => a.UserName == name).Select(a => new AuthorDTO
+        return await dbContext.Authors
+            .Where(a => a.UserName == name)
+            .Select(a => new AuthorDTO
         {
             Id = a.Id, Name = a.UserName, Email = a.Email
         }).FirstOrDefaultAsync();
@@ -67,7 +72,9 @@ public class AuthorRepository(ChirpDBContext dbContext) : IAuthorRepository
 
     public async Task<AuthorDTO> GetAuthorByEmailAsync(string email)
     {
-        return await dbContext.Authors.Where(a=> a.Email == email).Select(a => new AuthorDTO
+        return await dbContext.Authors
+            .Where(a=> a.Email == email)
+            .Select(a => new AuthorDTO
         {
             Id = a.Id,
             Name = a.UserName,

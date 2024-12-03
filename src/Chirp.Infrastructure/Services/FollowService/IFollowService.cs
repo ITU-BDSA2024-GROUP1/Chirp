@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Chirp.Infrastructure.Services.FollowService;
 
-using Chirp.Core.DataTransferObject;
-
-namespace Chirp.Infrastructure.FollowService;
 public interface IFollowService
 {
     public Task<List<FollowViewModel>> GetFollowersByName(string name);
     public Task<List<FollowViewModel>> GetFollowingByName(string name);
     public Task<FollowViewModel> GetFollow(string followerName, string followedName);
-    public Task AddFollow(FollowViewModel entity);
+    public Task AddFollow(FollowViewModel followViewModel);
     public Task RemoveFollow(FollowViewModel entity);
 }
