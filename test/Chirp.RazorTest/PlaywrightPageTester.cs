@@ -28,7 +28,7 @@ public abstract class PlaywrightPageTester : PageTest
         _webServer.StartInfo.RedirectStandardOutput = true;
         _webServer.Start();
         
-        Thread.Sleep(2000);
+        Thread.Sleep(5000);
         Assert.That(_webServer?.HasExited, Is.False);
     }
 
@@ -98,9 +98,10 @@ public abstract class PlaywrightPageTester : PageTest
     private protected async Task AssertLoggedInAs(string username)
     {
         await GotoHomePage();
-        await AssertContainsText("button", $"logout [{username}]");
+        await AssertContainsText("body", $"logout [{username}]");
         await AssertContainsText("h3", $"What's on your mind {username}?");
         await AssertContainsText("body", "my timeline");
+        await AssertContainsText("body", "About me");
     }
     private protected async Task AssertCheepPosted(string username, string cheep)
     {
