@@ -193,4 +193,18 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
     {
         return await dbContext.Cheeps.Where(c => c.Author.UserName == authorName).CountAsync();
     }
+
+    public async Task<CheepDTO> GetCheepByNotIDAsync(string author, string message, string timestamp)
+    {
+
+        return await dbContext.Cheeps.Where(c => c.Author.UserName == author && c.Text == message && c.TimeStamp.ToString() == timestamp).Select(c => new CheepDTO
+        {
+            Id = c.CheepId,
+            Name = c.Author.UserName,
+            Message = c.Text,
+            TimeStamp = c.TimeStamp.ToString(),
+            AuthorId = c.AuthorId,
+            AuthorEmail = c.Author.Email
+        }).FirstOrDefaultAsync();
+    }
 }

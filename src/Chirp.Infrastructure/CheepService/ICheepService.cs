@@ -1,4 +1,5 @@
-﻿using Chirp.Core.Models;
+﻿using Chirp.Core.DataTransferObject;
+using Chirp.Core.Models;
 
 namespace Chirp.Infrastructure.CheepService;
 
@@ -10,4 +11,5 @@ public interface ICheepService
     public Task<CheepViewModel> GetCheepById(int id);
     public Task<int> PostCheep(CheepViewModel cheep);
     public Task<int> GetCheepCount(string authorName);
+    public Task<CheepDTO> DeleteCheep(CheepViewModel cheep);
 }

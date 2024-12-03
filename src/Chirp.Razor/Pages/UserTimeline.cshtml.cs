@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.Design;
 
 using Chirp.Core.Entities;
 using Chirp.Infrastructure.CheepService;
@@ -10,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Chirp.Razor.Pages;
 
-public class UserTimelineModel(ICheepService service, IFollowService followService) : PageModel
+public class UserTimelineModel(ICheepService cheepService, IFollowService followService) : PageModel
 {
     public List<CheepViewModel> Cheeps { get; set; } = new List<CheepViewModel>();
     public string FollowOrUnfollow { get; set; } = "Follow";
@@ -34,7 +35,7 @@ public class UserTimelineModel(ICheepService service, IFollowService followServi
         List<string> authors = new List<string>();
         foreach (FollowViewModel f in Follows) authors.Add(f.followedName);
         authors.Add(author);
-        var cheepsResult = await service.GetCheepsFromAuthor(authors, page, pageSize);
+        var cheepsResult = await cheepService.GetCheepsFromAuthor(authors, page, pageSize);
         if (cheepsResult.Items != null)
         {
             Cheeps.AddRange(cheepsResult.Items);
@@ -58,7 +59,7 @@ public class UserTimelineModel(ICheepService service, IFollowService followServi
         //Cheeps.Add(newCheep);
 
         // Optionally: Save the new message to a database or cache here
-        await service.PostCheep(newCheep);
+        await cheepService.PostCheep(newCheep);
 
         // Redirect to avoid form re-submission
         return RedirectToPage();
@@ -81,6 +82,13 @@ public class UserTimelineModel(ICheepService service, IFollowService followServi
         FollowViewModel FVM = await followService.GetFollow(A, B);
         if (FVM != null) return true;
         return false;
+    }
+
+    public async Task<IActionResult> OnPostDeleteCheep()
+    {
+        CheepViewModel cheep = new CheepViewModel(Request.Form["cheepAuthor"], Request.Form["cheepMessage"], Request.Form["cheepTimestamp"]);
+        await cheepService.DeleteCheep(cheep);
+        return RedirectToPage();
     }
 
     public int CurrentPage { get; set; }
