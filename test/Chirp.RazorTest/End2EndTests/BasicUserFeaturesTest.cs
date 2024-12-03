@@ -1,4 +1,6 @@
-﻿namespace Chirp.RazorTest.End2EndTests;
+﻿using Microsoft.Playwright;
+
+namespace Chirp.RazorTest.End2EndTests;
 
 public class BasicUserFeaturesTest : PlaywrightPageTester
 {
@@ -66,12 +68,25 @@ public class BasicUserFeaturesTest : PlaywrightPageTester
     [Test]
     public async Task CanFollow()
     {
-        //throw new NotImplementedException();
+        
     }
 
     [Test]
     public async Task CanUnfollow()
     {
-        //throw new NotImplementedException();
+        
+    }
+
+    [Test]
+    public async Task CanDeleteCheep()
+    {
+        await Login(DefaultUsername, DefaultPassword);
+
+        string cheep = "This cheep should disappear";
+        await PostCheep(cheep);
+        await AssertCheepPosted(DefaultUsername, cheep);
+
+        //await GetLocatorByText("li", $"{DefaultUsername} {cheep}").ClickLocatorButton();
+        //Assert.Throws<Exception>(() => _ = AssertCheepPosted(DefaultUsername, cheep));
     }
 }

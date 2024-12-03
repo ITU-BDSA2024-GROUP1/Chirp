@@ -17,6 +17,9 @@ public abstract class PlaywrightPageTester : PageTest
     private ILocator GetByRole(AriaRole role) => Page.GetByRole(role);
     private ILocator GetByRole(AriaRole role, string elementName, bool exact) => Page.GetByRole(role, new() { Name = elementName, Exact = exact });
     private ILocator GetByLabel(string labelName, bool exact) => Page.GetByLabel(labelName, new() { Exact = exact });
+
+    private protected ILocator GetLocatorByText(string selectorName, string text) =>
+        GetLocator(selectorName).Filter(new() { HasText = text });
     
     // Atomic Actions
     private async Task GotoHomePage() => await Page.GotoAsync(HomepageUrl);
