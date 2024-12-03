@@ -62,4 +62,16 @@ public class BasicUserFeaturesTest : PlaywrightPageTester
         await AssertContainsText("h2", $"{DefaultUsername}'s Timeline");
         await AssertCheepPosted(DefaultUsername, cheep);
     }
+
+    [Test]
+    public async Task CanFollow()
+    {
+        throw new NotImplementedException();
+    }
+
+    [Test]
+    public async Task CanUnfollow()
+    {
+        throw new NotImplementedException();
+    }
 }

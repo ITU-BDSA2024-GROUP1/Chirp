@@ -5,6 +5,18 @@ namespace Chirp.RazorTest.End2EndTests;
 public class BadInteractionsTest : PlaywrightPageTester
 {
     [Test]
+    public async Task CheepNothing()
+    {
+        throw new NotImplementedException();
+    }
+
+    [Test]
+    public async Task CheepTooLong()
+    {
+        throw new NotImplementedException();
+    }
+    
+    [Test]
     public async Task LoginWithMissingFields()
     {
         await Login("", "");
