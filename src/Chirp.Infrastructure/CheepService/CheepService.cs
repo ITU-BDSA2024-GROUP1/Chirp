@@ -80,4 +80,8 @@ public class CheepService(ICheepRepository cheepRepository, IAuthorRepository au
     {
         return await cheepRepository.DeleteCheepAsync((await cheepRepository.GetCheepByNotIDAsync(cheep.Author, cheep.Message, cheep.Timestamp)).Id);
     }
+    public async Task UpdateCheep(CheepViewModel cheep)
+    {
+        await cheepRepository.UpdateCheepAsync(CheepViewModelToCheepDTO(cheep));
+    }
 }

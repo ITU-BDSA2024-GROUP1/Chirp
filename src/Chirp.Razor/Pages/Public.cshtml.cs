@@ -80,6 +80,12 @@ public class PublicModel(ICheepService cheepService, IFollowService followServic
         await cheepService.DeleteCheep(cheep);
         return RedirectToPage();
     }
+    public async Task<IActionResult> OnPostEditCheep()
+    {
+        CheepViewModel cheep = new CheepViewModel(Request.Form["cheepAuthor"], Request.Form["cheepMessage"], Request.Form["cheepTimestamp"]);
+        await cheepService.DeleteCheep(cheep);
+        return RedirectToPage();
+    }
 
     public int CurrentPage { get; set; }
     public int TotalPages { get; set; }

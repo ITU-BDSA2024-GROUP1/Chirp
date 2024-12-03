@@ -55,18 +55,46 @@
 								<a href="/@cheep.Author">@cheep.Author</a>
 							</strong>
 						}
-						<br />
-						@cheep.Message
+                        <br />
+                        <p id="edit">
+                            @cheep.Message
+                        </p>
 						<br />
 						<small>&mdash; @cheep.Timestamp</small>
 						@if (User.Identity.IsAuthenticated && User.Identity.Name!.Equals(cheep.Author))
 						{
-							<form method="post">
-								<input type="hidden" name="cheepAuthor" value="@cheep.Author" />
-								<input type="hidden" name="cheepMessage" value="@cheep.Message" />
-								<input type="hidden" name="cheepTimestamp" value="@cheep.Timestamp" />
-								<button type="submit" asp-page-handler="DeleteCheep">Delete</button>
-							</form>
+                            <form method="post">
+                                <input type="hidden" name="cheepAuthor" value="@cheep.Author" />
+                                <input type="hidden" name="cheepMessage" value="@cheep.Message" />
+                                <input type="hidden" name="cheepTimestamp" value="@cheep.Timestamp" />
+                                <button type="submit" asp-page-handler="DeleteCheep">Delete</button>
+                            </form>
+                            
+                            <form method="post" asp-page-handler="EditCheep">
+                                <input type="hidden" name="cheepAuthor" value="@cheep.Author" />
+                                <input type="hidden" name="originalCheepMessage" value="@cheep.Message" />
+                                <input type="hidden" name="timeStamp" value="@cheep.Timestamp" />
+                                <input type="hidden" id="editedCheepMessage" name="cheepMessage" value="" />
+                                <button type="button" id="edit-button">Edit</button>
+                                <button type="submit" id="end-editing" >Done</button>
+                            </form>
+                            <script>
+                                const paragraph = document.getElementById("edit");
+                                const editButton = document.getElementById("edit-button");
+                                const endButton = document.getElementById("end-editing");
+                                const editedCheepMessageInput = document.getElementById("editedCheepMessage");
+
+                                editButton.addEventListener("click", function () {
+                                    paragraph.contentEditable = true;
+                                    paragraph.style.backgroundColor = "#dddbdb";
+                                });
+
+                                endButton.addEventListener("click", function () {
+                                    paragraph.contentEditable = false;
+                                    paragraph.style.backgroundColor = "#f0faf9";
+                                    editedCheepMessageInput.value = paragraph.innerHTML;
+                                });
+                            </script>
 						}
 					</p>
                 </li>

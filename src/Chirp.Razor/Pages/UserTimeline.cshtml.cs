@@ -8,6 +8,9 @@ using Chirp.Infrastructure.FollowService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.JSInterop;
+
+using NuGet.Packaging.Signing;
 
 namespace Chirp.Razor.Pages;
 
@@ -89,6 +92,12 @@ public class UserTimelineModel(ICheepService cheepService, IFollowService follow
         CheepViewModel cheep = new CheepViewModel(Request.Form["cheepAuthor"], Request.Form["cheepMessage"], Request.Form["cheepTimestamp"]);
         await cheepService.DeleteCheep(cheep);
         return RedirectToPage();
+    }
+    public async Task OnPostEditCheep(string cheepAuthor, string cheepMessage,string timeStamp)
+    {
+        Console.WriteLine(cheepAuthor+" "+cheepMessage+" "+timeStamp);
+        await cheepService.UpdateCheep(new CheepViewModel(cheepAuthor, cheepMessage, timeStamp));
+        
     }
 
     public int CurrentPage { get; set; }
