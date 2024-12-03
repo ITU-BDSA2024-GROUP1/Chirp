@@ -8,6 +8,7 @@ using Chirp.Razor.Areas.Identity.Pages.Account.Manage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Chirp.Infrastructure.FollowService;
 
 namespace Chirp.Razor.Pages
 {
@@ -16,13 +17,18 @@ namespace Chirp.Razor.Pages
         private readonly SignInManager<Author> _signInManager;
         private readonly UserManager<Author> _userManager;
         private readonly ICheepService _cheepService;
+        private readonly IFollowService _followService;
         public List<CheepViewModel> Cheeps { get; set; } = new List<CheepViewModel>();
+        public List<FollowViewModel> Follows { get; set; } = new List<FollowViewModel>();
+        public List<FollowViewModel> FollowedBy { get; set; } = new List<FollowViewModel>();
 
-        public AboutMeModel(SignInManager<Author> signInManager, UserManager<Author> userManager, ICheepService cheepService)
+
+        public AboutMeModel(SignInManager<Author> signInManager, UserManager<Author> userManager, ICheepService cheepService, IFollowService followService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _cheepService = cheepService;
+            _followService = followService;
         }
 
         [BindProperty]
@@ -66,6 +72,9 @@ namespace Chirp.Razor.Pages
             {
                 githubUser = false;
             }
+
+            Follows = await _followService.GetFollowersByName(User.Identity.Name);
+            FollowedBy = await _followService.GetFollowingByName(User.Identity.Name);
 
             var cheepCount = await _cheepService.GetCheepCount(user.UserName);
             var cheepsResult = await _cheepService.GetCheepsFromAuthor(user.UserName, 1, cheepCount);
