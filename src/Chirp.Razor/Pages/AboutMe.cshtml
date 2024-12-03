@@ -7,7 +7,9 @@
 
 <div>
     <h2>@ViewData["Title"]</h2>
-    
+	<form method="post">
+		<button type="submit" asp-page-handler="ForgetMe">FORGET ME</button>
+	</form>
     <ul>
         <li>Username: @User.Identity.Name</li>
         <li>Email: @Model.Data.Email</li>

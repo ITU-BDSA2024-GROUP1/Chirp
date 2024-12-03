@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Chirp.Core.Entities;
 using Chirp.Infrastructure.FollowService;
+using Chirp.Infrastructure.AuthorService;
 
 namespace Chirp.Razor;
 
@@ -61,6 +62,7 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorPages();
         builder.Services.AddScoped<ICheepService, CheepService>();
+        builder.Services.AddScoped<IAuthorService, AuthorService>();
         builder.Services.AddScoped<IFollowService, FollowService>();
 
         var app = builder.Build();
