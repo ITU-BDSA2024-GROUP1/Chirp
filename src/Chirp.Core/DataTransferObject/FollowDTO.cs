@@ -9,7 +9,7 @@ public class FollowDTO : IEquatable<FollowDTO>
     {
         return
             that != null &&
-            FollowedName.Equals(that.FollowedName) &&
-            FollowerName.Equals(that.FollowerName);
+            this.FollowedName == that.FollowedName &&
+            this.FollowerName == that.FollowerName;
     }
 }

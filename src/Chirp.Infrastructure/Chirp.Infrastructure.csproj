@@ -12,4 +12,9 @@
         <ProjectReference Include="../Chirp.Core/Chirp.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="Services\" />
+        <Folder Include="Repositories\"/>
+    </ItemGroup>
+
 </Project>

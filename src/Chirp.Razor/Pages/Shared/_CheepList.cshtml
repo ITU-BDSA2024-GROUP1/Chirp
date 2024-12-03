@@ -1,0 +1,40 @@
+﻿@model Chirp.Razor.Pages.Shared.CheepTimeline
+
+<ul id="messagelist" class="cheeps">
+    @foreach (var cheep in Model.Cheeps)
+    {
+        <li>
+            <p style="word-wrap:break-word;">
+                @if (User.Identity!.IsAuthenticated && !User.Identity.Name!.Equals(cheep.Author))
+                {
+                    @if (await Model.AFollowsBAsync(User.Identity.Name, cheep.Author)) Model.FollowOrUnfollow = "Unfollow"; else Model.FollowOrUnfollow = "Follow";
+                    <form method="post">
+                        <strong>
+                            <a href="/@cheep.Author">@cheep.Author</a>
+                        </strong>
+                        <input type="hidden" name="cheepAuthor" value="@cheep.Author" />
+                        <button type="submit" asp-page-handler="ChangeFollowStatus">@Model.FollowOrUnfollow</button>
+                    </form>
+                }
+                else
+                {
+                    <strong>
+                        <a href="/@cheep.Author">@cheep.Author</a>
+                    </strong>
+                }
+                <br />
+                @cheep.Message
+                <br />
+                <small>&mdash; @cheep.Timestamp</small>
+                @if (User.Identity.IsAuthenticated && User.Identity.Name!.Equals(cheep.Author))
+                {
+                    <form method="post">
+                        <input type="hidden" name="cheepAuthor" value="@cheep.Author" />
+                        <input type="hidden" name="cheepMessage" value="@cheep.Message" />
+                        <input type="hidden" name="cheepTimestamp" value="@cheep.Timestamp" />
+                        <button type="submit" asp-page-handler="DeleteCheep">Delete</button>
+                    </form>
+                }
+        </li>
+    }
+</ul>
