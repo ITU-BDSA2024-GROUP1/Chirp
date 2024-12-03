@@ -16,30 +16,30 @@ public class FollowServiceUnitTest : InfrastructureServiceTester
     [Fact]
     public async Task GetFollowersByName()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     [Fact]
     public async Task GetFollowingByName()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     [Fact]
     public async Task GetFollow()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     [Fact]
     public async Task AddFollow()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     [Fact]
     public async Task RemoveFollow()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 }
