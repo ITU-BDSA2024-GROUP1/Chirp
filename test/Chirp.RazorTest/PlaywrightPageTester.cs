@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 
 namespace Chirp.RazorTest;
 
@@ -13,32 +11,6 @@ public abstract class PlaywrightPageTester : PageTest
         DefaultEmail = "ropf@itu.dk",
         DefaultUsername = "Helge",
         DefaultPassword = "LetM31n!";
-
-    private Process? _webServer; // WebServer
-
-    [OneTimeSetUp]
-    public void StartWebsite()
-    {
-        _webServer = new();
-        _webServer.StartInfo.FileName = "dotnet";
-        const string projectPath = "../../../../../src/Chirp.Razor/Chirp.Razor.csproj";
-        _webServer.StartInfo.Arguments = $"run --project {projectPath}";
-        _webServer.StartInfo.UseShellExecute = false;
-        _webServer.StartInfo.WorkingDirectory = Directory.GetCurrentDirectory();
-        _webServer.StartInfo.RedirectStandardOutput = true;
-        _webServer.Start();
-        
-        Thread.Sleep(5000);
-        Assert.That(_webServer?.HasExited, Is.False);
-    }
-
-    [OneTimeTearDown]
-    public void StopWebsite()
-    {
-        Assert.That(_webServer?.HasExited, Is.False);
-        _webServer?.Kill();
-        Assert.That(_webServer?.HasExited, Is.True);
-    }
     
     // Locators
     private ILocator GetLocator(string elementName) => Page.Locator(elementName);

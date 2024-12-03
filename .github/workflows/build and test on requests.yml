@@ -37,5 +37,9 @@ jobs:
         run: npx playwright install --with-deps
       - name: Build
         run: dotnet build --no-restore
+      - name: Start server
+        run: dotnet run --project src/Chirp.Razor/Chirp.Razor.csproj &
+      - name: Wait for server to be ready
+        run: sleep 10 # Adjust the sleep duration if needed
       - name: Test
         run: dotnet test --no-build --verbosity normal
