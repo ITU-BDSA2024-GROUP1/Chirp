@@ -42,4 +42,9 @@ public class AuthorService(IAuthorRepository authorRepository) : IAuthorService
             Email = authorViewModel.Email
         };
     }
+
+    public async Task<AuthorDTO> DeleteAuthor(AuthorViewModel author)
+    {
+        return await authorRepository.DeleteAuthorAsync(author.Id);
+    }
 }

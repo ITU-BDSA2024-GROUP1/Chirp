@@ -4,6 +4,8 @@ using Chirp.Core.Data;
 using Microsoft.EntityFrameworkCore;
 
 using Chirp.Core.Entities;
+using Chirp.Infrastructure.FollowService;
+using Chirp.Infrastructure.AuthorService;
 using Chirp.Infrastructure.Repositories;
 using Chirp.Infrastructure.Services.CheepService;
 using Chirp.Infrastructure.Services.FollowService;

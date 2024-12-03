@@ -71,4 +71,14 @@ public class CheepService(ICheepRepository cheepRepository, IAuthorRepository au
             AuthorId = "0"
         };
     }
+
+    public Task<int> GetCheepCount(string authorName)
+    {
+        return cheepRepository.GetCheepCountByAuthor(authorName);
+    }
+
+    public async Task<CheepDTO> DeleteCheep(CheepViewModel cheep)
+    {
+        return await cheepRepository.DeleteCheepAsync((await cheepRepository.GetCheepByNotIDAsync(cheep.Author, cheep.Message, cheep.Timestamp)).Id);
+    }
 }

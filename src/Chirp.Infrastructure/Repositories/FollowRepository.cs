@@ -29,8 +29,8 @@ public class FollowRepository(ChirpDBContext dbContext) : IFollowRepository
             .Where(a => a.Followed.UserName == name)
             .Select(f => new FollowDTO
         {
-            FollowerName = f.FollowerId,
-            FollowedName = f.FollowerId
+            FollowerName = f.Follower.UserName,
+            FollowedName = f.Followed.UserName
         });
 
         return await query.ToListAsync();
