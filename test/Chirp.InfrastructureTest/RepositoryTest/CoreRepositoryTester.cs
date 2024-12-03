@@ -46,6 +46,16 @@ public abstract class CoreRepositoryTester
         return cheepRepository;
     }
     
+    private protected async Task<FollowRepository> SetUpFollowRepository()
+    {
+        FollowRepository followRepository = new(_context);
+
+        await ClearDB("Follows");
+        Assert.Empty(_context.Follows);
+
+        return followRepository;
+    }
+    
     private protected async Task<AuthorDTO[]> PopulateAuthorRepository(AuthorRepository authorRepository, int n = 4)
     {
         AuthorDTO[] authors = new AuthorDTO[n];
