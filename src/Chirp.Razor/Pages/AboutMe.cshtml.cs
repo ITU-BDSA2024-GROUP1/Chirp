@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Chirp.Infrastructure.FollowService;
+using Chirp.Infrastructure.AuthorService;
 
 namespace Chirp.Razor.Pages
 {
@@ -18,17 +19,19 @@ namespace Chirp.Razor.Pages
         private readonly UserManager<Author> _userManager;
         private readonly ICheepService _cheepService;
         private readonly IFollowService _followService;
+        private readonly IAuthorService _authorService;
         public List<CheepViewModel> Cheeps { get; set; } = new List<CheepViewModel>();
         public List<FollowViewModel> Follows { get; set; } = new List<FollowViewModel>();
         public List<FollowViewModel> FollowedBy { get; set; } = new List<FollowViewModel>();
 
 
-        public AboutMeModel(SignInManager<Author> signInManager, UserManager<Author> userManager, ICheepService cheepService, IFollowService followService)
+        public AboutMeModel(SignInManager<Author> signInManager, UserManager<Author> userManager, ICheepService cheepService, IFollowService followService, IAuthorService authorService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _cheepService = cheepService;
             _followService = followService;
+            _authorService = authorService;
         }
 
         [BindProperty]
@@ -83,6 +86,13 @@ namespace Chirp.Razor.Pages
                 Cheeps.AddRange(cheepsResult.Items);
             }
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostForgetMe()
+        {
+            await _authorService.DeleteAuthor(await _authorService.GetAuthorByName(User.Identity!.Name));
+            await _signInManager.SignOutAsync();
+            return Redirect("/");
         }
     }
 }
