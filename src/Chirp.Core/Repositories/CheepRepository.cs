@@ -188,4 +188,9 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
         dbContext.Cheeps.Update(cheep);
         await dbContext.SaveChangesAsync();
     }
+
+    public async Task<int> GetCheepCountByAuthor(string authorName)
+    {
+        return await dbContext.Cheeps.Where(c => c.Author.UserName == authorName).CountAsync();
+    }
 }

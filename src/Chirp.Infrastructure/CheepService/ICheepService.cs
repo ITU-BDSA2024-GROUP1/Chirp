@@ -9,4 +9,5 @@ public interface ICheepService
     public Task<PagedResult<CheepViewModel>> GetCheepsFromAuthor(List<string> authors, int page, int pageSize);
     public Task<CheepViewModel> GetCheepById(int id);
     public Task<int> PostCheep(CheepViewModel cheep);
+    public Task<int> GetCheepCount(string authorName);
 }

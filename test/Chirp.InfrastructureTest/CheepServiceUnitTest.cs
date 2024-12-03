@@ -82,4 +82,18 @@ public class CheepServiceUnitTest : InfrastructureServiceTester
         // Assert
         Assert.Equal(expected, actual);
     }
+
+    [Fact]
+    public async Task GetCheepCount()
+    {
+        // Arrange
+        string authorName = _knownAuthors[0].Name;
+        int expectedCount = _knownCheeps.Count(c => c.Name == authorName);
+
+        // Act
+        int actualCount = await _cheepService.GetCheepCount(authorName);
+
+        // Assert
+        Assert.Equal(expectedCount, actualCount);
+    }
 }

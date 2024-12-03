@@ -1,0 +1,88 @@
+﻿@page
+@model Chirp.Razor.Pages.AboutMeModel
+@{
+    ViewData["Title"] = "About me";
+    Layout = "Shared/_Layout";
+}
+
+<div>
+    <h2>@ViewData["Title"]</h2>
+    
+    <ul>
+        <li>Username: @User.Identity.Name</li>
+        <li>Email: @Model.Data.Email</li>
+        @if (Model.githubUser)
+        {
+            <li>Login Provider: @Model.Data.LoginProvider</li>
+            <li>Provider Key: @Model.Data.ProviderKey</li>
+        }
+
+        <!--List of followers-->
+        <h3>You are followed by:</h3>
+        @if (Model.FollowedBy.Any())
+        {
+            <ul>
+                @foreach (var follower in Model.FollowedBy)
+                {
+                    <li>
+                        <p style="word-wrap:break-word;">
+                            <strong>
+                                @follower.followerName
+                            </strong>
+                        </p>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <em>Nobody is following you.</em>
+        }
+
+        <!--List of following-->
+        <h3>You are following:</h3>
+        @if (Model.Follows.Any())
+        {
+            <ul>
+                @foreach (var follows in Model.Follows)
+                {
+                    <li>
+                        <p style="word-wrap:break-word;">
+                            <strong>
+                                @follows.followedName
+                            </strong>
+                        </p>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <em>You are not following anybody.</em>
+        }
+
+        <!--Cheeps-->
+        <h3>Cheeps sent by you:</h3>
+        @if (Model.Cheeps.Any())
+        {
+            <ul id="messagelist" class="cheeps">
+                @foreach (var cheep in Model.Cheeps)
+                {
+                    <li>
+                        <p style="word-wrap:break-word;">
+                            <strong>
+                                <a href="/@cheep.Author">@cheep.Author</a>
+                            </strong>
+                            @cheep.Message
+                            <small>&mdash; @cheep.Timestamp</small>
+                        </p>
+                    </li>
+                }
+            </ul>
+        } 
+        else
+        {
+            <em>There are no cheeps so far.</em>
+        }
+    </ul>
+</div>

@@ -70,4 +70,9 @@ public class CheepService(ICheepRepository cheepRepository, IAuthorRepository au
             AuthorId = "0"
         };
     }
+
+    public Task<int> GetCheepCount(string authorName)
+    {
+        return cheepRepository.GetCheepCountByAuthor(authorName);
+    }
 }

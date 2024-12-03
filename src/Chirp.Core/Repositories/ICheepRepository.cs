@@ -12,4 +12,5 @@ public interface ICheepRepository
     Task<int> AddCheepAsync(CheepDTO cheepDto);
     Task UpdateCheepAsync(CheepDTO cheepDto);
     Task<CheepDTO> DeleteCheepAsync(int id);
+    Task<int> GetCheepCountByAuthor(string authorName);
 }
