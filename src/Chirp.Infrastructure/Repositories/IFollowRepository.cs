@@ -7,6 +7,6 @@ public interface IFollowRepository
     Task<List<FollowDTO>> GetFollowersByName(string name);
     Task<List<FollowDTO>> GetFollowingByName(string name);
     Task<FollowDTO> GetFollow(string followerName, string followedName);
-    Task AddFollow(FollowDTO entity);
-    Task RemoveFollow(FollowDTO entity);
+    Task AddFollow(FollowDTO followDto);
+    Task RemoveFollow(FollowDTO followDto);
 }
