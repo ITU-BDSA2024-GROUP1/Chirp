@@ -1,7 +1,6 @@
-﻿namespace Chirp.Infrastructure.Services.AuthorService;
-using Chirp.Core.DataTransferObject;
+﻿using Chirp.Core.DataTransferObject;
 
-namespace Chirp.Infrastructure.AuthorService;
+namespace Chirp.Infrastructure.Services.AuthorService;
 
 public interface IAuthorService
 {

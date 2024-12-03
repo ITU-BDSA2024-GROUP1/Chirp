@@ -4,9 +4,8 @@ using Chirp.Core.Data;
 using Microsoft.EntityFrameworkCore;
 
 using Chirp.Core.Entities;
-using Chirp.Infrastructure.FollowService;
-using Chirp.Infrastructure.AuthorService;
 using Chirp.Infrastructure.Repositories;
+using Chirp.Infrastructure.Services.AuthorService;
 using Chirp.Infrastructure.Services.CheepService;
 using Chirp.Infrastructure.Services.FollowService;
 
@@ -61,6 +60,7 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorPages();
         builder.Services.AddScoped<ICheepService, CheepService>();
+        builder.Services.AddScoped<IAuthorService, AuthorService>();
         builder.Services.AddScoped<IFollowService, FollowService>();
 
         var app = builder.Build();

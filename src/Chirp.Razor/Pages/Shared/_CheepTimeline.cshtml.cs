@@ -78,6 +78,14 @@ public abstract class CheepTimeline(ICheepService service, IFollowService follow
         
         return followViewModel != null;
     }
+    
+    public async Task<IActionResult> OnPostDeleteCheep()
+    {
+        CheepViewModel cheep = new(Request.Form["cheepAuthor"], Request.Form["cheepMessage"], Request.Form["cheepTimestamp"]);
+        await _service.DeleteCheep(cheep);
+        
+        return RedirectToPage();
+    }
 
     public int CurrentPage { get; set; }
     public int TotalPages { get; set; }
