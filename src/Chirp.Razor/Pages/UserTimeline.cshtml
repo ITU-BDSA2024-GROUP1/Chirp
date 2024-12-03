@@ -35,14 +35,31 @@
         <ul id="messagelist" class="cheeps">
             @foreach (var cheep in Model.Cheeps)
             {
-                <li>
+				<li>
 					<p style="word-wrap:break-word;">
-                        <strong>
-                            <a href="/@cheep.Author">@cheep.Author</a>
-                        </strong>
-                        @cheep.Message
-                        <small>&mdash; @cheep.Timestamp</small>
-                    </p>
+
+						@if (User.Identity.IsAuthenticated && !User.Identity.Name!.Equals(cheep.Author))
+						{
+							@if (await Model.AFollowsBAsync(User.Identity.Name, cheep.Author)) Model.FollowOrUnfollow = "Unfollow"; else Model.FollowOrUnfollow = "Follow";
+							<form method="post">
+								<strong>
+									<a href="/@cheep.Author">@cheep.Author</a>
+								</strong>
+								<input type="hidden" name="cheepAuthor" value="@cheep.Author" />
+								<button type="submit" asp-page-handler="ChangeFollowStatus">@Model.FollowOrUnfollow</button>
+							</form>
+						}
+						else
+						{
+							<strong>
+								<a href="/@cheep.Author">@cheep.Author</a>
+							</strong>
+						}
+						<br />
+						@cheep.Message
+						<br />
+						<small>&mdash; @cheep.Timestamp</small>
+					</p>
                 </li>
             }
         </ul>
