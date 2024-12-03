@@ -1,14 +1,12 @@
 using Chirp.Core;
 using Chirp.Core.Data;
-using Chirp.Core.Repositories;
-using Chirp.Infrastructure.CheepService;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OAuth;
+
 using Chirp.Core.Entities;
-using Chirp.Infrastructure.FollowService;
+using Chirp.Infrastructure.Repositories;
+using Chirp.Infrastructure.Services.CheepService;
+using Chirp.Infrastructure.Services.FollowService;
 
 namespace Chirp.Razor;
 

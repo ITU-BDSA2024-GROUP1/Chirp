@@ -2,18 +2,22 @@
 
 using Chirp.Infrastructure.Models;
 using Chirp.Infrastructure.Services.CheepService;
+using Chirp.Infrastructure.Services.FollowService;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Chirp.Razor.Pages.Shared;
 
-public abstract class CheepTimeline(ICheepService service) : PageModel
+public abstract class CheepTimeline(ICheepService service, IFollowService followService) : PageModel
 {
     private protected readonly ICheepService _service = service;
+    private protected readonly IFollowService _followService = followService;
     private protected const int PageSize = 32;
     
     public List<CheepViewModel> Cheeps { get; set; } = [];
+    public string FollowOrUnfollow { get; set; } = "Follow";
     
     [BindProperty]
     [Required]
@@ -49,6 +53,30 @@ public abstract class CheepTimeline(ICheepService service) : PageModel
 
         // Redirect to avoid form re-submission
         return RedirectToPage();
+    }
+    
+    public IActionResult OnPostChangeFollowStatus()
+    {
+        var cheepAuthor = Request.Form["cheepAuthor"];
+        if (!User.Identity!.IsAuthenticated || cheepAuthor.IsNullOrEmpty()) return RedirectToPage();
+        
+        if (AFollowsBAsync(User.Identity.Name!, cheepAuthor!).Result)
+        {
+            _followService.RemoveFollow(new(User.Identity!.Name, cheepAuthor));
+            return RedirectToPage();
+        }
+        
+        _followService.AddFollow(new(User.Identity!.Name, cheepAuthor));
+        return RedirectToPage();
+        
+        
+    }
+    
+    public async Task<bool> AFollowsBAsync(string a, string b)
+    {
+        FollowViewModel followViewModel = await _followService.GetFollow(a, b);
+        
+        return followViewModel != null;
     }
 
     public int CurrentPage { get; set; }
