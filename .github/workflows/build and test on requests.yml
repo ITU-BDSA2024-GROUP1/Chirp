@@ -12,11 +12,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      # Set the environment variables from GitHub secrets
-      auth_github_clientId: ${{ secrets.LOCALHOSTGITHUB_CLIENTID }}
-      auth_github_clientSecret: ${{ secrets.LOCALHOSTGITHUB_SECRET }}
-
     steps:
       - uses: actions/checkout@v4
       - name: Setup .NET
@@ -35,6 +30,12 @@ jobs:
           npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+      - name: Install dotnet-ef tool
+        run: dotnet tool install --global dotnet-ef
+      - name: Setup user-secrets clientid
+        run: dotnet user-secrets set "auth_github_clientId" "${{ secrets.LOCALHOSTGITHUB_CLIENTID }}" --project src/Chirp.Razor/Chirp.Razor.csproj
+      - name: Setup user-secrets clientsecret
+        run: dotnet user-secrets set "auth_github_clientSecret" "${{ secrets.LOCALHOSTGITHUB_SECRET }}" --project src/Chirp.Razor/Chirp.Razor.csproj
       - name: Build
         run: dotnet build --no-restore
       - name: Start server
