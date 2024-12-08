@@ -53,9 +53,34 @@ Briefly describe and illustrate the flow of activities that happen from the new 
 
 ### How to make _Chirp!_ work locally
 
-There has to be some documentation on how to come from cloning your project to a running system.
-That is, Adrian or Helge have to know precisely what to do in which order.
-Likely, it is best to describe how we clone your project, which commands we have to execute, and what we are supposed to see then.
+In order to clone the repository you have to run the following command, which requires you to have git installed:
+
+```git clone https://github.com/ITU-BDSA2024-GROUP1/Chirp.git```
+
+Once you cloned the repository you will have to setup some user-secrets since they are used for third party login. Start by locating the files on your pc and once you are in the Chirp folder you should be able to run the following commands after having dotnet-ef installed (If you have installed dotnet-ef you can skip the first command):
+
+```dotnet tool install --global dotnet-ef```
+
+```dotnet user-secrets set "auth_github_clientId" "Ov23liRWZA8rujaSnUGT" --project "src/Chirp.Razor/Chirp.Razor.csproj"```
+
+```dotnet user-secrets set "auth_github_clientSecret" "6f43c9d347116d35557b9a98133177b520f97178" --project "src/Chirp.Razor/Chirp.Razor.csproj"```
+
+To check if the user-secrets are set you can run the following command:
+
+```dotnet user-secrets list --project "src/Chirp.Razor/Chirp.Razor.csproj"```
+
+In case the user-secrets haven't been set you will have to set them manually which you do the following way:
+
+1. Head to the following location and ensure a folder ```UserSecrets``` exists: C:\Users\\\<user>\AppData\Roaming\Microsoft\, where user is your pc user.
+2. Then you will have to create a folder within ```UserSecrets``` that is called: 7fac5a3e-b457-40f0-8c72-57166e5bc39f 
+3. Inside that folder you will have to create a file: secrets.json that will have to contain:
+```json
+{
+  "auth_github_clientId": "Ov23liRWZA8rujaSnUGT",
+  "auth_github_clientSecret": "6f43c9d347116d35557b9a98133177b520f97178"
+}
+```
+4. Now you can go back to the Chirp folder and try the command that lists all of the user-secrets for the applications as with the other method.
 
 ### How to run test suite locally
 
