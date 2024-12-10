@@ -1,6 +1,6 @@
-﻿using Chirp.Core.Data;
-using Chirp.Core.DataTransferObject;
+﻿using Chirp.Core.DataTransferObject;
 using Chirp.Core.Entities;
+using Chirp.Infrastructure.Data;
 
 using Microsoft.EntityFrameworkCore;
 

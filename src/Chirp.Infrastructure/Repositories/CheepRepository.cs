@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-using Chirp.Core.Data;
 using Chirp.Core.DataTransferObject;
 using Chirp.Core.Entities;
+using Chirp.Infrastructure.Data;
 using Chirp.Infrastructure.Models;
 
 using Microsoft.EntityFrameworkCore;
