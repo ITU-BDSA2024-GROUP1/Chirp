@@ -93,7 +93,7 @@ Briefly describe what kinds of tests you have in your test suites and what they 
 
 ### License
 
-State which software license you chose for your application.
+We have chosen to use an MIT license for our project since it is an open source project that is open to the public on GitHub, where anybody is allowed to use it if they choose to as long as they credit us.
 
 ### LLMs, ChatGPT, CoPilot, and others
 
