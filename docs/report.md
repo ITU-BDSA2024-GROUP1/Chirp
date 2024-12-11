@@ -2,15 +2,52 @@
 
 ### Domain model
 
-Provide an illustration of your domain model.
-Make sure that it is correct and complete.
-In case you are using ASP.NET Identity, make sure to illustrate that accordingly.
+![](images/DomainModel.png "Domain model")
+
+As illustrated, our domain model consists of three key entities: **Author**, **Cheep**, and **Follow**. The model integrates seamlessly with ASP.NET Identity for authentication and authorization, as demonstrated by the inheritance of the ``Author`` entity from ``IdentityUser``. This ensures access to built-in Identity properties such as ``UserName``, ``Email``, and password management features.
+
+The **Author** entity is central to the model and includes a collection of associated cheeps, representing the one-to-many relationship between an author and their posts.
+
+The **Cheep** entity encapsulates information about the author and the cheep itself, including:
+- **CheepId**: A unique identifier for each cheep.
+- **Text**: The message content, constrained to 160 characters for brevity and readability.
+- **TimeStamp**: The creation time of the cheep.
+- **AuthorId**: A foreign key linking the cheep to its author.
+
+The **Follow** entity represents a many-to-many relationship between authors, where one author can follow another. This entity includes:
+- **FollowerId**: The ID of the author who initiates the follow action.
+- **FollowedId**: The ID of the author being followed.
+- **Relationships** to the corresponding ``Author`` entities (``Follower`` and ``Followed``).
+
+The **Follow** domain is primarily designed for write operations rather than read operations. This approach is suitable given our context, where the number of users is minimal, and complex read optimizations are not required.
+
+#### Validation and Constraints
+To maintain data integrity:
+- **Text** in the **Cheep** entity is validated to ensure it does not exceed 160 characters.
+- Composite primary keys (``FollowerId`` and ``FollowedId``) in Follow prevent duplicate entries for the same follow relationship.
 
 ### Architecture — In the small
 
-Illustrate the organization of your code base.
-That is, illustrate which layers exist in your (onion) architecture.
-Make sure to illustrate which part of your code is residing in which layer.
+![](images/Architecture.png "Figure 1: Architecture")
+
+As illustrated, our code base is organized following an onion architecture, emphasizing separation of concerns and a dependency-inversion approach. The architecture consists of four distinct layers:
+1. **Domain Layer** \
+This is the core of our application, containing the domain entities, core business rules, and logic. This layer is framework-agnostic, ensuring its independence from external dependencies.
+
+2. **Repository Layer** \
+This layer handles persistence and data access. It includes interfaces and their implementations for managing the storage and retrieval of domain entities. Examples include Entity Framework Core repositories for database operations.
+
+3. **Service Layer** \
+The Service Layer acts as the mediator between the Repository Layer and the Application Layer. It contains the application’s business logic, orchestrates calls to repositories, and prepares data for the Application Layer.
+
+4. **Application and Tests Layer** \
+This outermost layer contains the presentation logic, implemented as Razor Pages or Views, which interact with end-users. It also includes test projects to verify the functionality and integrity of the system, covering unit, integration, and end-to-end tests.
+
+Each layer strictly depends on the layer beneath it, ensuring adherence to onion architecture principles. For example: 
+- The Service Layer depends on the Repository Layer for data operations but not vice versa.
+- The Repository Layer depends on abstractions defined in the Domain Layer, not concrete implementations.
+
+This structure ensures flexibility, testability, and maintainability of the code base.
 
 ### Architecture of deployed application
 
