@@ -1,6 +1,6 @@
 ## Design and architecture
 
-### Domain model
+### Domain model (Adam)
 
 ![](images/DomainModel.png "Domain model")
 
@@ -26,7 +26,7 @@ To maintain data integrity:
 - **Text** in the **Cheep** entity is validated to ensure it does not exceed 160 characters.
 - Composite primary keys (``FollowerId`` and ``FollowedId``) in Follow prevent duplicate entries for the same follow relationship.
 
-### Architecture — In the small
+### Architecture — In the small (Adam)
 
 ![](images/Architecture.png "Figure 1: Architecture")
 
@@ -49,20 +49,20 @@ Each layer strictly depends on the layer beneath it, ensuring adherence to onion
 
 This structure ensures flexibility, testability, and maintainability of the code base.
 
-### Architecture of deployed application
+### Architecture of deployed application (Emil/Adam)
 
 Illustrate the architecture of your deployed application.
 Remember, you developed a client-server application.
 Illustrate the server component and to where it is deployed, illustrate a client component, and show how these communicate with each other.
 
-### User activities
+### User activities (Mathias)
 
 Illustrate typical scenarios of a user journey through your _Chirp!_ application.
 That is, start illustrating the first page that is presented to a non-authorized user, illustrate what a non-authorized user can do with your _Chirp!_ application, and finally illustrate what a user can do after authentication.
 
 Make sure that the illustrations are in line with the actual behavior of your application.
 
-### Sequence of functionality/calls trough _Chirp!_
+### Sequence of functionality/calls through _Chirp!_ (Emil)
 
 With a UML sequence diagram, illustrate the flow of messages and data through your _Chirp!_ application.
 Start with an HTTP request that is send by an unauthorized user to the root endpoint of your application and end with the completely rendered web-page that is returned to the user.
@@ -70,25 +70,25 @@ Start with an HTTP request that is send by an unauthorized user to the root endp
 Make sure that your illustration is complete.
 That is, likely for many of you there will be different kinds of "calls" and responses.
 Some HTTP calls and responses, some calls and responses in C# and likely some more.
-(Note the previous sentence is vague on purpose. I want that you create a complete illustration.)
+(Note the previous sentence is vague on purpose. I want you to create a complete illustration.)
 
 ## Process
 
-### Build, test, release, and deployment
+### Build, test, release, and deployment (Mathias)
 
 Illustrate with a UML activity diagram how your _Chirp!_ applications are build, tested, released, and deployed.
 That is, illustrate the flow of activities in your respective GitHub Actions workflows.
 
 Describe the illustration briefly, i.e., how your application is built, tested, released, and deployed.
 
-### Team work
+### Team work (Niels)
 
 Show a screenshot of your project board right before hand-in.
 Briefly describe which tasks are still unresolved, i.e., which features are missing from your applications or which functionality is incomplete.
 
 Briefly describe and illustrate the flow of activities that happen from the new creation of an issue (task description), over development, etc. until a feature is finally merged into the `main` branch of your repository.
 
-### How to make _Chirp!_ work locally
+### How to make _Chirp!_ work locally (Adam)
 
 In order to clone the repository you have to run the following command, which requires you to have git installed:
 
@@ -119,7 +119,7 @@ In case the user-secrets haven't been set you will have to set them manually whi
 ```
 4. Now you can go back to the Chirp folder and try the command that lists all of the user-secrets for the applications as with the other method.
 
-### How to run test suite locally
+### How to run test suite locally (Noah)
 
 List all necessary steps that Adrian or Helge have to perform to execute your test suites.
 Here, you can assume that we already cloned your repository in the step above.
@@ -128,11 +128,11 @@ Briefly describe what kinds of tests you have in your test suites and what they 
 
 ## Ethics
 
-### License
+### License (Adam/Emil)
 
 We have chosen to use an MIT license for our project since it is an open source project that is open to the public on GitHub, where anybody is allowed to use it if they choose to as long as they credit us.
 
-### LLMs, ChatGPT, CoPilot, and others
+### LLMs, ChatGPT, CoPilot, and others (Noah/Niels)
 
 State which LLM(s) were used during development of your project.
 In case you were not using any, just state so.
