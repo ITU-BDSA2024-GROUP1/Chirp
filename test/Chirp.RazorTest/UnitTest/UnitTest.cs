@@ -39,6 +39,10 @@ public class UnitTest : PlaywrightPageTester
         await ClickLink("About me");
         await ClickButton("Forget me");
 
-        throw new NotImplementedException("We just need to assert that it worked by attempting to register the account again and having that be successful");
+        await Register("BazzB@burner1.burner", "BazzB", "Scrh1ft_H");
+        await ClickLink("About me");
+        await AssertLoggedInAs("BazzB");
+        await ClickButton("Forget me");
+       // throw new NotImplementedException("We just need to assert that it worked by attempting to register the account again and having that be successful");
     }
 }
