@@ -1,9 +1,8 @@
-using Chirp.Core;
-using Chirp.Core.Data;
+using Chirp.Core.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
-using Chirp.Core.Entities;
+using Chirp.Infrastructure.Data;
 using Chirp.Infrastructure.Repositories;
 using Chirp.Infrastructure.Services.AuthorService;
 using Chirp.Infrastructure.Services.CheepService;

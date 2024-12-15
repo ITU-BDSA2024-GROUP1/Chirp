@@ -1,10 +1,9 @@
-using Chirp.Core.Data;
 using Chirp.Core.Entities;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace Chirp.Core;
+namespace Chirp.Infrastructure.Data;
 
 public static class DbInitializer
 {
