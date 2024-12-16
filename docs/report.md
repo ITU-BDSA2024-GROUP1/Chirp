@@ -51,9 +51,11 @@ This structure ensures flexibility, testability, and maintainability of the code
 
 ### Architecture of deployed application (Emil/Adam)
 
-Illustrate the architecture of your deployed application.
+*Illustrate the architecture of your deployed application.
 Remember, you developed a client-server application.
-Illustrate the server component and to where it is deployed, illustrate a client component, and show how these communicate with each other.
+Illustrate the server component and to where it is deployed, illustrate a client component, and show how these communicate with each other.*
+
+![](images/DeploymentArchitecture.png "")
 
 ### User activities (Mathias)
 
