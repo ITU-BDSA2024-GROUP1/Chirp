@@ -134,8 +134,10 @@ We have chosen to use an MIT license for our project since it is an open source 
 
 ### LLMs, ChatGPT, CoPilot, and others (Noah/Niels)
 
-State which LLM(s) were used during development of your project.
+*State which LLM(s) were used during development of your project.
 In case you were not using any, just state so.
 In case you were using an LLM to support your development, briefly describe when and how it was applied.
 Reflect in writing to which degree the responses of the LLM were helpful.
-Discuss briefly if application of LLMs sped up your development or if the contrary was the case.
+Discuss briefly if application of LLMs sped up your development or if the contrary was the case.*
+
+CoPilot was used for generating some css, fixing errors in code, explaining stuff from Microsoft documentation that was harad to understand, and pros and cons for different ways of designing code.
