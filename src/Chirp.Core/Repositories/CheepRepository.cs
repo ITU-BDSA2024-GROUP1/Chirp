@@ -170,34 +170,24 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
     {
 
         var cheepDTo = await GetCheepByNotIDAsync(cheepDto.Name, originalCheepMessage, cheepDto.TimeStamp);
-        //Console.WriteLine("Updating Cheep "+cheepDto.TimeStamp+" "+cheepDto.Message+" "+cheepDto.Name);
-        //Console.WriteLine("cheep "+cheepDto + " cheep id is "+cheepDto.Id);
         var cheep = await dbContext.Cheeps.FindAsync(cheepDTo.Id);
-        Console.WriteLine("cheep is now "+cheep);
-        Console.WriteLine("check -2");
         if (cheep == null) return;
-        Console.WriteLine("check -1");
 
         var oldAuthor = cheep.Author;
         cheep.Text = cheepDto.Message;
         cheep.TimeStamp = DateTime.Parse(cheepDto.TimeStamp);
-        Console.WriteLine("check 0");
         if (cheep.AuthorId != cheepDto.AuthorId)
         {
-            Console.WriteLine("authorid is not dto auhtor id");
             var newAuthor = await dbContext.Authors.FindAsync(cheepDto.AuthorId);
             if (newAuthor != null)
             {
-                Console.WriteLine("the new author is not null");
                 oldAuthor.Cheeps.Remove(cheep);
                 newAuthor.Cheeps.Add(cheep);
                 cheep.Author = newAuthor;
             }
         }
-        Console.WriteLine("check 1");
         dbContext.Cheeps.Update(cheep);
         await dbContext.SaveChangesAsync();
-        Console.WriteLine("check 3");
     }
 
     public async Task<int> GetCheepCountByAuthor(string authorName)

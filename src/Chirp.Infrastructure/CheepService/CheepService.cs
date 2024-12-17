@@ -82,7 +82,6 @@ public class CheepService(ICheepRepository cheepRepository, IAuthorRepository au
     }
     public async Task UpdateCheep(CheepViewModel cheep, string originalCheepMessage)
     {
-        Console.WriteLine("Updating cheep in service"+cheep.Author+" " +cheep.Timestamp+" new message "+cheep.Message + " original message: "+originalCheepMessage);
         await cheepRepository.UpdateCheepAsync(CheepViewModelToCheepDTO(cheep), originalCheepMessage);
     }
 }
