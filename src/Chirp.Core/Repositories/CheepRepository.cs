@@ -166,11 +166,13 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
     }
 
 
-    public async Task UpdateCheepAsync(CheepDTO cheepDto)
+    public async Task UpdateCheepAsync(CheepDTO cheepDto,string originalCheepMessage)
     {
-        Console.WriteLine("Updating Cheep "+cheepDto.TimeStamp+" "+cheepDto.Message+" "+cheepDto.Name);
-        Console.WriteLine("cheep "+cheepDto + " cheep id is "+cheepDto.Id);
-        var cheep = await dbContext.Cheeps.FindAsync(cheepDto.Id);
+
+        var cheepDTo = await GetCheepByNotIDAsync(cheepDto.Name, originalCheepMessage, cheepDto.TimeStamp);
+        //Console.WriteLine("Updating Cheep "+cheepDto.TimeStamp+" "+cheepDto.Message+" "+cheepDto.Name);
+        //Console.WriteLine("cheep "+cheepDto + " cheep id is "+cheepDto.Id);
+        var cheep = await dbContext.Cheeps.FindAsync(cheepDTo.Id);
         Console.WriteLine("cheep is now "+cheep);
         Console.WriteLine("check -2");
         if (cheep == null) return;

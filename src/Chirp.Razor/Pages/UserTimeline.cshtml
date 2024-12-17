@@ -33,71 +33,80 @@
 	@if (Model.Cheeps.Any())
     {
         <ul id="messagelist" class="cheeps">
+            <script>
+            @Model.incrementer;
+            </script>
+            
             @foreach (var cheep in Model.Cheeps)
             {
-				<li>
-					<p style="word-wrap:break-word;">
-                        
-						@if (User.Identity.IsAuthenticated && !User.Identity.Name!.Equals(cheep.Author))
-						{
-							@if (await Model.AFollowsBAsync(User.Identity.Name, cheep.Author)) Model.FollowOrUnfollow = "Unfollow"; else Model.FollowOrUnfollow = "Follow";
-							<form method="post">
-								<strong>
-									<a href="/@cheep.Author">@cheep.Author</a>
-								</strong>
-								<input type="hidden" name="cheepAuthor" value="@cheep.Author" />
-								<button type="submit" asp-page-handler="ChangeFollowStatus">@Model.FollowOrUnfollow</button>
-							</form>
-						}
-						else
-						{
-							<strong>
-								<a href="/@cheep.Author">@cheep.Author</a>
-							</strong>
-						}
-                        <br />
-                        <p id="edit">
+                <li>
+                    <p style="word-wrap:break-word;">
+
+                        @if (User.Identity.IsAuthenticated && !User.Identity.Name!.Equals(cheep.Author))
+                        {
+                            @if (await Model.AFollowsBAsync(User.Identity.Name, cheep.Author)) Model.FollowOrUnfollow = "Unfollow";
+                            else Model.FollowOrUnfollow = "Follow";
+                            <form method="post">
+                                <strong>
+                                    <a href="/@cheep.Author">@cheep.Author</a>
+                                </strong>
+                                <input type="hidden" name="cheepAuthor" value="@cheep.Author"/>
+                                <button type="submit" asp-page-handler="ChangeFollowStatus">@Model.FollowOrUnfollow</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <strong>
+                                <a href="/@cheep.Author">@cheep.Author</a>
+                            </strong>
+                        }
+                        <br/>
+                        <p id="edit_@Model.incrementer">
                             @cheep.Message
                         </p>
-						<br />
-						<small>&mdash; @cheep.Timestamp</small>
-						@if (User.Identity.IsAuthenticated && User.Identity.Name!.Equals(cheep.Author))
-						{
+                        <br/>
+                        <small>&mdash; @cheep.Timestamp</small>
+                        @if (User.Identity.IsAuthenticated && User.Identity.Name!.Equals(cheep.Author))
+                        {
                             <form method="post">
-                                <input type="hidden" name="cheepAuthor" value="@cheep.Author" />
-                                <input type="hidden" name="cheepMessage" value="@cheep.Message" />
-                                <input type="hidden" name="cheepTimestamp" value="@cheep.Timestamp" />
+                                <input type="hidden" name="cheepAuthor" value="@cheep.Author"/>
+                                <input type="hidden" name="cheepMessage" value="@cheep.Message"/>
+                                <input type="hidden" name="cheepTimestamp" value="@cheep.Timestamp"/>
                                 <button type="submit" asp-page-handler="DeleteCheep">Delete</button>
                             </form>
-                            
-                            <form method="post" asp-page-handler="EditCheep">
-                                <input type="hidden" name="cheepAuthor" value="@cheep.Author" />
-                                <input type="hidden" name="originalCheepMessage" value="@cheep.Message" />
-                                <input type="hidden" name="timeStamp" value="@cheep.Timestamp" />
-                                <input type="hidden" id="editedCheepMessage" name="cheepMessage" value="" />
-                                <button type="button" id="edit-button">Edit</button>
-                                <button type="submit" id="end-editing" >Done</button>
+
+                            <form method="post" asp-page-handler ="EditCheep">
+                                <input type="hidden" name="cheepAuthor" value="@cheep.Author"/>
+                                <input type="hidden" name="originalCheepMessage" value="@cheep.Message"/>
+                                <input type="hidden" name="timeStamp" value="@cheep.Timestamp"/>
+                                <input type="hidden" id="editedCheepMessage_@Model.incrementer" name="cheepMessage" value=""/>
+                                <button type="button" id="edit-button_@Model.incrementer">Edit</button>
+                                <button type="submit" id="end-editing_@Model.incrementer">Done</button>
                             </form>
                             <script>
-                                const paragraph = document.getElementById("edit");
-                                const editButton = document.getElementById("edit-button");
-                                const endButton = document.getElementById("end-editing");
-                                const editedCheepMessageInput = document.getElementById("editedCheepMessage");
-
+                                // Generate unique IDs dynamically
+                                var editButton = document.getElementById("edit-button_@Model.incrementer");
+                                var endButton = document.getElementById("end-editing_@Model.incrementer");
+                                var paragraph = document.getElementById("edit_@Model.incrementer");
+                                var editedCheepMessageInput = document.getElementById("editedCheepMessage_@Model.incrementer");
+                                console.log(editButton);
                                 editButton.addEventListener("click", function () {
-                                    paragraph.contentEditable = true;
-                                    paragraph.style.backgroundColor = "#dddbdb";
+                                paragraph.contentEditable = true;
+                                paragraph.style.backgroundColor = "#dddbdb";
                                 });
 
                                 endButton.addEventListener("click", function () {
-                                    paragraph.contentEditable = false;
-                                    paragraph.style.backgroundColor = "#f0faf9";
-                                    editedCheepMessageInput.value = paragraph.innerHTML;
+                                paragraph.contentEditable = false;
+                                paragraph.style.backgroundColor = "#f0faf9";
+                                editedCheepMessageInput.value = paragraph.innerText.trim();
                                 });
                             </script>
-						}
-					</p>
+                        }
+                    </p>
                 </li>
+                <script>
+                @Model.increment();
+                </script>
             }
         </ul>
 

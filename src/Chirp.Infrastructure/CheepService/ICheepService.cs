@@ -13,5 +13,5 @@ public interface ICheepService
     public Task<int> GetCheepCount(string authorName);
     public Task<CheepDTO> DeleteCheep(CheepViewModel cheep);
     
-    public Task UpdateCheep(CheepViewModel cheep);
+    public Task UpdateCheep(CheepViewModel cheep, string originalCheepMessage);
 }

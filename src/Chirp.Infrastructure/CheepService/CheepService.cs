@@ -80,9 +80,9 @@ public class CheepService(ICheepRepository cheepRepository, IAuthorRepository au
     {
         return await cheepRepository.DeleteCheepAsync((await cheepRepository.GetCheepByNotIDAsync(cheep.Author, cheep.Message, cheep.Timestamp)).Id);
     }
-    public async Task UpdateCheep(CheepViewModel cheep)
+    public async Task UpdateCheep(CheepViewModel cheep, string originalCheepMessage)
     {
-        Console.WriteLine("Updating cheep in service"+cheep.Author+" " +cheep.Timestamp+" "+cheep.Message);
-        await cheepRepository.UpdateCheepAsync(CheepViewModelToCheepDTO(cheep));
+        Console.WriteLine("Updating cheep in service"+cheep.Author+" " +cheep.Timestamp+" new message "+cheep.Message + " original message: "+originalCheepMessage);
+        await cheepRepository.UpdateCheepAsync(CheepViewModelToCheepDTO(cheep), originalCheepMessage);
     }
 }
