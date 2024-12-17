@@ -1,6 +1,15 @@
 ﻿@model Chirp.Razor.Pages.Shared.CheepTimeline
 
 <ul id="messagelist" class="cheeps">
+    <script>
+        @Model.Incrementer;
+        var size = @Model.Cheeps.Count()
+        var editButtons = []
+        var endButtons = []
+        var paragraphs = []
+        var editedCheepMessageInputs = []
+    </script>
+
     @foreach (var cheep in Model.Cheeps)
     {
         <li>
@@ -23,7 +32,17 @@
                     </strong>
                 }
                 <br />
-                @cheep.Message
+                @if (User.Identity.IsAuthenticated && User.Identity.Name!.Equals(cheep.Author))
+                {
+                    // CSS from: https://stackoverflow.com/questions/39972794/css-to-make-input-and-textarea-looks-like-simple-html-text - Atal Kishore
+                    <textarea id="edit_@Model.Incrementer" maxlength="160" style="background: rgba(0, 0, 0, 0); width: 100%; border: none; outline: 0; cursor: text; resize: none;">@cheep.Message</textarea>
+                }
+                else
+                {
+                    <p>
+                        @cheep.Message
+                    </p>
+                }
                 <br />
                 <small>&mdash; @cheep.Timestamp</small>
                 @if (User.Identity.IsAuthenticated && User.Identity.Name!.Equals(cheep.Author))
@@ -32,8 +51,35 @@
                         <input type="hidden" name="cheepAuthor" value="@cheep.Author" />
                         <input type="hidden" name="cheepMessage" value="@cheep.Message" />
                         <input type="hidden" name="cheepTimestamp" value="@cheep.Timestamp" />
+                        <input type="hidden" id="editedCheepMessage_@Model.Incrementer" name="newCheepMessage" value="" />
                         <button type="submit" asp-page-handler="DeleteCheep">Delete</button>
+                        <button type="button" id="edit-button_@Model.Incrementer">Edit</button>
+                        <button type="submit" asp-page-handler="EditCheep" id="end-editing_@Model.Incrementer">Done</button>
                     </form>
+
+                    <script>
+                        editButtons.push(document.getElementById("edit-button_@Model.Incrementer"))
+                        endButtons.push(document.getElementById("end-editing_@Model.Incrementer"))
+                        paragraphs.push(document.getElementById("edit_@Model.Incrementer"))
+                        editedCheepMessageInputs.push(document.getElementById("editedCheepMessage_@Model.Incrementer"))
+                        endButtons[@Model.Incrementer].disabled = true
+                        endButtons[@Model.Incrementer].style.visibility = "hidden"
+
+                        editButtons[@Model.Incrementer].addEventListener("click", function () {
+                            paragraphs[@Model.Incrementer].contentEditable = true;
+                            paragraphs[@Model.Incrementer].style.backgroundColor = "#dddbdb";
+                            endButtons[@Model.Incrementer].disabled = false
+                            endButtons[@Model.Incrementer].style.visibility = "visible"
+                        });
+
+                        endButtons[@Model.Incrementer].addEventListener("click", function () {
+                            paragraphs[@Model.Incrementer].contentEditable = false;
+                            paragraphs[@Model.Incrementer].style.backgroundColor = "#f0faf9";
+                            editedCheepMessageInputs[@Model.Incrementer].value = paragraphs[@Model.Incrementer].value.trim();
+                            endButtons[@Model.Incrementer].style.visibility = "hidden"
+                        });
+                            @Model.Increment()
+                    </script>
                 }
         </li>
     }

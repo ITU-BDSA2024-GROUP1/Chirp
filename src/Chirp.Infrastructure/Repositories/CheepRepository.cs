@@ -169,15 +169,16 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
     }
 
 
-    public async Task UpdateCheepAsync(CheepDTO cheepDto)
+    public async Task UpdateCheepAsync(CheepDTO cheepDto, string originalCheepMessage)
     {
-        var cheep = await dbContext.Cheeps.FindAsync(cheepDto.Id); // This should include author? .Include(c => c.Author) or that's at least what my IDE is telling me.
+
+        var cheepDTo = await GetCheepByNotIDAsync(cheepDto.Name, originalCheepMessage, cheepDto.TimeStamp);
+        var cheep = await dbContext.Cheeps.FindAsync(cheepDTo.Id);
         if (cheep == null) return;
 
         var oldAuthor = cheep.Author;
         cheep.Text = cheepDto.Message;
         cheep.TimeStamp = DateTime.Parse(cheepDto.TimeStamp);
-
         if (cheep.AuthorId != cheepDto.AuthorId)
         {
             var newAuthor = await dbContext.Authors.FindAsync(cheepDto.AuthorId);
@@ -188,7 +189,6 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
                 cheep.Author = newAuthor;
             }
         }
-
         dbContext.Cheeps.Update(cheep);
         await dbContext.SaveChangesAsync();
     }

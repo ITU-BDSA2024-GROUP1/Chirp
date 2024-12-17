@@ -24,6 +24,9 @@ public abstract class CheepTimeline(ICheepService service, IFollowService follow
     [StringLength(maximumLength: 160, ErrorMessage = "The cheep must at most be 160 characters long.", MinimumLength = 0)]
     public string? Text { get; set; }
 
+    public int Incrementer { get; set; } = 0;
+    public int Increment() { return ++Incrementer; }
+
     private protected PageResult PopulateTimeline(PagedResult<CheepViewModel> cheeps)
     {
         if (cheeps.Items != null)
@@ -84,6 +87,18 @@ public abstract class CheepTimeline(ICheepService service, IFollowService follow
         CheepViewModel cheep = new(Request.Form["cheepAuthor"], Request.Form["cheepMessage"], Request.Form["cheepTimestamp"]);
         await _service.DeleteCheep(cheep);
         
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostEditCheep(string cheepAuthor, string newCheepMessage, string cheepMessage, string cheepTimestamp)
+    {
+        if (string.IsNullOrEmpty(cheepAuthor) || string.IsNullOrEmpty(newCheepMessage) || string.IsNullOrEmpty(cheepTimestamp))
+        {
+            return RedirectToPage();
+        }
+
+
+        await service.UpdateCheep(new CheepViewModel(cheepAuthor, newCheepMessage, cheepTimestamp), cheepMessage);
         return RedirectToPage();
     }
 
