@@ -34,7 +34,12 @@
     {
         <ul id="messagelist" class="cheeps">
             <script>
-            @Model.incrementer;
+			@Model.Incrementer;
+			var size = @Model.Cheeps.Count()
+			var editButtons = []
+			var endButtons = []
+			var paragraphs = []
+			var editedCheepMessageInputs = []
             </script>
             
             @foreach (var cheep in Model.Cheeps)
@@ -60,53 +65,60 @@
                                 <a href="/@cheep.Author">@cheep.Author</a>
                             </strong>
                         }
-                        <br/>
-                        <p id="edit_@Model.incrementer">
-                            @cheep.Message
-                        </p>
-                        <br/>
-                        <small>&mdash; @cheep.Timestamp</small>
-                        @if (User.Identity.IsAuthenticated && User.Identity.Name!.Equals(cheep.Author))
-                        {
-                            <form method="post">
-                                <input type="hidden" name="cheepAuthor" value="@cheep.Author"/>
-                                <input type="hidden" name="cheepMessage" value="@cheep.Message"/>
-                                <input type="hidden" name="cheepTimestamp" value="@cheep.Timestamp"/>
-                                <button type="submit" asp-page-handler="DeleteCheep">Delete</button>
-                            </form>
+						<br />
+						@if (User.Identity.IsAuthenticated && User.Identity.Name!.Equals(cheep.Author))
+						{
+						<p id="edit_@Model.Incrementer">
+							@cheep.Message
+						</p>
+						}
+						else
+						{
+						<p>
+							@cheep.Message
+						</p>
+						}
+						<br />
+						<small>&mdash; @cheep.Timestamp</small>
+						@if (User.Identity.IsAuthenticated && User.Identity.Name!.Equals(cheep.Author))
+						{
+							<form	method="post">
+								<input type="hidden" name="cheepAuthor" value="@cheep.Author" />
+								<input type="hidden" name="cheepMessage" value="@cheep.Message" />
+								<input type="hidden" name="cheepTimestamp" value="@cheep.Timestamp" />
+								<input type="hidden" id="editedCheepMessage_@Model.Incrementer" name="newCheepMessage" value="" />
+								<button type="submit" asp-page-handler="DeleteCheep">Delete</button>
+								<button type="button" id="edit-button_@Model.Incrementer">Edit</button>
+								<button type="submit" id="end-editing_@Model.Incrementer" asp-page-handler="EditCheep">Done</button>
+							</form>
 
-                            <form method="post" asp-page-handler ="EditCheep">
-                                <input type="hidden" name="cheepAuthor" value="@cheep.Author"/>
-                                <input type="hidden" name="originalCheepMessage" value="@cheep.Message"/>
-                                <input type="hidden" name="timeStamp" value="@cheep.Timestamp"/>
-                                <input type="hidden" id="editedCheepMessage_@Model.incrementer" name="cheepMessage" value=""/>
-                                <button type="button" id="edit-button_@Model.incrementer">Edit</button>
-                                <button type="submit" id="end-editing_@Model.incrementer">Done</button>
-                            </form>
-                            <script>
-                                // Generate unique IDs dynamically
-                                var editButton = document.getElementById("edit-button_@Model.incrementer");
-                                var endButton = document.getElementById("end-editing_@Model.incrementer");
-                                var paragraph = document.getElementById("edit_@Model.incrementer");
-                                var editedCheepMessageInput = document.getElementById("editedCheepMessage_@Model.incrementer");
-                                console.log(editButton);
-                                editButton.addEventListener("click", function () {
-                                paragraph.contentEditable = true;
-                                paragraph.style.backgroundColor = "#dddbdb";
-                                });
+							<script>
+								editButtons.push(document.getElementById("edit-button_@Model.Incrementer"))
+								endButtons.push(document.getElementById("end-editing_@Model.Incrementer"))
+								paragraphs.push(document.getElementById("edit_@Model.Incrementer"))
+								editedCheepMessageInputs.push(document.getElementById("editedCheepMessage_@Model.Incrementer"))
+								endButtons[@Model.Incrementer].disabled = true
+								endButtons[@Model.Incrementer].style.visibility = "hidden"
 
-                                endButton.addEventListener("click", function () {
-                                paragraph.contentEditable = false;
-                                paragraph.style.backgroundColor = "#f0faf9";
-                                editedCheepMessageInput.value = paragraph.innerText.trim();
-                                });
-                            </script>
+								editButtons[@Model.Incrementer].addEventListener("click", function () {
+									paragraphs[@Model.Incrementer].contentEditable = true;
+									paragraphs[@Model.Incrementer].style.backgroundColor = "#dddbdb";
+									endButtons[@Model.Incrementer].disabled = false
+									endButtons[@Model.Incrementer].style.visibility = "visible"
+								});
+
+								endButtons[@Model.Incrementer].addEventListener("click", function () {
+									paragraphs[@Model.Incrementer].contentEditable = false;
+									paragraphs[@Model.Incrementer].style.backgroundColor = "#f0faf9";
+									editedCheepMessageInputs[@Model.Incrementer].value = paragraphs[@Model.Incrementer].innerText.trim();
+									endButtons[@Model.Incrementer].disabled = true
+									endButtons[@Model.Incrementer].style.visibility = "hidden"
+								});
+								@Model.Increment()
+							</script>
                         }
                     </p>
                 </li>
-                <script>
-                @Model.increment();
-                </script>
             }
         </ul>
 

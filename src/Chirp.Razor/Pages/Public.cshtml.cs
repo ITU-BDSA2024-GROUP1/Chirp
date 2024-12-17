@@ -20,7 +20,8 @@ public class PublicModel(ICheepService cheepService, IFollowService followServic
     [Required]
     [StringLength(maximumLength: 160, ErrorMessage = "The cheep must at most be 160 characters long.", MinimumLength = 0)]
     public string Text { get; set; }
-
+    public int Incrementer { get; set; } = 0;
+    public int Increment() { return ++Incrementer; }
     public async Task<ActionResult> OnGetAsync([FromQuery] int page = 1)
     {
         const int pageSize = 32; // Define your page size
@@ -80,10 +81,17 @@ public class PublicModel(ICheepService cheepService, IFollowService followServic
         await cheepService.DeleteCheep(cheep);
         return RedirectToPage();
     }
-    public async Task<IActionResult> OnPostEditCheep()
+    public async Task<IActionResult> OnPostEditCheep(string cheepAuthor, string newCheepMessage, string cheepMessage, string cheepTimeStamp)
     {
-        CheepViewModel cheep = new CheepViewModel(Request.Form["cheepAuthor"], Request.Form["cheepMessage"], Request.Form["cheepTimestamp"]);
-        await cheepService.DeleteCheep(cheep);
+        if (string.IsNullOrEmpty(cheepAuthor) || string.IsNullOrEmpty(newCheepMessage) || string.IsNullOrEmpty(cheepTimeStamp))
+        {
+            Console.WriteLine("Invalid input: Missing required fields.");
+            return RedirectToPage();
+        }
+
+        Console.WriteLine($"Author: {cheepAuthor}, Message: {newCheepMessage}, Timestamp: {cheepTimeStamp}, Original Message: {cheepMessage}");
+
+        await cheepService.UpdateCheep(new CheepViewModel(cheepAuthor, newCheepMessage, cheepTimeStamp), cheepMessage);
         return RedirectToPage();
     }
 

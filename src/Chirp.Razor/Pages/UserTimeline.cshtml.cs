@@ -18,14 +18,14 @@ public class UserTimelineModel(ICheepService cheepService, IFollowService follow
 {
     public List<CheepViewModel> Cheeps { get; set; } = new List<CheepViewModel>();
     public string FollowOrUnfollow { get; set; } = "Follow";
-    public int incrementer { get; set; } = 0;
 
     [BindProperty]
     [Required]
     [StringLength(maximumLength: 160, ErrorMessage = "The cheep must at most be 160 characters long.", MinimumLength = 0)]
 
     public string Text { get; set; }
-    public int increment(){return ++incrementer;}
+    public int Incrementer { get; set; } = 0;
+    public int Increment(){return ++Incrementer;}
     public async Task<ActionResult> OnGetAsync([FromRoute] string author, [FromQuery] int page = 1)
     {
         if (string.IsNullOrEmpty(author))
@@ -94,17 +94,17 @@ public class UserTimelineModel(ICheepService cheepService, IFollowService follow
         await cheepService.DeleteCheep(cheep);
         return RedirectToPage();
     }
-    public async Task<IActionResult> OnPostEditCheep(string cheepAuthor, string cheepMessage, string originalCheepMessage, string timeStamp)
+    public async Task<IActionResult> OnPostEditCheep(string cheepAuthor, string newCheepMessage, string cheepMessage, string cheepTimeStamp)
     {
-        if (string.IsNullOrEmpty(cheepAuthor) || string.IsNullOrEmpty(cheepMessage) || string.IsNullOrEmpty(timeStamp))
+        if (string.IsNullOrEmpty(cheepAuthor) || string.IsNullOrEmpty(newCheepMessage) || string.IsNullOrEmpty(cheepTimeStamp))
         {
             Console.WriteLine("Invalid input: Missing required fields.");
             return RedirectToPage();
         }
 
-        Console.WriteLine($"Author: {cheepAuthor}, Message: {cheepMessage}, Timestamp: {timeStamp}, Original Message: {originalCheepMessage}");
+        Console.WriteLine($"Author: {cheepAuthor}, Message: {newCheepMessage}, Timestamp: {cheepTimeStamp}, Original Message: {cheepMessage}");
 
-        await cheepService.UpdateCheep(new CheepViewModel(cheepAuthor, cheepMessage, timeStamp), originalCheepMessage);
+        await cheepService.UpdateCheep(new CheepViewModel(cheepAuthor, newCheepMessage, cheepTimeStamp), cheepMessage);
         return RedirectToPage();
     }
 
