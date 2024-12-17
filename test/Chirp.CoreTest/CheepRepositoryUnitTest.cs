@@ -112,10 +112,11 @@ public class CheepRepositoryUnitTest : CoreRepositoryTester
         
         // Act
         CheepDTO testCheep = testCheeps.First();
+        string originalMessage=testCheep.Message;
         Assert.NotEqual("New Test Message", testCheep.Message);
         testCheep.Message = "New Test Message";
         
-        await _cheepRepository.UpdateCheepAsync(testCheep);
+        await _cheepRepository.UpdateCheepAsync(testCheep,originalMessage);
         
         // Assert
         CheepDTO updatedCheep = await _cheepRepository.GetCheepByIdAsync(testCheep.Id);
