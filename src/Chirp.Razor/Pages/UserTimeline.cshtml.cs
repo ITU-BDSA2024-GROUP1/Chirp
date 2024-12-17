@@ -98,11 +98,9 @@ public class UserTimelineModel(ICheepService cheepService, IFollowService follow
     {
         if (string.IsNullOrEmpty(cheepAuthor) || string.IsNullOrEmpty(cheepMessage) || string.IsNullOrEmpty(timeStamp))
         {
-            Console.WriteLine("Invalid input: Missing required fields.");
             return RedirectToPage();
         }
-
-        Console.WriteLine($"Author: {cheepAuthor}, Message: {cheepMessage}, Timestamp: {timeStamp}, Original Message: {originalCheepMessage}");
+        
 
         await cheepService.UpdateCheep(new CheepViewModel(cheepAuthor, cheepMessage, timeStamp), originalCheepMessage);
         return RedirectToPage();
