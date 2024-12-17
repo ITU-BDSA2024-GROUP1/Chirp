@@ -1,9 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.Design;
-
-using Chirp.Core.Entities;
-using Chirp.Infrastructure.CheepService;
-using Chirp.Infrastructure.FollowService;
+﻿using Chirp.Infrastructure.Services.CheepService;
+using Chirp.Infrastructure.Services.FollowService;
+using Chirp.Razor.Pages.Shared;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,6 +11,8 @@ using NuGet.Packaging.Signing;
 
 namespace Chirp.Razor.Pages;
 
+public class UserTimelineModel(ICheepService service, IFollowService followService) : CheepTimeline(service, followService)
+{
 public class UserTimelineModel(ICheepService cheepService, IFollowService followService) : PageModel
 {
     public List<CheepViewModel> Cheeps { get; set; } = new List<CheepViewModel>();
@@ -33,6 +32,23 @@ public class UserTimelineModel(ICheepService cheepService, IFollowService follow
             Cheeps = [];
             return Page();
         }
+        
+        List<string> authors = await GetFollowers(author);
+        var cheepsResult = await _service.GetCheepsFromAuthor(authors, page, PageSize);
+        return PopulateTimeline(cheepsResult);
+    }
+
+    private async Task<List<string>> GetFollowers(string author)
+    {
+        List<string> authors = [];
+        
+        List<FollowViewModel> follows = await _followService.GetFollowersByName(author);
+        authors.AddRange(follows.Select(f => f.FollowedName));
+        authors.Add(author);
+
+        return authors;
+    }
+}
 
         const int pageSize = 32; // Define your page size
         List<FollowViewModel> Follows = await followService.GetFollowersByName(author);

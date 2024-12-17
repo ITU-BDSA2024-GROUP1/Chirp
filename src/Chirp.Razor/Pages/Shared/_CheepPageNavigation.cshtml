@@ -1,0 +1,46 @@
+﻿@model Chirp.Razor.Pages.Shared.CheepTimeline
+
+<nav aria-label="Page navigation">
+    <ul style="list-style-type: none; padding: 0; display: flex; justify-content: center;">
+        @if (Model.CurrentPage > 1)
+        {
+            <li style="margin: 0 5px;">
+                <a href="@Model.BaseUrl?page=@(Model.CurrentPage - 1)" aria-label="Previous" style="padding: 0.5em 1em; border: 1px solid #ddd; text-decoration: none;">&laquo;</a>
+            </li>
+        }
+
+        @if (Model.CurrentPage > 3)
+        {
+            <li style="margin: 0 5px;">
+                <a href="@Model.BaseUrl?page=1" style="padding: 0.5em 1em; border: 1px solid #ddd; text-decoration: none;">1</a>
+            </li>
+            <li style="margin: 0 5px;">
+                <span style="padding: 0.5em 1em; border: 1px solid #ddd;">...</span>
+            </li>
+        }
+
+        @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
+        {
+            <li style="margin: 0 5px;" class="@(Model.CurrentPage == i ? "active" : "")">
+                <a href="@Model.BaseUrl?page=@i" style="padding: 0.5em 1em; border: 1px solid #ddd; text-decoration: none;">@i</a>
+            </li>
+        }
+
+        @if (Model.CurrentPage < Model.TotalPages - 2)
+        {
+            <li style="margin: 0 5px;">
+                <span style="padding: 0.5em 1em; border: 1px solid #ddd;">...</span>
+            </li>
+            <li style="margin: 0 5px;">
+                <a href="@Model.BaseUrl?page=@Model.TotalPages" style="padding: 0.5em 1em; border: 1px solid #ddd; text-decoration: none;">@Model.TotalPages</a>
+            </li>
+        }
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <li style="margin: 0 5px;">
+                <a href="@Model.BaseUrl?page=@(Model.CurrentPage + 1)" aria-label="Next" style="padding: 0.5em 1em; border: 1px solid #ddd; text-decoration: none;">&raquo;</a>
+            </li>
+        }
+    </ul>
+</nav>

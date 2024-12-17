@@ -1,15 +1,12 @@
-using Chirp.Core;
-using Chirp.Core.Data;
-using Chirp.Core.Repositories;
-using Chirp.Infrastructure.CheepService;
+using Chirp.Core.Entities;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using Chirp.Core.Entities;
-using Chirp.Infrastructure.FollowService;
-using Chirp.Infrastructure.AuthorService;
+
+using Chirp.Infrastructure.Data;
+using Chirp.Infrastructure.Repositories;
+using Chirp.Infrastructure.Services.AuthorService;
+using Chirp.Infrastructure.Services.CheepService;
+using Chirp.Infrastructure.Services.FollowService;
 
 namespace Chirp.Razor;
 
@@ -47,8 +44,8 @@ public class Program
         .AddCookie()*/
         .AddGitHub(o =>
         {
-            o.ClientId = builder.Configuration["auth_github_clientId"] ?? Environment.GetEnvironmentVariable("auth_github_clientId");
-            o.ClientSecret = builder.Configuration["auth_github_clientSecret"] ?? Environment.GetEnvironmentVariable("auth_github_clientSecret");
+            o.ClientId = builder.Configuration["auth_github_clientId"];
+            o.ClientSecret = builder.Configuration["auth_github_clientSecret"];
             o.CallbackPath = "/signin-github";
             o.Scope.Add("user:email");
             o.Scope.Add("read:user");

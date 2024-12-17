@@ -1,13 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-using Chirp.Core.Entities;
-using Chirp.Core.DataTransferObject;
-using Chirp.Infrastructure.CheepService;
+﻿using Chirp.Infrastructure.Services.CheepService;
+using Chirp.Infrastructure.Services.FollowService;
+using Chirp.Razor.Pages.Shared;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Chirp.Infrastructure.FollowService;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Chirp.Razor.Pages;
 
