@@ -85,10 +85,12 @@ Describe the illustration briefly, i.e., how your application is built, tested, 
 
 ### Team work (Niels)
 
-Show a screenshot of your project board right before hand-in.
-Briefly describe which tasks are still unresolved, i.e., which features are missing from your applications or which functionality is incomplete.
+As of the morning of the 19th of december, the thing that is mostly missing is test for the different features that has been implemented, and one test related isssue from the CLI version of programme. 
 
-Briefly describe and illustrate the flow of activities that happen from the new creation of an issue (task description), over development, etc. until a feature is finally merged into the `main` branch of your repository.
+
+Each week when the group got new features to implement, the group sat down and made issues. After the issues were made, they were then distributed among members. Each member worked on their issues on individual branches. When the issue was done, a pull request would then be made where review would be requested. If two or more other group members approved, the branch would then be merged into main. If the branch contained new features, github actions would then deploy those features to the website.
+
+![](images/bdsaworkflow.png "")
 
 ### How to make _Chirp!_ work locally (Adam)
 
