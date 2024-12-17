@@ -93,12 +93,19 @@ public class UserTimelineModel(ICheepService cheepService, IFollowService follow
         await cheepService.DeleteCheep(cheep);
         return RedirectToPage();
     }
-    public async Task OnPostEditCheep(string cheepAuthor, string cheepMessage,string timeStamp)
+    public async Task OnPostEditCheep(string cheepAuthor, string cheepMessage, string timeStamp)
     {
-        Console.WriteLine(cheepAuthor+" "+cheepMessage+" "+timeStamp);
+        if (string.IsNullOrEmpty(cheepAuthor) || string.IsNullOrEmpty(cheepMessage) || string.IsNullOrEmpty(timeStamp))
+        {
+            Console.WriteLine("Invalid input: Missing required fields.");
+            return;
+        }
+
+        Console.WriteLine($"Author: {cheepAuthor}, Message: {cheepMessage}, Timestamp: {timeStamp}");
+
         await cheepService.UpdateCheep(new CheepViewModel(cheepAuthor, cheepMessage, timeStamp));
-        
     }
+
 
     public int CurrentPage { get; set; }
     public int TotalPages { get; set; }
