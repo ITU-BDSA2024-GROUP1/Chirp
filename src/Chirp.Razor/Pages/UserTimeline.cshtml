@@ -68,9 +68,8 @@
 						<br />
 						@if (User.Identity.IsAuthenticated && User.Identity.Name!.Equals(cheep.Author))
 						{
-						<p id="edit_@Model.Incrementer">
-							@cheep.Message
-						</p>
+                            // CSS from: https://stackoverflow.com/questions/39972794/css-to-make-input-and-textarea-looks-like-simple-html-text - Atal Kishore
+                            <textarea id="edit_@Model.Incrementer" maxlength="160" style="background: rgba(0, 0, 0, 0); width: 100%; border: none; outline: 0; cursor: text; resize: none;">@cheep.Message</textarea>
 						}
 						else
 						{
@@ -110,8 +109,7 @@
 								endButtons[@Model.Incrementer].addEventListener("click", function () {
 									paragraphs[@Model.Incrementer].contentEditable = false;
 									paragraphs[@Model.Incrementer].style.backgroundColor = "#f0faf9";
-									editedCheepMessageInputs[@Model.Incrementer].value = paragraphs[@Model.Incrementer].innerText.trim();
-									endButtons[@Model.Incrementer].disabled = true
+									editedCheepMessageInputs[@Model.Incrementer].value = paragraphs[@Model.Incrementer].value.trim();
 									endButtons[@Model.Incrementer].style.visibility = "hidden"
 								});
 								@Model.Increment()

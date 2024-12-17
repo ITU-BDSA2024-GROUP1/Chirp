@@ -94,15 +94,15 @@ public class UserTimelineModel(ICheepService cheepService, IFollowService follow
         await cheepService.DeleteCheep(cheep);
         return RedirectToPage();
     }
-    public async Task<IActionResult> OnPostEditCheep(string cheepAuthor, string newCheepMessage, string cheepMessage, string cheepTimeStamp)
+    public async Task<IActionResult> OnPostEditCheep(string cheepAuthor, string newCheepMessage, string cheepMessage, string cheepTimestamp)
     {
-        if (string.IsNullOrEmpty(cheepAuthor) || string.IsNullOrEmpty(newCheepMessage) || string.IsNullOrEmpty(cheepTimeStamp))
+        if (string.IsNullOrEmpty(cheepAuthor) || string.IsNullOrEmpty(newCheepMessage) || string.IsNullOrEmpty(cheepTimestamp))
         {
             return RedirectToPage();
         }
         
 
-        await cheepService.UpdateCheep(new CheepViewModel(cheepAuthor, newCheepMessage, cheepTimeStamp), cheepMessage);
+        await cheepService.UpdateCheep(new CheepViewModel(cheepAuthor, newCheepMessage, cheepTimestamp), cheepMessage);
         return RedirectToPage();
     }
 
