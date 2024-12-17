@@ -85,11 +85,8 @@ public class PublicModel(ICheepService cheepService, IFollowService followServic
     {
         if (string.IsNullOrEmpty(cheepAuthor) || string.IsNullOrEmpty(newCheepMessage) || string.IsNullOrEmpty(cheepTimeStamp))
         {
-            Console.WriteLine("Invalid input: Missing required fields.");
             return RedirectToPage();
         }
-
-        Console.WriteLine($"Author: {cheepAuthor}, Message: {newCheepMessage}, Timestamp: {cheepTimeStamp}, Original Message: {cheepMessage}");
 
         await cheepService.UpdateCheep(new CheepViewModel(cheepAuthor, newCheepMessage, cheepTimeStamp), cheepMessage);
         return RedirectToPage();
