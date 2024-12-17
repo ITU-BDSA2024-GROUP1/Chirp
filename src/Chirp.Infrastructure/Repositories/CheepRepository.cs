@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-using Chirp.Core.Data;
 using Chirp.Core.DataTransferObject;
 using Chirp.Core.Entities;
-using Chirp.Core.Models;
+using Chirp.Infrastructure.Data;
+using Chirp.Infrastructure.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Chirp.Core.Repositories;
+namespace Chirp.Infrastructure.Repositories;
 
 public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
 {
@@ -69,7 +69,9 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
 
     public async Task<PagedResult<CheepDTO>> GetAllCheepsAsync(int page, int pageSize)
     {
-        var query = dbContext.Cheeps.Include(c => c.Author).Select(c => new CheepDTO
+        var query = dbContext.Cheeps
+            .Include(c => c.Author)
+            .Select(c => new CheepDTO
         {
             Id = c.CheepId,
             Name = c.Author.UserName,
@@ -153,7 +155,9 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
 
     public async Task<CheepDTO> GetCheepByIdAsync(int id)
     {
-        return await dbContext.Cheeps.Where(c => c.CheepId == id).Select(c => new CheepDTO
+        return await dbContext.Cheeps
+            .Where(c => c.CheepId == id)
+            .Select(c => new CheepDTO
         {
             Id = c.CheepId,
             Name = c.Author.UserName,
@@ -167,7 +171,7 @@ public class CheepRepository(ChirpDBContext dbContext) : ICheepRepository
 
     public async Task UpdateCheepAsync(CheepDTO cheepDto)
     {
-        var cheep = await dbContext.Cheeps.FindAsync(cheepDto.Id);
+        var cheep = await dbContext.Cheeps.FindAsync(cheepDto.Id); // This should include author? .Include(c => c.Author) or that's at least what my IDE is telling me.
         if (cheep == null) return;
 
         var oldAuthor = cheep.Author;

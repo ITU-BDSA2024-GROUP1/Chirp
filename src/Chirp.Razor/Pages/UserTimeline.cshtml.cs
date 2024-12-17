@@ -13,8 +13,6 @@ namespace Chirp.Razor.Pages;
 
 public class UserTimelineModel(ICheepService service, IFollowService followService) : CheepTimeline(service, followService)
 {
-public class UserTimelineModel(ICheepService cheepService, IFollowService followService) : PageModel
-{
     public List<CheepViewModel> Cheeps { get; set; } = new List<CheepViewModel>();
     public string FollowOrUnfollow { get; set; } = "Follow";
 
@@ -27,6 +25,8 @@ public class UserTimelineModel(ICheepService cheepService, IFollowService follow
     public int Increment(){return ++Incrementer;}
     public async Task<ActionResult> OnGetAsync([FromRoute] string author, [FromQuery] int page = 1)
     {
+        const int PageSize = 32; // Define your page size
+
         if (string.IsNullOrEmpty(author))
         {
             Cheeps = [];
@@ -47,23 +47,6 @@ public class UserTimelineModel(ICheepService cheepService, IFollowService follow
         authors.Add(author);
 
         return authors;
-    }
-}
-
-        const int pageSize = 32; // Define your page size
-        List<FollowViewModel> Follows = await followService.GetFollowersByName(author);
-        List<string> authors = new List<string>();
-        foreach (FollowViewModel f in Follows) authors.Add(f.followedName);
-        authors.Add(author);
-        var cheepsResult = await cheepService.GetCheepsFromAuthor(authors, page, pageSize);
-        if (cheepsResult.Items != null)
-        {
-            Cheeps.AddRange(cheepsResult.Items);
-        }
-
-        CurrentPage = cheepsResult.CurrentPage;
-        TotalPages = cheepsResult.TotalPages;
-        return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
