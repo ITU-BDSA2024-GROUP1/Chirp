@@ -50,12 +50,8 @@ Each layer strictly depends on the layer beneath it, ensuring adherence to onion
 This structure ensures flexibility, testability, and maintainability of the code base.
 
 ### Architecture of deployed application (Emil/Adam)
-
-*Illustrate the architecture of your deployed application.
-Remember, you developed a client-server application.
-Illustrate the server component and to where it is deployed, illustrate a client component, and show how these communicate with each other.*
-
 ![](images/DeploymentArchitecture.png "")
+
 We use a Client-Server architecture, which gives us three main bodies to deal with:
 1. The first body is our setup of GitHub Actions workflows which handle our CI/CD. Once the program can build and it passes tests, it will be automatically deployed to our server. This is the main way we interact with the program as developers.
    
