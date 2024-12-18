@@ -96,8 +96,8 @@ public class BasicUserFeaturesTest : PlaywrightPageTester
         await PostCheep(cheep);
         await AssertCheepPosted(DefaultUsername, cheep);
 
-        await ClickFirstListItemButton(DefaultUsername); // Deletes most recent tweet by default user.
-        await Expect(Page.Locator("#messagelist")).Not.ToContainTextAsync($"{DefaultUsername} {cheep}");
+        await ClickFirstListItemButton($"{DefaultUsername} {cheep}"); // Deletes most recent tweet by default user.
+        await Expect(Page.Locator("#messagelist")).Not.ToContainTextAsync(cheep);
         
     }
 
