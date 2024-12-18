@@ -64,11 +64,14 @@ An unauthorized user starts at the public timeline, from here they have access t
 They can log in to an existing account via username and password, or use GitHub to log in. They can also register and create a new account, 
 this can be done with either GitHub, or through using an email, username and creating a password.
 
-After logging in a user is authorized, and get access to new functionality. you gain access to share your own cheeps, you can now also follow other authors, you get access to your own timeline.
-Your timeline contains all of your own cheeps as well as all cheeps of authors you currently follow. you can also in addition to sharing cheeps, delete cheeps and edit cheeps. you also get access to the about me page,
-here you can find all authors you follow and authors you are following, you get to see your username and email, and all cheeps sent by you. there is also a "FORGET ME" button, that removes all data related to your account,
-including follow relations, account details, and cheeps. doing this is permanent as we will delete the account from our server, and your data will cease to exist.
-The last feature you get access to is to log out of your account.
+After logging in a user is authorized, and get access to new functionality. You gain access to share your own cheeps, 
+you can also follow other authors, and you get access to your <i>own</i> timeline. Your timeline contains all of your own cheeps
+as well as all cheeps of authors you currently follow. You can also, in addition to sharing cheeps, delete cheeps and edit cheeps. 
+You also get access to the about me page, where you can find all the authors you follow and the authors you are following.
+You get to see your username and email, and all the cheeps sent by you, and there is also a "FORGET ME" button,
+which removes all data related to your account, including follow relations, account details, and cheeps.
+Doing this is permanent as we will delete the account from our server, and your data will cease to exist.
+The last feature you get access to, is to log out of your account.
 
 ### Sequence of functionality/calls through _Chirp!_ (Emil)
 ![](images/Chirp.drawio.png){style="display:block; margin: 0 auto"}
