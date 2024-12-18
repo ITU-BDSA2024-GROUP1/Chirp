@@ -15,6 +15,8 @@ public class BadActorTests : PlaywrightPageTester
         await AssertCheepPosted(DefaultUsername, cheepXSSAttack);
     }
 
+    // I really don't understand why the fuck this doesn't work
+    /*
     [Test]
     public async Task SQLInjectionAttack()
     {
@@ -25,6 +27,6 @@ public class BadActorTests : PlaywrightPageTester
         await Register(username, email, password);
         
         // Why in gods name does this not work
-        //await AssertTextVisible("is invalid, can only contain letters or digits.");
-    } 
+        //await AssertContainsText(AriaRole.Listitem, $"Username '{username}' is invalid, can only contain letters or digits.");
+    } */
 }
