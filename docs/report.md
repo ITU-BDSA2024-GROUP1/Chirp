@@ -154,6 +154,8 @@ it fetches the item id of the issue, then updates the issue status to "In Progre
 As of the morning of the 19th of december, the thing that is mostly missing is a few tests, for some of the features that have been implemented lately,
 and one test related issue from the CLI version of programme.
 
+![](images/bdsaprojectboard.png "")
+
 Each week when the group got new features to implement, the group sat down and made issues. 
 After the issues were made, they were then distributed among members. Each member worked on their issues on individual branches. 
 When the issue was done, a pull request would then be made where review would be requested. 
