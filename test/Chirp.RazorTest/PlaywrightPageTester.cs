@@ -17,6 +17,7 @@ public abstract class PlaywrightPageTester : PageTest
     private ILocator GetByRole(AriaRole role) => Page.GetByRole(role);
     private ILocator GetByRole(AriaRole role, string elementName, bool exact) => Page.GetByRole(role, new() { Name = elementName, Exact = exact });
     private ILocator GetByLabel(string labelName, bool exact) => Page.GetByLabel(labelName, new() { Exact = exact });
+    private ILocator GetByText(string text) => Page.GetByText(text);
     
     // Atomic Actions
     private async Task GotoHomePage() => await Page.GotoAsync(HomepageUrl);
@@ -74,6 +75,16 @@ public abstract class PlaywrightPageTester : PageTest
     {
         await GotoHomePage();
         await ClickFirstListItemButton($"{username} Unfollow");
+    }
+
+    private protected async Task EditCheep(int cheepNumber, string oldCheepText, string newCheepText)
+    {
+        await GotoHomePage();
+
+        await GetLocator($"#edit-button_{cheepNumber}").ClickAsync();
+        await GetByText(oldCheepText).ClickAndFill(newCheepText);
+        await ClickButton("Done");
+        
     }
     
     // Atomic Assertions

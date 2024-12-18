@@ -100,4 +100,18 @@ public class BasicUserFeaturesTest : PlaywrightPageTester
         await Expect(Page.Locator("#messagelist")).Not.ToContainTextAsync($"{DefaultUsername} {cheep}");
         
     }
+
+    [Test]
+    public async Task EditCheep()
+    {
+        await Login(DefaultUsername, DefaultPassword);
+        
+        const string cheepBefore = "This cheep has not been edited.";
+        await PostCheep(cheepBefore);
+        await AssertCheepPosted(DefaultUsername, cheepBefore);
+        
+        const string cheepAfter = "This cheep has been edited.";
+        await EditCheep(0, cheepBefore, cheepAfter);
+        await AssertCheepPosted(DefaultUsername, cheepAfter);
+    }
 }
