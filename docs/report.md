@@ -1,3 +1,20 @@
+
+# Chirp!
+*Analysis, Design, and Software Architecture*
+
+BSANDSA1KU
+
+|Student|Email|
+|-|-|
+|Adam Nielsen|adni@itu.dk|
+|Emil Sørensen|embs@itu.dk|
+|Mathias Alm|matal@itu.dk|
+|Niels Bay|nbay@itu.dk|
+|Noah Fabricius|gafa@itu.dk|
+
+
+<div style="page-break-after: always;"></div>
+
 ## Design and architecture
 
 ### Domain model (Adam)
