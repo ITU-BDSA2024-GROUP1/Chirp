@@ -1,15 +1,11 @@
-using Azure;
-using System.Drawing.Printing;
-
 using Chirp.Core.Entities;
-using Chirp.Infrastructure.CheepService;
-using Chirp.Razor.Areas.Identity.Pages.Account.Manage;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Chirp.Infrastructure.FollowService;
-using Chirp.Infrastructure.AuthorService;
+using Chirp.Infrastructure.Services.FollowService;
+using Chirp.Infrastructure.Services.AuthorService;
+using Chirp.Infrastructure.Services.CheepService;
 
 namespace Chirp.Razor.Pages
 {

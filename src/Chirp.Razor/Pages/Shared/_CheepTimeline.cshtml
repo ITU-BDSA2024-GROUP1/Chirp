@@ -1,0 +1,15 @@
+﻿@model Chirp.Razor.Pages.Shared.CheepTimeline
+
+@if (User.Identity is { IsAuthenticated: true })
+{
+    <partial name="_CheepPostBox"/>
+}
+@if (Model.Cheeps.Any())
+{
+    <partial name="_CheepList"/>
+    <partial name="_CheepPageNavigation"/>
+}
+else
+{
+    <em>There are no cheeps so far.</em>
+}
