@@ -72,7 +72,7 @@ public abstract class PlaywrightPageTester : PageTest
     private protected async Task UnfollowUser(string username)
     {
         await GotoHomePage();
-        await GetLocator("li").Filter($"{username} Unfollow").GetByRole(AriaRole.Button).ClickAsync();
+        await GetLocator("li").Filter($"{username} Unfollow").GetByRole(AriaRole.Button).First.ClickAsync();
     }
     
     // Atomic Assertions
