@@ -169,3 +169,5 @@ Reflect in writing to which degree the responses of the LLM were helpful.
 Discuss briefly if application of LLMs sped up your development or if the contrary was the case.*
 
 CoPilot was used for generating some css, fixing errors in code, explaining stuff from Microsoft documentation that was harad to understand, and pros and cons for different ways of designing code.
+
+ChatGPT was used a lot when we were dealing with GitHub Actions since there was not a whole lot of documentation about it and a lot of help found on the internet varried greatly in usability. It was also used for RazorPages and especially error-handling. In general, we mostly used it to help where our knowledge ran short and where some google searching didn't provide a useful answer; it was not used to just write code we could ourselves but didn't want to.
