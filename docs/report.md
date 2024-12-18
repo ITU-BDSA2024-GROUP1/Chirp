@@ -64,7 +64,7 @@ An unauthorized user starts at the public timeline, from here they have access t
 They can log in to an existing account via username and password, or use GitHub to log in. They can also register and create a new account, 
 this can be done with either GitHub, or through using an email, username and creating a password.
 
-after logging in a user is authorized, and get access to new functionality. you gain access to share your own cheeps, you can now also follow other authors, you get access to your own timeline.
+After logging in a user is authorized, and get access to new functionality. you gain access to share your own cheeps, you can now also follow other authors, you get access to your own timeline.
 Your timeline contains all of your own cheeps as well as all cheeps of authors you currently follow. you can also in addition to sharing cheeps, delete cheeps and edit cheeps. you also get access to the about me page,
 here you can find all authors you follow and authors you are following, you get to see your username and email, and all cheeps sent by you. there is also a "FORGET ME" button, that removes all data related to your account,
 including follow relations, account details, and cheeps. doing this is permanent as we will delete the account from our server, and your data will cease to exist.
@@ -104,7 +104,7 @@ On the automatic moving of issues on project board workflow, we can see it fetch
 it fetches the item id of the issue, then updates the issue status to "In Progress"
 ### Team work (Niels)
 
-As of the morning of the 19th of december, the thing that is mostly missing is test for the different features that has been implemented, and one test related isssue from the CLI version of programme. 
+As of the morning of the 19th of december, the thing that is mostly missing is test for the different features that have been implemented lately, and one test related isssue from the CLI version of programme. 
 
 
 Each week when the group got new features to implement, the group sat down and made issues. After the issues were made, they were then distributed among members. Each member worked on their issues on individual branches. When the issue was done, a pull request would then be made where review would be requested. If two or more other group members approved, the branch would then be merged into main. If the branch contained new features, github actions would then deploy those features to the website.
@@ -180,12 +180,8 @@ There are two main considerations we had when comparing it to a copyleft license
 As for why we chose the MIT license specifically; most if not all of our dependencies at the time used it, and we liked it, so we went with it.
 ### LLMs, ChatGPT, CoPilot, and others (Niels)
 
-*State which LLM(s) were used during development of your project.
-In case you were not using any, just state so.
-In case you were using an LLM to support your development, briefly describe when and how it was applied.
-Reflect in writing to which degree the responses of the LLM were helpful.
-Discuss briefly if application of LLMs sped up your development or if the contrary was the case.*
-
 CoPilot was used for generating some css, fixing errors in code, explaining stuff from Microsoft documentation that was harad to understand, and pros and cons for different ways of designing code.
 
 ChatGPT was used a lot when we were dealing with GitHub Actions since there was not a whole lot of documentation about it and a lot of help found on the internet varried greatly in usability. It was also used for RazorPages and especially error-handling. In general, we mostly used it to help where our knowledge ran short and where some google searching didn't provide a useful answer; it was not used to just write code we could ourselves but didn't want to.
+
+The LLMs were largely quite helpful for the development since we used it to supplement information we would otherwise spend very long to find through googling, if we could even find it. Though there were also some times were it led us on a bit of wild-goose chase. But largely, we would say that it sped up development far more than slow it down.
