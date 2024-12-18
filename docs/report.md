@@ -1,6 +1,6 @@
 ## Design and architecture
 
-### Domain model (Adam)
+### Domain model
 
 ![](images/DomainModel.png "Domain model")
 
@@ -30,7 +30,7 @@ To maintain data integrity:
 - **Text** in the **Cheep** entity is validated to ensure it does not exceed 160 characters.
 - Composite primary keys (``FollowerId`` and ``FollowedId``) in Follow prevent duplicate entries for the same follow relationship.
 
-### Architecture — In the small (Adam)
+### Architecture — In the small
 
 ![](images/Architecture.png "Figure 1: Architecture")
 
@@ -58,7 +58,7 @@ Each layer strictly depends on the layer beneath it, ensuring adherence to onion
 
 This structure ensures flexibility, testability, and maintainability of the code base.
 
-### Architecture of deployed application (Emil/Adam)
+### Architecture of deployed application
 ![](images/DeploymentArchitecture.png "")
 
 We use a Client-Server architecture, which gives us three main bodies to deal with:
@@ -74,7 +74,7 @@ there is the database for storing all relevant information and the application i
 GET is used to load and view Chirp! in their browser and POST to send updates to our server and database.
 Before they can use HTTPS, they must first establish themselves to the server with HTTP calls.
 
-### User activities (Mathias)
+### User activities
 An unauthorized user starts at the public timeline, from here they have access to all pages of the public timeline, they can also enter an author's timeline.
 They can log in to an existing account via username and password, or use GitHub to log in. They can also register and create a new account, 
 this can be done with either GitHub, or through using an email, username and creating a password.
@@ -89,7 +89,7 @@ Doing this is permanent as we will delete the account from our server, and your 
 The last feature you get access to, is to log out of your account.
 ![](images/UserActivityStatechart.png "")
 This UML statechart represents what user activities you can accomplish from different states.
-### Sequence of functionality/calls through _Chirp!_ (Emil)
+### Sequence of functionality/calls through _Chirp!_
 ![](images/Chirp.drawio.png)
 
 It starts with an HTTP GET request to the webserver, which is redirected to the application itself.
@@ -104,7 +104,7 @@ Lastly, it generates the HTML which is then returned and redirected back to the 
 
 ## Process
 
-### Build, test, release, and deployment (Mathias)
+### Build, test, release, and deployment
 These following UML diagrams describe our GitHub workflows. From the left to the right we have, building and testing,
 adding pull request to the project board, deploy app to azure, making releases on tags, automatic moving of issues on project board.
 ![](images/githubWorkflowUmlActivityDiagrams.png ""){style="display:block; margin: 0 auto"}
@@ -122,7 +122,7 @@ Then zips the executables and makes a release containing the zip files.
 On the 'automatic moving of issues on project board' workflow, we can see it fetches status id and progress option id from the project, then
 it fetches the item id of the issue, then updates the issue status to "In Progress".
 
-### Team work (Niels)
+### Team work
 
 As of the morning of the 19th of december, the thing that is mostly missing is test for the different features that have been implemented lately, and one test related issue from the CLI version of programme.
 
@@ -134,7 +134,7 @@ If the branch contained new features, GitHub actions would then deploy those fea
 
 ![](images/bdsaworkflow.png "")
 
-### How to make _Chirp!_ work locally (Adam)
+### How to make _Chirp!_ work locally
 
 In order to clone the repository you have to run the following command, which requires you to have git installed:
 
@@ -167,7 +167,7 @@ In case the user-secrets haven't been set you will have to set them manually whi
 ```
 4. Now you can go back to the Chirp folder and try the command that lists all the user-secrets for the applications as with the other method.
 
-### How to run test suite locally (Noah)
+### How to run test suite locally
 
 Assuming you have properly followed the steps of the previous chapter, the only required dependency, 
 should be Playwright itself for the End2End tests.
@@ -194,7 +194,7 @@ testing the basic user functionality (log-in, cheep, edit, forget-me), bad user-
 
 ## Ethics
 
-### License (Adam/Emil)
+### License
 
 We have chosen to use an MIT license for our project since it is an open source project that is open to the public on GitHub,
 where anybody is allowed to use it if they choose to as long as they credit us.
@@ -204,7 +204,7 @@ There are two main considerations we had when comparing it to a copyleft license
 2. The second is whether we wanted a copyleft license at all, which we didn't. 
 
 As for why we chose the MIT license specifically; most if not all of our dependencies at the time used it, and we liked it, so we went with it.
-### LLMs, ChatGPT, CoPilot, and others (Niels)
+### LLMs, ChatGPT, CoPilot, and others
 
 CoPilot was used for generating some css, fixing errors in code, explaining stuff from Microsoft documentation that was hard to understand,
 and pros and cons for different ways of designing code.
