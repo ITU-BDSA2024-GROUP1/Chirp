@@ -64,15 +64,16 @@ public abstract class PlaywrightPageTester : PageTest
         await ClickLink("About me");
         await ClickButton("FORGET ME");
     }
+    private protected async Task ClickFirstListItemButton(string textFilter) => await GetLocator("li").Filter(textFilter).GetByRole(AriaRole.Button).First.ClickAsync();
     private protected async Task FollowUser(string username)
     {
         await GotoHomePage();
-        await GetLocator("li").Filter($"{username} Follow").GetByRole(AriaRole.Button).First.ClickAsync();
+        await ClickFirstListItemButton($"{username} Follow");
     }
     private protected async Task UnfollowUser(string username)
     {
         await GotoHomePage();
-        await GetLocator("li").Filter($"{username} Unfollow").GetByRole(AriaRole.Button).First.ClickAsync();
+        await ClickFirstListItemButton($"{username} Unfollow");
     }
     
     // Atomic Assertions
