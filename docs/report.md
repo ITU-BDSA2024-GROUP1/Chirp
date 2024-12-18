@@ -107,7 +107,7 @@ Lastly, it generates the HTML which is then returned and redirected back to the 
 ### Build, test, release, and deployment
 These following UML diagrams describe our GitHub workflows. From the left to the right we have, building and testing,
 adding pull request to the project board, deploy app to azure, making releases on tags, automatic moving of issues on project board.
-![](images/githubWorkflowUmlActivityDiagrams.png ""){style="display:block; margin: 0 auto"}
+![](images/githubWorkflowUmlActivityDiagrams.png "")
 On the building and testing workflow we can see that it sets up a lot of tools like dotnet and playwright then it builds, runs and test the files with dotnet commands.
 
 On the 'adding pull request to project board' workflow it gets data from GitHub, and then adds this into an item for the project board.
