@@ -59,6 +59,7 @@ Each layer strictly depends on the layer beneath it, ensuring adherence to onion
 This structure ensures flexibility, testability, and maintainability of the code base.
 
 ### Architecture of deployed application
+
 ![](images/DeploymentArchitecture.png "")
 
 We use a Client-Server architecture, which gives us three main bodies to deal with:
@@ -87,9 +88,13 @@ You get to see your username and email, and all the cheeps sent by you, and ther
 which removes all data related to your account, including follow relations, account details, and cheeps.
 Doing this is permanent as we will delete the account from our server, and your data will cease to exist.
 The last feature you get access to, is to log out of your account.
+
 ![](images/UserActivityStatechart.png "")
+
 This UML statechart represents what user activities you can accomplish from different states.
+
 ### Sequence of functionality/calls through _Chirp!_
+
 ![](images/Chirp.drawio.png)
 
 It starts with an HTTP GET request to the webserver, which is redirected to the application itself.
@@ -107,7 +112,9 @@ Lastly, it generates the HTML which is then returned and redirected back to the 
 ### Build, test, release, and deployment
 These following UML diagrams describe our GitHub workflows. From the left to the right we have, building and testing,
 adding pull request to the project board, deploy app to azure, making releases on tags, automatic moving of issues on project board.
+
 ![](images/githubWorkflowUmlActivityDiagrams.png "")
+
 On the building and testing workflow we can see that it sets up a lot of tools like dotnet and playwright then it builds, runs and test the files with dotnet commands.
 
 On the 'adding pull request to project board' workflow it gets data from GitHub, and then adds this into an item for the project board.
