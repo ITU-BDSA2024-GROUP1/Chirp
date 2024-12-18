@@ -31,8 +31,8 @@ public class BasicUserFeaturesTest : PlaywrightPageTester
     {
         await Login(DefaultUsername, DefaultPassword);
         await AssertLoggedInAs(DefaultUsername);
-        
-        await ClickButton("logout");
+
+        await Logout();
         await AssertNotLoggedIn();
     }
     

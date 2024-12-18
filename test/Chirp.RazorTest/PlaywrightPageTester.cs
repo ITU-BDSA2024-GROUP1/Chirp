@@ -47,6 +47,11 @@ public abstract class PlaywrightPageTester : PageTest
         
         await ClickButton("Log in", true);
     }
+    private protected async Task Logout()
+    {
+        await GotoHomePage();
+        await ClickButton("logout");
+    }
     private protected async Task PostCheep(string cheep)
     {
         await GotoHomePage();
