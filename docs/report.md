@@ -60,21 +60,28 @@ We use a Client-Server architecture, which gives us three main bodies to deal wi
 3. The third body is the client. They use HTTPS GET and POST calls to send requests and information to our application through Azure. GET is used to load and view Chirp! in their browser and POST to send updates to our server and database. Before they can use HTTPS, they must first establish themselves to the server with HTTP calls.
 
 ### User activities (Mathias)
+An unauthorized user starts at the public timeline, from here they have access to all pages of the public timeline, they can also enter an authors timeline.
+They can log in to an existing account via username and password, or use GitHub to log in. They can also register and create a new account, 
+this can be done with either GitHub, or through using an email, username and creating a password.
 
-Illustrate typical scenarios of a user journey through your _Chirp!_ application.
-That is, start illustrating the first page that is presented to a non-authorized user, illustrate what a non-authorized user can do with your _Chirp!_ application, and finally illustrate what a user can do after authentication.
-
-Make sure that the illustrations are in line with the actual behavior of your application.
+after logging in a user is authorized, and get access to new functionality. you gain access to share your own cheeps, you can now also follow other authors, you get access to your own timeline.
+Your timeline contains all of your own cheeps as well as all cheeps of authors you currently follow. you can also in addition to sharing cheeps, delete cheeps and edit cheeps. you also get access to the about me page,
+here you can find all authors you follow and authors you are following, you get to see your username and email, and all cheeps sent by you. there is also a "FORGET ME" button, that removes all data related to your account,
+including follow relations, account details, and cheeps. doing this is permanent as we will delete the account from our server, and your data will cease to exist.
+The last feature you get access to is to log out of your account.
 
 ### Sequence of functionality/calls through _Chirp!_ (Emil)
+![](images/Chirp.drawio.png)
 
-With a UML sequence diagram, illustrate the flow of messages and data through your _Chirp!_ application.
-Start with an HTTP request that is send by an unauthorized user to the root endpoint of your application and end with the completely rendered web-page that is returned to the user.
+It starts with an HTTP GET request to the webserver, which is redirected to the application itself.
+The request is from an unauthorized user of the program.
 
-Make sure that your illustration is complete.
-That is, likely for many of you there will be different kinds of "calls" and responses.
-Some HTTP calls and responses, some calls and responses in C# and likely some more.
-(Note the previous sentence is vague on purpose. I want you to create a complete illustration.)
+To show responses from the C#, we have split the application into the cshtml files and the cs files. 
+To keep it manageble, we have elected to only show method calls between the cshtml and the cs files.
+Since it is an unauthorized user, the only method call is OnGetAsync, which is automatically called on GET requsts.
+It queries the database for a list of cheeps which it then makes accessible to both itself and the cshtml.
+
+Lastly it generates the HTML which is then returned and redirected back to the server. This rendered web-page is then sent back to the client through a HTTP response.
 
 ## Process
 
@@ -162,3 +169,5 @@ Reflect in writing to which degree the responses of the LLM were helpful.
 Discuss briefly if application of LLMs sped up your development or if the contrary was the case.*
 
 CoPilot was used for generating some css, fixing errors in code, explaining stuff from Microsoft documentation that was harad to understand, and pros and cons for different ways of designing code.
+
+ChatGPT was used a lot when we were dealing with GitHub Actions since there was not a whole lot of documentation about it and a lot of help found on the internet varried greatly in usability. It was also used for RazorPages and especially error-handling. In general, we mostly used it to help where our knowledge ran short and where some google searching didn't provide a useful answer; it was not used to just write code we could ourselves but didn't want to.
