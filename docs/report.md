@@ -72,7 +72,8 @@ You get to see your username and email, and all the cheeps sent by you, and ther
 which removes all data related to your account, including follow relations, account details, and cheeps.
 Doing this is permanent as we will delete the account from our server, and your data will cease to exist.
 The last feature you get access to, is to log out of your account.
-
+![](images/UserActivityStatechart.png "")
+This UML statechart represents what user activities you can accomplish from different states.
 ### Sequence of functionality/calls through _Chirp!_ (Emil)
 ![](images/Chirp.drawio.png)
 
