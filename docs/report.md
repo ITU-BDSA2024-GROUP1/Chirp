@@ -201,7 +201,7 @@ The infrastructure tests are unit tests of all 3 repositories and services; chee
 Specifically, we're unit-testing all the methods described in our repository and service interfaces. <br>
 
 The Razor tests are all made using mostly just Playwright, and have primarily been split into End2End tests, <br>
-testing the basic user functionality (log-in, cheep, edit, forget-me), bad user-interactions (username taken, bad password, etc.), and bad-actor attacks (e.g. XSS). <br>
+testing the basic user functionality (log-in, cheep, edit, etc.), bad user-interactions (username taken, bad password, etc.), and bad-actor attacks (e.g. XSS). <br>
 
 ## Ethics
 
