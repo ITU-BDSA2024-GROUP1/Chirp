@@ -131,7 +131,8 @@ it fetches the item id of the issue, then updates the issue status to "In Progre
 
 ### Team work
 
-As of the morning of the 19th of december, the thing that is mostly missing is test for the different features that have been implemented lately, and one test related issue from the CLI version of programme.
+As of the morning of the 19th of december, the thing that is mostly missing is a few tests, for some of the features that have been implemented lately,
+and one test related issue from the CLI version of programme.
 
 Each week when the group got new features to implement, the group sat down and made issues. 
 After the issues were made, they were then distributed among members. Each member worked on their issues on individual branches. 
