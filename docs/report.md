@@ -144,10 +144,28 @@ In case the user-secrets haven't been set you will have to set them manually whi
 
 ### How to run test suite locally (Noah)
 
-List all necessary steps that Adrian or Helge have to perform to execute your test suites.
-Here, you can assume that we already cloned your repository in the step above.
+Assuming you have properly followed the steps of the previous chapter, the only required dependency, 
+should be playwright itself for the End2End tests.
 
-Briefly describe what kinds of tests you have in your test suites and what they are testing.
+Start by building the project from the root ```/Chirp``` folder: <br>
+```dotnet build```
+
+Install Playwright using the following command in PowerShell, from the ```test/Chirp.RazorTest/``` folder: <br>
+```bin/Test/net8.0/playwright.ps1 install```
+
+Then, for the Playwright tests to work, you must be running the website locally, so run the Razor project from the ```src/Chirp.Razor```: <br>
+```dotnet run```
+
+Finally, you can run the tests themselves from the root ```/Chirp``` folder: <br>
+```dotnet test --no-build```
+
+This should run approximately 60 tests, which are split almost half-half between infrastructure tests (36) and Razor tests (24). <br>
+
+The infrastructure tests are unit tests of all 3 repositories and services; cheep, author, and follow. <br>
+Specifically, we're unit-testing all the methods described in our repository and service interfaces. <br>
+
+The Razor tests are all made using mostly just Playwright, and have primarily been split into End2End tests, <br>
+testing the basic user functionality (log-in, cheep, edit, forget-me), bad user-interactions (username taken, bad password, etc.), and bad-actor attacks (e.g. XSS). <br>
 
 ## Ethics
 
@@ -160,7 +178,7 @@ There are two main considerations we had when comparing it to a copyleft license
 2. The second is whether we wanted a copyleft license at all, which we didn't. 
 
 As for why we chose the MIT license specifically; most if not all of our dependencies at the time used it, and we liked it, so we went with it.
-### LLMs, ChatGPT, CoPilot, and others (Noah/Niels)
+### LLMs, ChatGPT, CoPilot, and others (Niels)
 
 *State which LLM(s) were used during development of your project.
 In case you were not using any, just state so.
