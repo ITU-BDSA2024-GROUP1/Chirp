@@ -53,14 +53,14 @@ This structure ensures flexibility, testability, and maintainability of the code
 ![](images/DeploymentArchitecture.png ""){style="display:block; margin: 0 auto"}
 
 We use a Client-Server architecture, which gives us three main bodies to deal with:
-1. The first body is our setup of GitHub Actions workflows which handle our CI/CD. Once the program can build and it passes tests, it will be automatically deployed to our server. This is the main way we interact with the program as developers.
+1. The first body is our setup of GitHub Actions workflows which handle our CI/CD. Once the program can build, and it passes tests, it will be automatically deployed to our server. This is the main way we interact with the program as developers.
    
 2. The second body is our server, which is the heart of our interactions with clients. We are using Microsoft Azure for hosting the server. In Azure, Chirp! is split up in two parts; there is the database for storing all relevant information and the application itself that the client will interact with.
    
 3. The third body is the client. They use HTTPS GET and POST calls to send requests and information to our application through Azure. GET is used to load and view Chirp! in their browser and POST to send updates to our server and database. Before they can use HTTPS, they must first establish themselves to the server with HTTP calls.
 
 ### User activities (Mathias)
-An unauthorized user starts at the public timeline, from here they have access to all pages of the public timeline, they can also enter an authors timeline.
+An unauthorized user starts at the public timeline, from here they have access to all pages of the public timeline, they can also enter an author's timeline.
 They can log in to an existing account via username and password, or use GitHub to log in. They can also register and create a new account, 
 this can be done with either GitHub, or through using an email, username and creating a password.
 
@@ -80,11 +80,11 @@ It starts with an HTTP GET request to the webserver, which is redirected to the 
 The request is from an unauthorized user of the program.
 
 To show responses from the C#, we have split the application into the cshtml files and the cs files. 
-To keep it manageble, we have elected to only show method calls between the cshtml and the cs files.
-Since it is an unauthorized user, the only method call is OnGetAsync, which is automatically called on GET requsts.
+To keep it manageable, we have elected to only show method calls between the cshtml and the cs files.
+Since it is an unauthorized user, the only method call is OnGetAsync, which is automatically called on GET requests.
 It queries the database for a list of cheeps which it then makes accessible to both itself and the cshtml.
 
-Lastly it generates the HTML which is then returned and redirected back to the server. This rendered web-page is then sent back to the client through a HTTP response.
+Lastly, it generates the HTML which is then returned and redirected back to the server. This rendered web-page is then sent back to the client through an HTTP response.
 
 ## Process
 
@@ -96,7 +96,7 @@ On the building and testing workflow we can see that it sets up a lot of tools l
 
 On the adding pull request to project board workflow it gets data from GitHub, and then adds this into an item for the project board.
 
-On the deploy app to azure workflow it sets up dotnet, build and makes an executable file, then makes it available as an artifact, 
+On the 'deploy app to azure' workflow it sets up dotnet, build and makes an executable file, then makes it available as an artifact, 
 then sets up another environment with id token and then downloads the artifact from before. Next it logs into azure and then deploys the artifact.
 
 On the making releases on tags workflow, it sets up dotnet and dependencies, then sets up GitHub tokens in a new environment.
@@ -107,10 +107,14 @@ On the automatic moving of issues on project board workflow, we can see it fetch
 it fetches the item id of the issue, then updates the issue status to "In Progress"
 ### Team work (Niels)
 
-As of the morning of the 19th of december, the thing that is mostly missing is test for the different features that have been implemented lately, and one test related isssue from the CLI version of programme. 
+As of the morning of the 19th of december, the thing that is mostly missing is test for the different features that have been implemented lately, and one test related issue from the CLI version of programme. 
 
 
-Each week when the group got new features to implement, the group sat down and made issues. After the issues were made, they were then distributed among members. Each member worked on their issues on individual branches. When the issue was done, a pull request would then be made where review would be requested. If two or more other group members approved, the branch would then be merged into main. If the branch contained new features, github actions would then deploy those features to the website.
+Each week when the group got new features to implement, the group sat down and made issues. 
+After the issues were made, they were then distributed among members. Each member worked on their issues on individual branches. 
+When the issue was done, a pull request would then be made where review would be requested. 
+If two or more other group members approved, the branch would then be merged into main. 
+If the branch contained new features, GitHub actions would then deploy those features to the website.
 
 ![](images/bdsaworkflow.png ""){style="display:block; margin: 0 auto"}
 
@@ -120,7 +124,7 @@ In order to clone the repository you have to run the following command, which re
 
 ```git clone https://github.com/ITU-BDSA2024-GROUP1/Chirp.git```
 
-Once you cloned the repository you will have to setup some user-secrets since they are used for third party login. Start by locating the files on your pc and once you are in the Chirp folder you should be able to run the following commands after having dotnet-ef installed (If you have installed dotnet-ef you can skip the first command):
+Once you cloned the repository you will have to set up some user-secrets since they are used for third party login. Start by locating the files on your pc and once you are in the Chirp folder you should be able to run the following commands after having dotnet-ef installed (If you have installed dotnet-ef you can skip the first command):
 
 ```dotnet tool install --global dotnet-ef```
 
@@ -143,7 +147,7 @@ In case the user-secrets haven't been set you will have to set them manually whi
   "auth_github_clientSecret": "6f43c9d347116d35557b9a98133177b520f97178"
 }
 ```
-4. Now you can go back to the Chirp folder and try the command that lists all of the user-secrets for the applications as with the other method.
+4. Now you can go back to the Chirp folder and try the command that lists all the user-secrets for the applications as with the other method.
 
 ### How to run test suite locally (Noah)
 
@@ -183,8 +187,8 @@ There are two main considerations we had when comparing it to a copyleft license
 As for why we chose the MIT license specifically; most if not all of our dependencies at the time used it, and we liked it, so we went with it.
 ### LLMs, ChatGPT, CoPilot, and others (Niels)
 
-CoPilot was used for generating some css, fixing errors in code, explaining stuff from Microsoft documentation that was harad to understand, and pros and cons for different ways of designing code.
+CoPilot was used for generating some css, fixing errors in code, explaining stuff from Microsoft documentation that was hard to understand, and pros and cons for different ways of designing code.
 
-ChatGPT was used a lot when we were dealing with GitHub Actions since there was not a whole lot of documentation about it and a lot of help found on the internet varried greatly in usability. It was also used for RazorPages and especially error-handling. In general, we mostly used it to help where our knowledge ran short and where some google searching didn't provide a useful answer; it was not used to just write code we could ourselves but didn't want to.
+ChatGPT was used a lot when we were dealing with GitHub Actions since there was not a lot of documentation about it and a lot of help found on the internet varied greatly in usability. It was also used for RazorPages and especially error-handling. In general, we mostly used it to help where our knowledge ran short and where some google searching didn't provide a useful answer; it was not used to just write code we could ourselves but didn't want to.
 
 The LLMs were largely quite helpful for the development since we used it to supplement information we would otherwise spend very long to find through googling, if we could even find it. Though there were also some times were it led us on a bit of wild-goose chase. But largely, we would say that it sped up development far more than slow it down.
