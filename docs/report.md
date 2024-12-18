@@ -82,7 +82,7 @@ Illustrate with a UML activity diagram how your _Chirp!_ applications are build,
 That is, illustrate the flow of activities in your respective GitHub Actions workflows.
 
 Describe the illustration briefly, i.e., how your application is built, tested, released, and deployed.
-
+![](images/githubWorkflowUmlActivityDiagrams.png "")
 ### Team work (Niels)
 
 As of the morning of the 19th of december, the thing that is mostly missing is test for the different features that has been implemented, and one test related isssue from the CLI version of programme. 
