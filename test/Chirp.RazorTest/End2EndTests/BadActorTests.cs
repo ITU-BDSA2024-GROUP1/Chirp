@@ -18,17 +18,13 @@ public class BadActorTests : PlaywrightPageTester
     [Test]
     public async Task SQLInjectionAttack()
     {
-        return; // Because currently this doesn't work.
-        
         const string username = "Robert'); DROP Table AspNetUsers;--";
         const string email = "bobby@tables.sql";
         const string password = "Pa$$w0rd";
         
         await Register(username, email, password);
         
-        // This kinda should work, and it does if you manually do the test case, but for some reason, it doesn't work :(
-        await AssertContainsText(AriaRole.Listitem, $"Username '{username}' is invalid, can only contain letters or digits.");
-        
-        // P.S. You can probably come up with a better test case than this, so please do :D
+        // Why in gods name does this not work
+        //await AssertTextVisible("is invalid, can only contain letters or digits.");
     } 
 }

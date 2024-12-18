@@ -58,6 +58,7 @@ public abstract class PlaywrightPageTester : PageTest
     }
     
     // Atomic Assertions
+    private protected async Task AssertTextVisible(string text) => await Expect(Page.GetByText(text)).ToBeVisibleAsync();
     private async Task AssertContainsText(ILocator locator, string text) => await Expect(locator).ToContainTextAsync(text);
     private protected async Task AssertContainsText(string locatorName, string text) => await AssertContainsText(GetLocator(locatorName), text);
     private protected async Task AssertContainsText(AriaRole role, string text) => await AssertContainsText(GetByRole(role), text);
