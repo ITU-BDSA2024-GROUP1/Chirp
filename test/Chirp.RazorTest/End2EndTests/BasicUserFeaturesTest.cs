@@ -1,6 +1,4 @@
-﻿using Microsoft.Playwright;
-
-namespace Chirp.RazorTest.End2EndTests;
+﻿namespace Chirp.RazorTest.End2EndTests;
 
 public class BasicUserFeaturesTest : PlaywrightPageTester
 {
@@ -33,8 +31,8 @@ public class BasicUserFeaturesTest : PlaywrightPageTester
     {
         await Login(DefaultUsername, DefaultPassword);
         await AssertLoggedInAs(DefaultUsername);
-        
-        await ClickButton("logout");
+
+        await Logout();
         await AssertNotLoggedIn();
     }
     
@@ -68,25 +66,24 @@ public class BasicUserFeaturesTest : PlaywrightPageTester
     [Test]
     public async Task CanFollow()
     {
+        await Login(DefaultUsername, DefaultPassword);
+        await FollowUser("Mellie Yost");
+        await ClickLink("About me");
+        await AssertContainsText("body", "Mellie Yost");
         
+        // Clean-up
+        await UnfollowUser("Mellie Yost");
     }
 
     [Test]
     public async Task CanUnfollow()
     {
-        
-    }
-
-    [Test]
-    public async Task CanDeleteCheep()
-    {
         await Login(DefaultUsername, DefaultPassword);
-
-        string cheep = "This cheep should disappear";
-        await PostCheep(cheep);
-        await AssertCheepPosted(DefaultUsername, cheep);
-
-        //await GetLocatorByText("li", $"{DefaultUsername} {cheep}").ClickLocatorButton();
-        //Assert.Throws<Exception>(() => _ = AssertCheepPosted(DefaultUsername, cheep));
+        await UnfollowUser("emilbks");
+        await ClickLink("About me");
+        await AssertContainsText("body", "You are not following anybody.");
+        
+        // Clean-up
+        await FollowUser("emilbks");
     }
 }

@@ -10,8 +10,8 @@ public static class PlaywrightHelper
         await locator.FillAsync(fillText);
     }
 
-    public static async Task ClickLocatorButton(this ILocator locator)
+    public static ILocator Filter(this ILocator locator, string filterText)
     {
-        await locator.GetByRole(AriaRole.Button).ClickAsync();
+        return locator.Filter(new() { HasText = filterText });
     }
 }

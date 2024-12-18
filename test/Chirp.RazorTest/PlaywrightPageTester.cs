@@ -17,14 +17,11 @@ public abstract class PlaywrightPageTester : PageTest
     private ILocator GetByRole(AriaRole role) => Page.GetByRole(role);
     private ILocator GetByRole(AriaRole role, string elementName, bool exact) => Page.GetByRole(role, new() { Name = elementName, Exact = exact });
     private ILocator GetByLabel(string labelName, bool exact) => Page.GetByLabel(labelName, new() { Exact = exact });
-
-    private protected ILocator GetLocatorByText(string selectorName, string text) =>
-        GetLocator(selectorName).Filter(new() { HasText = text });
     
     // Atomic Actions
     private async Task GotoHomePage() => await Page.GotoAsync(HomepageUrl);
     private protected async Task ClickLink(string linkName, bool exact = false) => await GetByRole(AriaRole.Link, linkName, exact).ClickAsync();
-    private protected async Task ClickButton(string buttonName, bool exact = false) => await GetByRole(AriaRole.Button, buttonName, exact).ClickAsync();
+    private async Task ClickButton(string buttonName, bool exact = false) => await GetByRole(AriaRole.Button, buttonName, exact).ClickAsync();
     private async Task FillInputField(string labelName, string fillText, bool exact = false) => await GetByLabel(labelName, exact).ClickAndFill(fillText);
     
     // Composite Actions
@@ -50,15 +47,36 @@ public abstract class PlaywrightPageTester : PageTest
         
         await ClickButton("Log in", true);
     }
+    private protected async Task Logout()
+    {
+        await GotoHomePage();
+        await ClickButton("logout");
+    }
     private protected async Task PostCheep(string cheep)
     {
         await GotoHomePage();
         await GetLocator("#cheepText").ClickAndFill(cheep);
         await ClickButton("Share");
     }
+    private protected async Task ForgetMe()
+    {
+        await GotoHomePage();
+        await ClickLink("About me");
+        await ClickButton("FORGET ME");
+    }
+    private protected async Task FollowUser(string username)
+    {
+        await GotoHomePage();
+        await GetLocator("li").Filter($"{username} Follow").GetByRole(AriaRole.Button).First.ClickAsync();
+    }
+    private protected async Task UnfollowUser(string username)
+    {
+        await GotoHomePage();
+        await GetLocator("li").Filter($"{username} Unfollow").GetByRole(AriaRole.Button).ClickAsync();
+    }
     
     // Atomic Assertions
-    private protected async Task AssertTextVisible(string text) => await Expect(Page.GetByText(text)).ToBeVisibleAsync();
+    private protected async Task AssertVisible(string locatorName) => await Expect(GetLocator(locatorName)).ToBeVisibleAsync();
     private async Task AssertContainsText(ILocator locator, string text) => await Expect(locator).ToContainTextAsync(text);
     private protected async Task AssertContainsText(string locatorName, string text) => await AssertContainsText(GetLocator(locatorName), text);
     private protected async Task AssertContainsText(AriaRole role, string text) => await AssertContainsText(GetByRole(role), text);
