@@ -145,18 +145,18 @@ In case the user-secrets haven't been set you will have to set them manually whi
 ### How to run test suite locally (Noah)
 
 Assuming you have properly followed the steps of the previous chapter, the only required dependency, 
-should be playwright itself for the End2End tests.
+should be Playwright itself for the End2End tests.
 
-Start by building the project from the root ```/Chirp/``` folder: <br>
+Start by building the project from the root ```/Chirp/``` directory: <br>
 ```dotnet build```
 
-Install Playwright using the following command in PowerShell, from ```test/Chirp.RazorTest/```: <br>
+Install Playwright using the following command in <b>PowerShell</b>, from the ```test/Chirp.RazorTest/``` directory: <br>
 ```bin/Test/net8.0/playwright.ps1 install```
 
 Then, for the Playwright tests to work, you must be running the website locally, so run the Razor project from ```src/Chirp.Razor/```: <br>
 ```dotnet run```
 
-Finally, you can run the tests themselves from the root ```/Chirp/``` folder: <br>
+Finally, run the tests themselves from the root ```/Chirp/``` directory: <br>
 ```dotnet test --no-build```
 
 This should run approximately 60 tests, which are split almost half-half between infrastructure tests (36) and Razor tests (24). <br>
