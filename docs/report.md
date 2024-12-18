@@ -50,12 +50,8 @@ Each layer strictly depends on the layer beneath it, ensuring adherence to onion
 This structure ensures flexibility, testability, and maintainability of the code base.
 
 ### Architecture of deployed application (Emil/Adam)
-
-*Illustrate the architecture of your deployed application.
-Remember, you developed a client-server application.
-Illustrate the server component and to where it is deployed, illustrate a client component, and show how these communicate with each other.*
-
 ![](images/DeploymentArchitecture.png "")
+
 We use a Client-Server architecture, which gives us three main bodies to deal with:
 1. The first body is our setup of GitHub Actions workflows which handle our CI/CD. Once the program can build and it passes tests, it will be automatically deployed to our server. This is the main way we interact with the program as developers.
    
@@ -64,11 +60,15 @@ We use a Client-Server architecture, which gives us three main bodies to deal wi
 3. The third body is the client. They use HTTPS GET and POST calls to send requests and information to our application through Azure. GET is used to load and view Chirp! in their browser and POST to send updates to our server and database. Before they can use HTTPS, they must first establish themselves to the server with HTTP calls.
 
 ### User activities (Mathias)
+An unauthorized user starts at the public timeline, from here they have access to all pages of the public timeline, they can also enter an authors timeline.
+They can log in to an existing account via username and password, or use GitHub to log in. They can also register and create a new account, 
+this can be done with either GitHub, or through using an email, username and creating a password.
 
-Illustrate typical scenarios of a user journey through your _Chirp!_ application.
-That is, start illustrating the first page that is presented to a non-authorized user, illustrate what a non-authorized user can do with your _Chirp!_ application, and finally illustrate what a user can do after authentication.
-
-Make sure that the illustrations are in line with the actual behavior of your application.
+after logging in a user is authorized, and get access to new functionality. you gain access to share your own cheeps, you can now also follow other authors, you get access to your own timeline.
+Your timeline contains all of your own cheeps as well as all cheeps of authors you currently follow. you can also in addition to sharing cheeps, delete cheeps and edit cheeps. you also get access to the about me page,
+here you can find all authors you follow and authors you are following, you get to see your username and email, and all cheeps sent by you. there is also a "FORGET ME" button, that removes all data related to your account,
+including follow relations, account details, and cheeps. doing this is permanent as we will delete the account from our server, and your data will cease to exist.
+The last feature you get access to is to log out of your account.
 
 ### Sequence of functionality/calls through _Chirp!_ (Emil)
 
@@ -95,12 +95,22 @@ Lastly it generates the HTML which is then returned and redirected back to the s
 ## Process
 
 ### Build, test, release, and deployment (Mathias)
-
-Illustrate with a UML activity diagram how your _Chirp!_ applications are build, tested, released, and deployed.
-That is, illustrate the flow of activities in your respective GitHub Actions workflows.
-
-Describe the illustration briefly, i.e., how your application is built, tested, released, and deployed.
+These following UML diagrams describe our GitHub workflows. From the left to the right we have, building and testing,
+adding pull request to the project board, deploy app to azure, making releases on tags, automatic moving of issues on project board.
 ![](images/githubWorkflowUmlActivityDiagrams.png "")
+On the building and testing workflow we can see that it sets up a lot of tools like dotnet and playwright then it builds, runs and test the files with dotnet commands.
+
+On the adding pull request to project board workflow it gets data from GitHub, and then adds this into an item for the project board.
+
+On the deploy app to azure workflow it sets up dotnet, build and makes an executable file, then makes it available as an artifact, 
+then sets up another environment with id token and then downloads the artifact from before. Next it logs into azure and then deploys the artifact.
+
+On the making releases on tags workflow, it sets up dotnet and dependencies, then sets up GitHub tokens in a new environment.
+It then sets up dotnet in the new environment, builds and restores in the new environment, then makes executable files for multiple operating systems.
+Then zips the executables and makes a release containing the zip files.
+
+On the automatic moving of issues on project board workflow, we can see it fetches status id and progress option id from the project, then
+it fetches the item id of the issue, then updates the issue status to "In Progress"
 ### Team work (Niels)
 
 As of the morning of the 19th of december, the thing that is mostly missing is test for the different features that has been implemented, and one test related isssue from the CLI version of programme. 
