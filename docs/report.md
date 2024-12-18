@@ -77,12 +77,22 @@ Some HTTP calls and responses, some calls and responses in C# and likely some mo
 ## Process
 
 ### Build, test, release, and deployment (Mathias)
-
-Illustrate with a UML activity diagram how your _Chirp!_ applications are build, tested, released, and deployed.
-That is, illustrate the flow of activities in your respective GitHub Actions workflows.
-
-Describe the illustration briefly, i.e., how your application is built, tested, released, and deployed.
+These following UML diagrams describe our GitHub workflows. From the left to the right we have, building and testing,
+adding pull request to the project board, deploy app to azure, making releases on tags, automatic moving of issues on project board.
 ![](images/githubWorkflowUmlActivityDiagrams.png "")
+On the building and testing workflow we can see that it sets up a lot of tools like dotnet and playwright then it builds, runs and test the files with dotnet commands.
+
+On the adding pull request to project board workflow it gets data from GitHub, and then adds this into an item for the project board.
+
+On the deploy app to azure workflow it sets up dotnet, build and makes an executable file, then makes it available as an artifact, 
+then sets up another environment with id token and then downloads the artifact from before. Next it logs into azure and then deploys the artifact.
+
+On the making releases on tags workflow, it sets up dotnet and dependencies, then sets up GitHub tokens in a new environment.
+It then sets up dotnet in the new environment, builds and restores in the new environment, then makes executable files for multiple operating systems.
+Then zips the executables and makes a release containing the zip files.
+
+On the automatic moving of issues on project board workflow, we can see it fetches status id and progress option id from the project, then
+it fetches the item id of the issue, then updates the issue status to "In Progress"
 ### Team work (Niels)
 
 As of the morning of the 19th of december, the thing that is mostly missing is test for the different features that has been implemented, and one test related isssue from the CLI version of programme. 
