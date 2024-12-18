@@ -71,15 +71,6 @@ including follow relations, account details, and cheeps. doing this is permanent
 The last feature you get access to is to log out of your account.
 
 ### Sequence of functionality/calls through _Chirp!_ (Emil)
-
-*With a UML sequence diagram, illustrate the flow of messages and data through your _Chirp!_ application.
-Start with an HTTP request that is send by an unauthorized user to the root endpoint of your application and end with the completely rendered web-page that is returned to the user.*
-
-*Make sure that your illustration is complete.
-That is, likely for many of you there will be different kinds of "calls" and responses.
-Some HTTP calls and responses, some calls and responses in C# and likely some more.
-(Note the previous sentence is vague on purpose. I want you to create a complete illustration.)*
-
 ![](images/Chirp.drawio.png)
 
 It starts with an HTTP GET request to the webserver, which is redirected to the application itself.
