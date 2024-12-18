@@ -2,7 +2,7 @@
 
 ### Domain model (Adam)
 
-![](images/DomainModel.png "Domain model")
+![](images/DomainModel.png "Domain model"){style="display:block; margin: 0 auto"}
 
 As illustrated, our domain model consists of three key entities: **Author**, **Cheep**, and **Follow**. The model integrates seamlessly with ASP.NET Identity for authentication and authorization, as demonstrated by the inheritance of the ``Author`` entity from ``IdentityUser``. This ensures access to built-in Identity properties such as ``UserName``, ``Email``, and password management features.
 
@@ -28,7 +28,7 @@ To maintain data integrity:
 
 ### Architecture — In the small (Adam)
 
-![](images/Architecture.png "Figure 1: Architecture")
+![](images/Architecture.png "Figure 1: Architecture"){style="display:block; margin: 0 auto"}
 
 As illustrated, our code base is organized following an onion architecture, emphasizing separation of concerns and a dependency-inversion approach. The architecture consists of four distinct layers:
 1. **Domain Layer** \
@@ -50,7 +50,7 @@ Each layer strictly depends on the layer beneath it, ensuring adherence to onion
 This structure ensures flexibility, testability, and maintainability of the code base.
 
 ### Architecture of deployed application (Emil/Adam)
-![](images/DeploymentArchitecture.png "")
+![](images/DeploymentArchitecture.png ""){style="display:block; margin: 0 auto"}
 
 We use a Client-Server architecture, which gives us three main bodies to deal with:
 1. The first body is our setup of GitHub Actions workflows which handle our CI/CD. Once the program can build and it passes tests, it will be automatically deployed to our server. This is the main way we interact with the program as developers.
@@ -71,7 +71,7 @@ including follow relations, account details, and cheeps. doing this is permanent
 The last feature you get access to is to log out of your account.
 
 ### Sequence of functionality/calls through _Chirp!_ (Emil)
-![](images/Chirp.drawio.png)
+![](images/Chirp.drawio.png){style="display:block; margin: 0 auto"}
 
 It starts with an HTTP GET request to the webserver, which is redirected to the application itself.
 The request is from an unauthorized user of the program.
@@ -88,7 +88,7 @@ Lastly it generates the HTML which is then returned and redirected back to the s
 ### Build, test, release, and deployment (Mathias)
 These following UML diagrams describe our GitHub workflows. From the left to the right we have, building and testing,
 adding pull request to the project board, deploy app to azure, making releases on tags, automatic moving of issues on project board.
-![](images/githubWorkflowUmlActivityDiagrams.png "")
+![](images/githubWorkflowUmlActivityDiagrams.png ""){style="display:block; margin: 0 auto"}
 On the building and testing workflow we can see that it sets up a lot of tools like dotnet and playwright then it builds, runs and test the files with dotnet commands.
 
 On the adding pull request to project board workflow it gets data from GitHub, and then adds this into an item for the project board.
@@ -109,7 +109,7 @@ As of the morning of the 19th of december, the thing that is mostly missing is t
 
 Each week when the group got new features to implement, the group sat down and made issues. After the issues were made, they were then distributed among members. Each member worked on their issues on individual branches. When the issue was done, a pull request would then be made where review would be requested. If two or more other group members approved, the branch would then be merged into main. If the branch contained new features, github actions would then deploy those features to the website.
 
-![](images/bdsaworkflow.png "")
+![](images/bdsaworkflow.png ""){style="display:block; margin: 0 auto"}
 
 ### How to make _Chirp!_ work locally (Adam)
 
