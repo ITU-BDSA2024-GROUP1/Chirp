@@ -72,13 +72,25 @@ Make sure that the illustrations are in line with the actual behavior of your ap
 
 ### Sequence of functionality/calls through _Chirp!_ (Emil)
 
-With a UML sequence diagram, illustrate the flow of messages and data through your _Chirp!_ application.
-Start with an HTTP request that is send by an unauthorized user to the root endpoint of your application and end with the completely rendered web-page that is returned to the user.
+*With a UML sequence diagram, illustrate the flow of messages and data through your _Chirp!_ application.
+Start with an HTTP request that is send by an unauthorized user to the root endpoint of your application and end with the completely rendered web-page that is returned to the user.*
 
-Make sure that your illustration is complete.
+*Make sure that your illustration is complete.
 That is, likely for many of you there will be different kinds of "calls" and responses.
 Some HTTP calls and responses, some calls and responses in C# and likely some more.
-(Note the previous sentence is vague on purpose. I want you to create a complete illustration.)
+(Note the previous sentence is vague on purpose. I want you to create a complete illustration.)*
+
+![](images/Chirp.drawio.png)
+
+It starts with an HTTP GET request to the webserver, which is redirected to the application itself.
+The request is from an unauthorized user of the program.
+
+To show responses from the C#, we have split the application into the cshtml files and the cs files. 
+To keep it manageble, we have elected to only show method calls between the cshtml and the cs files.
+Since it is an unauthorized user, the only method call is OnGetAsync, which is automatically called on GET requsts.
+It queries the database for a list of cheeps which it then makes accessible to both itself and the cshtml.
+
+Lastly it generates the HTML which is then returned and redirected back to the server. This rendered web-page is then sent back to the client through a HTTP response.
 
 ## Process
 
