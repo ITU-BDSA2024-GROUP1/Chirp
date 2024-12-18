@@ -67,17 +67,23 @@ public class BasicUserFeaturesTest : PlaywrightPageTester
     public async Task CanFollow()
     {
         await Login(DefaultUsername, DefaultPassword);
-        await ClickButton("follow");
+        await FollowUser("Mellie Yost");
         await ClickLink("About me");
-        await Expect(Page.GetByText("emilbks")).ToBeVisibleAsync();
+        await AssertContainsText("body", "Mellie Yost");
+        
+        // Clean-up
+        await UnfollowUser("Mellie Yost");
     }
 
     [Test]
     public async Task CanUnfollow()
     {
         await Login(DefaultUsername, DefaultPassword);
-        await ClickButton("unfollow");
+        await UnfollowUser("emilbks");
         await ClickLink("About me");
-        await Expect(Page.GetByText("You are not following anybody.")).ToBeVisibleAsync();
+        await AssertContainsText("body", "You are not following anybody.");
+        
+        // Clean-up
+        await FollowUser("emilbks");
     }
 }

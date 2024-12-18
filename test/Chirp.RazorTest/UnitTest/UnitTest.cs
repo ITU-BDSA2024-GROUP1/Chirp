@@ -33,16 +33,17 @@ public class UnitTest : PlaywrightPageTester
     }
 
     [Test]
-    public async Task ForgetMe()
+    public async Task ForgetMeTest()
     {
-        await Register("BazzB@burner1.burner", "BazzB", "Scrh1ft_H");
-        await ClickLink("About me");
-        await ClickButton("Forget me");
+        const string email = "BazzB@burner1.burner", username = "BazzB", password = "Scrh1ft_H";
+        await Register(email, username, password);
+        await AssertLoggedInAs(username);
+        await ForgetMe();
 
-        await Register("BazzB@burner1.burner", "BazzB", "Scrh1ft_H");
-        await ClickLink("About me");
-        await AssertLoggedInAs("BazzB");
-        await ClickButton("Forget me");
-       // throw new NotImplementedException("We just need to assert that it worked by attempting to register the account again and having that be successful");
+        await Register(email, username, password);
+        await AssertLoggedInAs(username);
+        
+        // Clean-up
+        await ForgetMe();
     }
 }

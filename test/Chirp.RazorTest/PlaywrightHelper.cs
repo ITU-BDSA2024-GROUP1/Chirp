@@ -9,4 +9,9 @@ public static class PlaywrightHelper
         await locator.ClickAsync();
         await locator.FillAsync(fillText);
     }
+
+    public static ILocator Filter(this ILocator locator, string filterText)
+    {
+        return locator.Filter(new() { HasText = filterText });
+    }
 }
