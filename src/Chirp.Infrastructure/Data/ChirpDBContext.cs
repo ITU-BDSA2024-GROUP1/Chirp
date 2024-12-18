@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Chirp.Core.Data;
+namespace Chirp.Infrastructure.Data;
 
 public class ChirpDBContext(DbContextOptions<ChirpDBContext> options) : IdentityDbContext<IdentityUser>(options)
 {
