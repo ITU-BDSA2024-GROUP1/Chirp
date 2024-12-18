@@ -86,4 +86,32 @@ public class BasicUserFeaturesTest : PlaywrightPageTester
         // Clean-up
         await FollowUser("emilbks");
     }
+
+    [Test]
+    public async Task DeleteCheep()
+    {
+        await Login(DefaultUsername, DefaultPassword);
+        
+        const string cheep = "This cheep should disappear in a bit!";
+        await PostCheep(cheep);
+        await AssertCheepPosted(DefaultUsername, cheep);
+
+        await ClickFirstListItemButton(DefaultUsername); // Deletes most recent tweet by default user.
+        await Expect(Page.Locator("#messagelist")).Not.ToContainTextAsync($"{DefaultUsername} {cheep}");
+        
+    }
+
+    [Test]
+    public async Task EditCheep()
+    {
+        await Login(DefaultUsername, DefaultPassword);
+        
+        const string cheepBefore = "This cheep has not been edited.";
+        await PostCheep(cheepBefore);
+        await AssertCheepPosted(DefaultUsername, cheepBefore);
+        
+        const string cheepAfter = "This cheep has been edited.";
+        await EditCheep(0, cheepBefore, cheepAfter);
+        await AssertCheepPosted(DefaultUsername, cheepAfter);
+    }
 }
