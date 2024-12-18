@@ -26,6 +26,7 @@ The **Follow** domain is primarily designed for write operations rather than rea
 This approach is suitable given our context, where the number of users is minimal, and complex read optimizations are not required.
 
 #### Validation and Constraints
+
 To maintain data integrity:
 - **Text** in the **Cheep** entity is validated to ensure it does not exceed 160 characters.
 - Composite primary keys (``FollowerId`` and ``FollowedId``) in Follow prevent duplicate entries for the same follow relationship.
@@ -76,6 +77,7 @@ GET is used to load and view Chirp! in their browser and POST to send updates to
 Before they can use HTTPS, they must first establish themselves to the server with HTTP calls.
 
 ### User activities
+
 An unauthorized user starts at the public timeline, from here they have access to all pages of the public timeline, they can also enter an author's timeline.
 They can log in to an existing account via username and password, or use GitHub to log in. They can also register and create a new account, 
 this can be done with either GitHub, or through using an email, username and creating a password.
@@ -110,6 +112,7 @@ Lastly, it generates the HTML which is then returned and redirected back to the 
 ## Process
 
 ### Build, test, release, and deployment
+
 These following UML diagrams describe our GitHub workflows. From the left to the right we have, building and testing,
 adding pull request to the project board, deploy app to azure, making releases on tags, automatic moving of issues on project board.
 
@@ -148,7 +151,7 @@ In order to clone the repository you have to run the following command, which re
 
 ```git clone https://github.com/ITU-BDSA2024-GROUP1/Chirp.git```
 
-Once you cloned the repository you will have to set up some user-secrets since they are used for third party login.
+Once you cloned the repository, you will have to set up some user-secrets, since they are used for third party login.
 Start by locating the files on your pc, and once you are in the Chirp folder, you should be able to run the following commands
 after having dotnet-ef installed (If you have installed dotnet-ef you can skip the first command):
 
@@ -211,7 +214,8 @@ There are two main considerations we had when comparing it to a copyleft license
 1. The first is whether we were using a dependency that used a copyleft license, since that would require us to either use the same license or an even more restrictive one.
 2. The second is whether we wanted a copyleft license at all, which we didn't. 
 
-As for why we chose the MIT license specifically; most if not all of our dependencies at the time used it, and we liked it, so we went with it.
+As for why we chose the MIT license specifically; most, if not all, of our dependencies at the time, used it, and we liked it, so we went with it.
+
 ### LLMs, ChatGPT, CoPilot, and others
 
 CoPilot was used for generating some css, fixing errors in code, explaining stuff from Microsoft documentation that was hard to understand,
@@ -222,6 +226,6 @@ and a lot of help found on the internet varied greatly in usability. It was also
 In general, we mostly used it to help where our knowledge ran short and where some google searching didn't provide a useful answer;
 it was not used to just write code we could ourselves but didn't want to.
 
-The LLMs were largely quite helpful for the development since we used it to supplement information we would otherwise spend very long to find through googling,
-if we could even find it. Though there were also some times were it led us on a bit of wild-goose chase.
-But largely, we would say that it sped up development far more than slow it down.
+The LLMs were largely quite helpful for the development since we used it to supplement information, we would otherwise spend a very long trying to find through googling;
+if we even _could_ find it. Though, there were also times when it led us on a bit of wild-goose chase.
+But largely, we would say that it sped up development, far more than slowed it down.
