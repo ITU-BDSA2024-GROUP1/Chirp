@@ -60,11 +60,15 @@ We use a Client-Server architecture, which gives us three main bodies to deal wi
 3. The third body is the client. They use HTTPS GET and POST calls to send requests and information to our application through Azure. GET is used to load and view Chirp! in their browser and POST to send updates to our server and database. Before they can use HTTPS, they must first establish themselves to the server with HTTP calls.
 
 ### User activities (Mathias)
+An unauthorized user starts at the public timeline, from here they have access to all pages of the public timeline, they can also enter an authors timeline.
+They can log in to an existing account via username and password, or use GitHub to log in. They can also register and create a new account, 
+this can be done with either GitHub, or through using an email, username and creating a password.
 
-Illustrate typical scenarios of a user journey through your _Chirp!_ application.
-That is, start illustrating the first page that is presented to a non-authorized user, illustrate what a non-authorized user can do with your _Chirp!_ application, and finally illustrate what a user can do after authentication.
-
-Make sure that the illustrations are in line with the actual behavior of your application.
+after logging in a user is authorized, and get access to new functionality. you gain access to share your own cheeps, you can now also follow other authors, you get access to your own timeline.
+Your timeline contains all of your own cheeps as well as all cheeps of authors you currently follow. you can also in addition to sharing cheeps, delete cheeps and edit cheeps. you also get access to the about me page,
+here you can find all authors you follow and authors you are following, you get to see your username and email, and all cheeps sent by you. there is also a "FORGET ME" button, that removes all data related to your account,
+including follow relations, account details, and cheeps. doing this is permanent as we will delete the account from our server, and your data will cease to exist.
+The last feature you get access to is to log out of your account.
 
 ### Sequence of functionality/calls through _Chirp!_ (Emil)
 
