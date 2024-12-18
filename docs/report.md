@@ -50,12 +50,14 @@ Each layer strictly depends on the layer beneath it, ensuring adherence to onion
 This structure ensures flexibility, testability, and maintainability of the code base.
 
 ### Architecture of deployed application (Emil/Adam)
-
-*Illustrate the architecture of your deployed application.
-Remember, you developed a client-server application.
-Illustrate the server component and to where it is deployed, illustrate a client component, and show how these communicate with each other.*
-
 ![](images/DeploymentArchitecture.png "")
+
+We use a Client-Server architecture, which gives us three main bodies to deal with:
+1. The first body is our setup of GitHub Actions workflows which handle our CI/CD. Once the program can build and it passes tests, it will be automatically deployed to our server. This is the main way we interact with the program as developers.
+   
+2. The second body is our server, which is the heart of our interactions with clients. We are using Microsoft Azure for hosting the server. In Azure, Chirp! is split up in two parts; there is the database for storing all relevant information and the application itself that the client will interact with.
+   
+3. The third body is the client. They use HTTPS GET and POST calls to send requests and information to our application through Azure. GET is used to load and view Chirp! in their browser and POST to send updates to our server and database. Before they can use HTTPS, they must first establish themselves to the server with HTTP calls.
 
 ### User activities (Mathias)
 
@@ -146,6 +148,11 @@ Briefly describe what kinds of tests you have in your test suites and what they 
 
 We have chosen to use an MIT license for our project since it is an open source project that is open to the public on GitHub, where anybody is allowed to use it if they choose to as long as they credit us.
 
+There are two main considerations we had when comparing it to a copyleft license like GNU GPLv3:
+1. The first is whether we were using a dependency that used a copyleft license, since that would require us to either use the same license or an even more restrictive one.
+2. The second is whether we wanted a copyleft license at all, which we didn't. 
+
+As for why we chose the MIT license specifically; most if not all of our dependencies at the time used it, and we liked it, so we went with it.
 ### LLMs, ChatGPT, CoPilot, and others (Noah/Niels)
 
 *State which LLM(s) were used during development of your project.
