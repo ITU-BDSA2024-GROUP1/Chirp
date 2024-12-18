@@ -31,8 +31,8 @@ public class BasicUserFeaturesTest : PlaywrightPageTester
     {
         await Login(DefaultUsername, DefaultPassword);
         await AssertLoggedInAs(DefaultUsername);
-        
-        await ClickButton("logout");
+
+        await Logout();
         await AssertNotLoggedIn();
     }
     
@@ -66,12 +66,24 @@ public class BasicUserFeaturesTest : PlaywrightPageTester
     [Test]
     public async Task CanFollow()
     {
-        //throw new NotImplementedException();
+        await Login(DefaultUsername, DefaultPassword);
+        await FollowUser("Mellie Yost");
+        await ClickLink("About me");
+        await AssertContainsText("body", "Mellie Yost");
+        
+        // Clean-up
+        await UnfollowUser("Mellie Yost");
     }
 
     [Test]
     public async Task CanUnfollow()
     {
-        //throw new NotImplementedException();
+        await Login(DefaultUsername, DefaultPassword);
+        await UnfollowUser("emilbks");
+        await ClickLink("About me");
+        await AssertContainsText("body", "You are not following anybody.");
+        
+        // Clean-up
+        await FollowUser("emilbks");
     }
 }
